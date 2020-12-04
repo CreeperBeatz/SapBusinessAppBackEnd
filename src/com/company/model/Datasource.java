@@ -5,6 +5,7 @@ import com.company.utilities.MD5Hash;
 import java.io.File;
 import java.sql.*;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class Datasource {
 
@@ -20,6 +21,8 @@ public class Datasource {
         public static final String COLUMN_USERS_EMAIL = "email";
         public static final String COLUMN_USERS_PASSWORD_HASH = "hash";
         public static final String COLUMN_USERS_TYPE = "type";
+
+        public static final int NUM_TYPES_USERS = 2;
 
     public static final String TABLE_SALES = "sales";
         public static final String COLUMN_SALES_ID = "_id";
@@ -94,6 +97,16 @@ public class Datasource {
             "', 1);";
 
     private Connection conn;
+    //TODO prepared statements
+
+    //Singleton design pattern, Thread safe
+    private static Datasource instance = new Datasource();
+
+    private Datasource(){}
+
+    public static Datasource getInstance() {
+        return instance;
+    }
 
     public boolean open(){
 
@@ -139,9 +152,32 @@ public class Datasource {
     ////////////////////////////ADD DATA///////////////////////////////
     ///////////////////////////////////////////////////////////////////
 
-    public void insertUser(String username, String password_hash, String email, byte userType){
-        //TODO validation
-        //TODO write to sql database
+    public void insertUser(String username, String password, String email, byte userType){
+        String password_hash;
+
+        //must contain word, followed by @, followed by word, followed by . , followed by 2-4 chars
+        if(!Pattern.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", email)) {
+            System.out.println("invalid email @user " +  username);
+            return;
+        }
+
+        //Minimum eight characters, at least one letter and one number:
+        if(Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$", password)){
+           password_hash = MD5Hash.getHash(password);
+        }
+        else {
+            System.out.println("invalid password @user " + username);
+            return;
+        }
+
+        if(userType > NUM_TYPES_USERS) {
+            System.out.println("invalid user type @user " + username);
+            return;
+        }
+
+
+
+
     }
 
     public void insertClient(){};

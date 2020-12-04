@@ -20,22 +20,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fd3e1398-5e8f-4441-8d60-de934b76b1c6" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/database creation SQL.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project.db" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/project.db-journal" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/company/model/Client.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/company/model/Product.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/company/model/Sale.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/company/utilities/MD5Hash.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ProjectBackend/com/company/Administrator.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ProjectBackend/com/company/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ProjectBackend/com/company/Main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ProjectBackend/com/company/Trader.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ProjectBackend/com/company/User.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/company/Administrator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/model/Administrator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/company/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/company/SalesMan.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/model/SalesMan.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/company/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/model/User.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/company/model/Datasource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/model/Datasource.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -112,7 +97,7 @@
       <workItem from="1606939506214" duration="6929000" />
       <workItem from="1606989173237" duration="3362000" />
       <workItem from="1607098048157" duration="3049000" />
-      <workItem from="1607103945531" duration="786000" />
+      <workItem from="1607103945531" duration="3130000" />
     </task>
     <servers />
   </component>
