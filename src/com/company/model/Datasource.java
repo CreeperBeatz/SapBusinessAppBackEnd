@@ -14,43 +14,6 @@ public class Datasource {
     public static final String CONNECTION_STRING = "jdbc:sqlite:" +
             System.getProperty("user.dir") + "\\" + DB_NAME;
 
-    //Database constants
-    public static final String TABLE_USERS = "users";
-        public static final String COLUMN_USERS_ID = "=_id";
-        public static final String COLUMN_USERS_USERNAME = "username";
-        public static final String COLUMN_USERS_EMAIL = "email";
-        public static final String COLUMN_USERS_PASSWORD_HASH = "hash";
-        public static final String COLUMN_USERS_TYPE = "type";
-
-        public static final int NUM_TYPES_USERS = 2;
-
-    public static final String TABLE_SALES = "sales";
-        public static final String COLUMN_SALES_ID = "_id";
-        public static final String COLUMN_SALES_SALESMAN = "salesman";
-        public static final String COLUMN_SALES_CLIENT = "client";
-        public static final String COLUMN_SALES_PRODUCT = "product";
-        public static final String COLUMN_SALES_QUANTITY = "quantity";
-        public static final String COLUMN_SALES_DISCOUNT = "discount";
-        public static final String COLUMN_SALES_PRICE = "price";
-
-    public static final String TABLE_PRODUCTS = "products";
-        public static final String COLUMN_PRODUCTS_ID = "_id";
-        public static final String COLUMN_PRODUCTS_NAME = "name";
-        public static final String COLUMN_PRODUCTS_PRICE = "price";
-        public static final String COLUMN_PRODUCTS_DISCOUNT = "discount";
-        public static final String COLUMN_PRODUCTS_DESCRIPTION = "description";
-        public static final String COLUMN_PRODUCTS_IMAGE_URL = "imageUrl";
-
-    public static final String TABLE_CLIENTS = "clients";
-        public static final String COLUMN_CLIENTS_ID = "_id";
-        public static final String COLUMN_CLIENTS_NAME = "name";
-        public static final String COLUMN_CLIENTS_SURNAME = "surname";
-        public static final String COLUMN_CLIENTS_ADDRESS = "address";
-        public static final String COLUMN_CLIENTS_COUNTRY = "country";
-        public static final String COLUMN_CLIENTS_CITY = "city";
-        public static final String COLUMN_CLIENTS_POSTAL_CODE = "postalCode";
-        public static final String COLUMN_CLIENTS_NUMBER_OF_PURCHASES = "purchases";
-
     //Database creation
     //TODO change all the fields (oh god) with the psfs above
     public static final String DATABASE_CREATION_STRING =
@@ -152,44 +115,18 @@ public class Datasource {
     ////////////////////////////ADD DATA///////////////////////////////
     ///////////////////////////////////////////////////////////////////
 
-    public void insertUser(String username, String password, String email, byte userType){
-        String password_hash;
-
-        //must contain word, followed by @, followed by word, followed by . , followed by 2-4 chars
-        if(!Pattern.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", email)) {
-            System.out.println("invalid email @user " +  username);
-            return;
-        }
-
-        //Minimum eight characters, at least one letter and one number:
-        if(Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$", password)){
-           password_hash = MD5Hash.getHash(password);
-        }
-        else {
-            System.out.println("invalid password @user " + username);
-            return;
-        }
-
-        if(userType > NUM_TYPES_USERS) {
-            System.out.println("invalid user type @user " + username);
-            return;
-        }
 
 
 
 
-    }
 
-    public void insertClient(){};
-    public void insertProduct(){};
-    public void insertSale(){};
 
     ///////////////////////////////////////////////////////////////////
     ///////////////////////////REMOVE DATA/////////////////////////////
     ///////////////////////////////////////////////////////////////////
 
     public void removeUser(){};
-    public void removeClient(){};
+
     public void removeProduct(){};
     public void removeSale(){}; //questionable, but yeah
 
@@ -198,7 +135,7 @@ public class Datasource {
     ///////////////////////////////////////////////////////////////////
 
     public void changeUser(){};
-    public void changeClient(){};
+
     public void changeProduct(){};
     public void changeSale(){};
 

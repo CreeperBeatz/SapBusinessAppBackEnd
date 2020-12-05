@@ -1,6 +1,6 @@
 package com.company.model;
 
-public abstract class User {
+public class User {
 
     private String password_hash;
     private String username;
