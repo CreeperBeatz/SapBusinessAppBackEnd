@@ -8,10 +8,9 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
-        Datasource datasource = new Datasource();
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println(MD5Hash.getHash("administrator"));
+        System.out.println(MD5Hash.getHash("123456"));
 
        // datasource.open();
         //datasource.close();

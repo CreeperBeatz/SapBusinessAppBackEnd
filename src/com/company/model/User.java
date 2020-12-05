@@ -2,11 +2,23 @@ package com.company.model;
 
 public class User {
 
-    private String password_hash;
+    private int id;
     private String username;
+    private String password_hash;
     private String email;
     private int type;
-    private int id;
+
+
+    public User() {
+    }
+
+    public User( int id, String username, String password_hash,  String email , int type) {
+        this.password_hash = password_hash;
+        this.username = username;
+        this.email = email;
+        this.type = type;
+        this.id = id;
+    }
 
     public String getPassword_hash() {
         return password_hash;

@@ -9,6 +9,18 @@ public class Sale {
     private float discount;
     private float price;
 
+    public Sale() {
+    }
+
+    public Sale(int id , int salesManID , int clientID , int productID , int quantity , float discount , float price) {
+        this.id = id;
+        this.salesManID = salesManID;
+        this.clientID = clientID;
+        this.productID = productID;
+        this.quantity = quantity;
+        this.discount = discount;
+        this.price = price;
+    }
 
     //getters and setters
     public int getId() {

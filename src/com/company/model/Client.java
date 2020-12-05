@@ -11,6 +11,20 @@ public class Client {
     private int postalCode;
     private int numOfPurchases;
 
+    public Client() {
+    }
+
+    public Client(int id , String name , String surname , String address , String country , String city , int postalCode , int numOfPurchases) {
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+        this.address = address;
+        this.country = country;
+        this.city = city;
+        this.postalCode = postalCode;
+        this.numOfPurchases = numOfPurchases;
+    }
+
     public int getId() {
         return id;
     }

@@ -39,6 +39,7 @@ public class Datasource {
             "        \"_id\"   INTEGER,\n" +
             "        \"name\"  TEXT,\n" +
             "        \"price\" NUMERIC,\n" +
+            "        \"available\" INTEGER\n" +
             "        \"discount\"      NUMERIC,\n" +
             "        \"description\"   TEXT,\n" +
             "        \"imageUrl\"      TEXT,\n" +
@@ -110,50 +111,4 @@ public class Datasource {
         statement.close();
         System.out.println("Default database with admin account administrator:administrator created");
     }
-
-    ///////////////////////////////////////////////////////////////////
-    ////////////////////////////ADD DATA///////////////////////////////
-    ///////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-
-    ///////////////////////////////////////////////////////////////////
-    ///////////////////////////REMOVE DATA/////////////////////////////
-    ///////////////////////////////////////////////////////////////////
-
-    public void removeUser(){};
-
-    public void removeProduct(){};
-    public void removeSale(){}; //questionable, but yeah
-
-    ///////////////////////////////////////////////////////////////////
-    //////////////////////////CHANGE DATA//////////////////////////////
-    ///////////////////////////////////////////////////////////////////
-
-    public void changeUser(){};
-
-    public void changeProduct(){};
-    public void changeSale(){};
-
-    ///////////////////////////////////////////////////////////////////
-    //////////////////////////////QUERIES//////////////////////////////
-    ///////////////////////////////////////////////////////////////////
-    //TODO might have to migrate those to the client side?
-    public List<Sale> getSales(){return null;}
-    public List<Sale> getSales(long fromMillisec, long toMillisec, String salesman){return null;}
-
-    public List<User> getUsers(){return null;}
-    public List<User> getUsers(int type){return null;}
-    public ResultSet getProductsByPrice(float fromPrice, float toPrice){return null;}
-    public ResultSet getProductsAll(){return null;}
-
-    ///////////////////////////////////////////////////////////////////
-    ///////////////////////STATIC METHODS//////////////////////////////
-    ///////////////////////////////////////////////////////////////////
-
-
 }

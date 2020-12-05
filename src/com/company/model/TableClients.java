@@ -11,8 +11,13 @@ public class TableClients {
     public static final String COLUMN_CLIENTS_POSTAL_CODE = "postalCode";
     public static final String COLUMN_CLIENTS_NUMBER_OF_PURCHASES = "purchases";
 
+    public static final String QUERY_ALL_CLIENTS_PREP = "SELECT * FROM " + TABLE_CLIENTS + " ORDER BY " +
+            TABLE_CLIENTS + "." + COLUMN_CLIENTS_NAME + ", " + TABLE_CLIENTS + "." + COLUMN_CLIENTS_SURNAME;
+
 
     public void insertClient(){};
+    //INSERT INTO CLIENTS(name, surname, address, country, city, postalCode, purchases)
+    //VALUES ('proba', 'dae', 'nqkyde', 'Germany','Berlin',6000 , 0)
     public void deleteClient(){};
     public void changeClient(){};
 

@@ -8,7 +8,17 @@ public class Product {
     private String description;
     private String imageUrl;
 
+    public Product() {
+    }
 
+    public Product(int id , String name , float price , float discount , String description , String imageUrl) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.discount = discount;
+        this.description = description;
+        this.imageUrl = imageUrl;
+    }
 
     public int getId() {
         return id;
