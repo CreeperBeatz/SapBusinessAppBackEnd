@@ -44,7 +44,7 @@ public class TableUsers {
             TABLE_USERS + "." + COLUMN_USERS_TYPE + " = " + INDEX_TRADER;
 
 
-    public static void insertUser(String username, String password, String email, byte userType){
+    public static void insertUser(String username, String password, String email, int userType){
         String password_hash;
 
         //must contain word, followed by @, followed by word, followed by . , followed by 2-4 chars
@@ -71,7 +71,9 @@ public class TableUsers {
             Datasource.getInstance().getInsertUser().setString(1 , username);
             Datasource.getInstance().getInsertUser().setString(2, email);
             Datasource.getInstance().getInsertUser().setString(3, MD5Hash.getHash(password));
-            Datasource.getInstance().getInsertUser().setString(4, Byte.toString(userType)); //TODO might change later, cuz spaghetti
+            Datasource.getInstance().getInsertUser().setString(4, Integer.toString(userType)); //TODO might change later, cuz spaghetti
+
+            Datasource.getInstance().getInsertUser().execute();
         } catch (SQLException e) {
             System.out.println("Couldn't insert user! - " + e.getMessage());
             e.printStackTrace();

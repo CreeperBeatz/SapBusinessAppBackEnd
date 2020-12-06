@@ -23,6 +23,8 @@ public class Main {
             System.out.println(user.getId() + "|" + user.getUsername()+"|" + user.getEmail() + "|" + user.getType());
         }
 
+        TableUsers.insertUser("GPotPochivka", "silnaParola123", "gp@kaisa.com", 2);
+
        datasource.close();
 
     }
