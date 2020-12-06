@@ -33,6 +33,7 @@ public class Datasource {
             "        \"quantity\"      INTEGER,\n" +
             "        \"discount\"      INTEGER,\n" +
             "        \"price\" INTEGER,\n" +
+            "        \"date\" INTEGER,\n" +
             "        PRIMARY KEY(\"_id\" AUTOINCREMENT)\n" +
             ");\n" +
             "CREATE TABLE IF NOT EXISTS \"products\" (\n" +
@@ -61,7 +62,9 @@ public class Datasource {
             "', 1);";
 
     private Connection conn;
+
     //TODO prepared statements
+    private PreparedStatement insertUser;
 
     //Singleton design pattern, Thread safe
     private static Datasource instance = new Datasource();
@@ -81,6 +84,7 @@ public class Datasource {
            if(!dbExists) {
                createDB();
            }
+           insertUser = conn.prepareStatement(TableUsers.INSERT_NEW_USER_PREP);
            return true;
         } catch(SQLException e) {
             System.out.println("Couldn't connect to database: " + e.getMessage());
@@ -100,7 +104,15 @@ public class Datasource {
         }
     }
 
-    public boolean DBExists() {
+    public PreparedStatement getInsertUser() {
+        return insertUser;
+    }
+
+    public Connection getConn() {
+        return conn;
+    }
+
+    private boolean DBExists() {
         File test = new File(DB_NAME);
         return test.exists();
     }

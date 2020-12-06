@@ -2,6 +2,12 @@ package com.company.model;
 
 import com.company.utilities.MD5Hash;
 
+import javax.xml.crypto.Data;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class TableUsers {
@@ -19,9 +25,26 @@ public class TableUsers {
     public static final int INDEX_USERS_TYPE = 5;
 
     public static final int NUM_TYPES_USERS = 2;
+    public static final int INDEX_ADMIN = 1;
+    public static final int INDEX_TRADER = 2;
+
+    //INSERT INTO users(username, email, hash, type) VALUES("gosho", "mail.bg","3123j12j",2)
+
+    //insert new record
+    public static final String INSERT_NEW_USER_PREP = "INSERT INTO " + TABLE_USERS + "(" +
+            COLUMN_USERS_USERNAME + ", " + COLUMN_USERS_EMAIL + ", " + COLUMN_USERS_PASSWORD_HASH +
+            ", " + COLUMN_USERS_TYPE + ") values(?, ?, ?, ?)";
+
+    //query all users
+    public static final String QUERY_ALL_USERS = "SELECT * FROM " + TABLE_USERS + " ORDER BY " +
+            TABLE_USERS + "." + COLUMN_USERS_TYPE;
+
+    //query all traders
+    public static final String QUERY_ALL_TRADERS = "SELECT * FROM " + TABLE_USERS + " WHERE " +
+            TABLE_USERS + "." + COLUMN_USERS_TYPE + " = " + INDEX_TRADER;
 
 
-    public void insertUser(String username, String password, String email, byte userType){
+    public static void insertUser(String username, String password, String email, byte userType){
         String password_hash;
 
         //must contain word, followed by @, followed by word, followed by . , followed by 2-4 chars
@@ -43,12 +66,81 @@ public class TableUsers {
             System.out.println("invalid user type @user " + username);
             return;
         }
-        //TODO actual inserting of the data lol
+
+        try {
+            Datasource.getInstance().getInsertUser().setString(1 , username);
+            Datasource.getInstance().getInsertUser().setString(2, email);
+            Datasource.getInstance().getInsertUser().setString(3, MD5Hash.getHash(password));
+            Datasource.getInstance().getInsertUser().setString(4, Byte.toString(userType)); //TODO might change later, cuz spaghetti
+        } catch (SQLException e) {
+            System.out.println("Couldn't insert user! - " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
-    void deleteUser(){};
-    void changeUser(){};
+    public static void deleteUser(){};
+    public static void changeUser(){};
 
-    //TODO query all users
-    //TODO query all traders?
+    //////////////////////////////////////////////////////////
+    //////////////////////////QUERIES/////////////////////////
+    //////////////////////////////////////////////////////////
+
+    /**
+     * Query that utilizes the DataSource class and the connection in it
+     * @return ArrayList of User, containing ID, Username, Email, Type of user WITHOUT password hash!
+     */
+    public static List<User> queryAllUsers() {
+        try(Statement statement = Datasource.getInstance().getConn().createStatement();
+            ResultSet results = statement.executeQuery(QUERY_ALL_USERS)) {
+
+            List<User> query = new ArrayList<>();
+            while(results.next()) {
+                User currUser = new User();
+                currUser.setId(results.getInt(INDEX_USERS_ID));
+                currUser.setUsername(results.getString(INDEX_USERS_USERNAME));
+                currUser.setEmail(results.getString(INDEX_USERS_EMAIL));
+                currUser.setType(results.getInt(INDEX_USERS_TYPE));
+
+                query.add(currUser);
+            }
+
+            return query;
+
+        } catch (SQLException e) {
+            System.out.println("Couldn't execute query: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
+
+    /**
+     * Query that utilizes the DataSource class and the connection in it. Returns Traders only, without Admins
+     * @return ArrayList of User, containing ID, Username, Email, Type of user WITHOUT password hash!
+     */
+    public static List<User> queryTraders() {
+        try(Statement statement = Datasource.getInstance().getConn().createStatement();
+            ResultSet results = statement.executeQuery(QUERY_ALL_TRADERS)) {
+
+            List<User> query = new ArrayList<>();
+            while(results.next()) {
+                User currUser = new User();
+                currUser.setId(results.getInt(INDEX_USERS_ID));
+                currUser.setUsername(results.getString(INDEX_USERS_USERNAME));
+                currUser.setEmail(results.getString(INDEX_USERS_EMAIL));
+                currUser.setType(results.getInt(INDEX_USERS_TYPE));
+
+                query.add(currUser);
+            }
+
+            return query;
+
+        } catch (SQLException e) {
+            System.out.println("Couldn't execute query: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }
