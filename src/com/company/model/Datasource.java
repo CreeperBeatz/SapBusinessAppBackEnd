@@ -64,6 +64,8 @@ public class Datasource {
     //TODO prepared statements
     private PreparedStatement insertUserPrep;
     private PreparedStatement deleteUserPrep;
+    private PreparedStatement changeUserPrep;
+    private PreparedStatement queryUserByID;
 
     //Singleton design pattern, Thread safe
     private static Datasource instance = new Datasource();
@@ -84,8 +86,11 @@ public class Datasource {
                createDB();
            }
 
+           //Prepared statements
            insertUserPrep = conn.prepareStatement(TableUsers.INSERT_NEW_USER_PREP);
            deleteUserPrep = conn.prepareStatement(TableUsers.DELETE_USER_PREP);
+           changeUserPrep = conn.prepareStatement(TableUsers.CHANGE_USER_PREP);
+           queryUserByID = conn.prepareStatement(TableUsers.QUERY_USER_BY_ID_PREP);
 
            return true;
         } catch(SQLException e) {
@@ -104,6 +109,14 @@ public class Datasource {
             System.out.println("Couldn't close connection: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    public PreparedStatement getQueryUserByID() {
+        return queryUserByID;
+    }
+
+    public PreparedStatement getChangeUserPrep() {
+        return changeUserPrep;
     }
 
     public PreparedStatement getDeleteUserPrep() {

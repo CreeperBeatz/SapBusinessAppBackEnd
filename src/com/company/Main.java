@@ -18,13 +18,15 @@ public class Main {
 
        datasource.open();
 
-        List<User> Users = TableUsers.queryTraders();
-        for(User user: Users) {
-            System.out.println(user.getId() + "|" + user.getUsername()+"|" + user.getEmail() + "|" + user.getType());
-        }
+        //List<User> Users = TableUsers.queryTraders();
+        //for(User user: Users) {
+        //    System.out.println(user.getId() + "|" + user.getUsername()+"|" + user.getEmail() + "|" + user.getType());
+        //}
 
         //TableUsers.insertUser("GPotPochivka", "silnaParola123", "gp@kaisa.com", 2);
         //TableUsers.deleteUser(7);
+
+        //TableUsers.changeUser(5, "", "", "golemiqGoshko123", 2);
 
        datasource.close();
 
