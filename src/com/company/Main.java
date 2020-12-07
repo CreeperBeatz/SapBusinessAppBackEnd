@@ -26,7 +26,7 @@ public class Main {
         //TableUsers.insertUser("GPotPochivka", "silnaParola123", "gp@kaisa.com", 2);
         //TableUsers.deleteUser(7);
 
-        //TableUsers.changeUser(5, "", "", "golemiqGoshko123", 2);
+        TableUsers.changeUser(5, "", "", "golemiqGoshko123", 0);
 
        datasource.close();
 

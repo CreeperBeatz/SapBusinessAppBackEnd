@@ -13,13 +13,15 @@ CREATE TABLE IF NOT EXISTS "users" (
                     "product"       INTEGER,
                     "quantity"      INTEGER,
                     "discount"      INTEGER,
-                    "price" INTEGER,
+                    "price" 	INTEGER,
+		    "date" 	INTEGER,
                     PRIMARY KEY("_id" AUTOINCREMENT)
             );
             CREATE TABLE IF NOT EXISTS "products" (
                     "_id"   INTEGER,
                     "name"  TEXT,
                     "price" NUMERIC,
+		    "avaivable" INTEGER,
                     "discount"      NUMERIC,
                     "description"   TEXT,
                     "imageUrl"      TEXT,
@@ -37,4 +39,4 @@ CREATE TABLE IF NOT EXISTS "users" (
                     PRIMARY KEY("_id" AUTOINCREMENT)
             );
             INSERT INTO users(username, email ,hash, type) 
-	    VALUES('administrator', 'random@mail.com', '200ceb26807d6bf99fd6f4f0d1ca54d4', 1);
+	    VALUES('administrator', 'default@mail.com', '200ceb26807d6bf99fd6f4f0d1ca54d4', 1);

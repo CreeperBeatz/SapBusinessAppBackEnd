@@ -103,6 +103,7 @@ public class Datasource {
     public void close(){
         try {
             if(conn!=null) {
+                //TODO close statements
                 conn.close();
             }
         } catch(SQLException e) {
