@@ -2,7 +2,6 @@ package com.company.model;
 
 import com.company.utilities.MD5Hash;
 
-import javax.xml.crypto.Data;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -13,7 +12,7 @@ import java.util.regex.Pattern;
 public class TableUsers {
 
     public static final String TABLE_USERS = "users";
-    public static final String COLUMN_USERS_ID = "=_id";
+    public static final String COLUMN_USERS_ID = "_id";
     public static final String COLUMN_USERS_USERNAME = "username";
     public static final String COLUMN_USERS_EMAIL = "email";
     public static final String COLUMN_USERS_PASSWORD_HASH = "hash";
@@ -28,12 +27,14 @@ public class TableUsers {
     public static final int INDEX_ADMIN = 1;
     public static final int INDEX_TRADER = 2;
 
-    //INSERT INTO users(username, email, hash, type) VALUES("gosho", "mail.bg","3123j12j",2)
-
-    //insert new record
+    //insert new record prep
     public static final String INSERT_NEW_USER_PREP = "INSERT INTO " + TABLE_USERS + "(" +
             COLUMN_USERS_USERNAME + ", " + COLUMN_USERS_EMAIL + ", " + COLUMN_USERS_PASSWORD_HASH +
             ", " + COLUMN_USERS_TYPE + ") values(?, ?, ?, ?)";
+
+    //delete record prep
+    public static final String DELETE_USER_PREP = "DELETE FROM " + TABLE_USERS + " WHERE " + TABLE_USERS +
+            "." + COLUMN_USERS_ID + " = ?";
 
     //query all users
     public static final String QUERY_ALL_USERS = "SELECT * FROM " + TABLE_USERS + " ORDER BY " +
@@ -68,19 +69,28 @@ public class TableUsers {
         }
 
         try {
-            Datasource.getInstance().getInsertUser().setString(1 , username);
-            Datasource.getInstance().getInsertUser().setString(2, email);
-            Datasource.getInstance().getInsertUser().setString(3, MD5Hash.getHash(password));
-            Datasource.getInstance().getInsertUser().setString(4, Integer.toString(userType)); //TODO might change later, cuz spaghetti
+            Datasource.getInstance().getInsertUserPrep().setString(1 , username);
+            Datasource.getInstance().getInsertUserPrep().setString(2, email);
+            Datasource.getInstance().getInsertUserPrep().setString(3, MD5Hash.getHash(password));
+            Datasource.getInstance().getInsertUserPrep().setString(4, Integer.toString(userType)); //TODO might change later, cuz spaghetti
 
-            Datasource.getInstance().getInsertUser().execute();
+            Datasource.getInstance().getInsertUserPrep().execute();
         } catch (SQLException e) {
             System.out.println("Couldn't insert user! - " + e.getMessage());
             e.printStackTrace();
         }
     }
 
-    public static void deleteUser(){};
+    public static void deleteUser(int id){
+        try {
+            Datasource.getInstance().getDeleteUserPrep().setInt(1, id);
+
+            Datasource.getInstance().getDeleteUserPrep().execute();
+        } catch (SQLException e) {
+            System.out.println("Couldn't delete user - " + e.getMessage());
+            e.printStackTrace();
+        }
+    };
     public static void changeUser(){};
 
     //////////////////////////////////////////////////////////

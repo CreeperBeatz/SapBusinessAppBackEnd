@@ -4,8 +4,6 @@ import com.company.utilities.MD5Hash;
 
 import java.io.File;
 import java.sql.*;
-import java.util.List;
-import java.util.regex.Pattern;
 
 public class Datasource {
 
@@ -64,7 +62,8 @@ public class Datasource {
     private Connection conn;
 
     //TODO prepared statements
-    private PreparedStatement insertUser;
+    private PreparedStatement insertUserPrep;
+    private PreparedStatement deleteUserPrep;
 
     //Singleton design pattern, Thread safe
     private static Datasource instance = new Datasource();
@@ -84,7 +83,10 @@ public class Datasource {
            if(!dbExists) {
                createDB();
            }
-           insertUser = conn.prepareStatement(TableUsers.INSERT_NEW_USER_PREP);
+
+           insertUserPrep = conn.prepareStatement(TableUsers.INSERT_NEW_USER_PREP);
+           deleteUserPrep = conn.prepareStatement(TableUsers.DELETE_USER_PREP);
+
            return true;
         } catch(SQLException e) {
             System.out.println("Couldn't connect to database: " + e.getMessage());
@@ -104,8 +106,12 @@ public class Datasource {
         }
     }
 
-    public PreparedStatement getInsertUser() {
-        return insertUser;
+    public PreparedStatement getDeleteUserPrep() {
+        return deleteUserPrep;
+    }
+
+    public PreparedStatement getInsertUserPrep() {
+        return insertUserPrep;
     }
 
     public Connection getConn() {
