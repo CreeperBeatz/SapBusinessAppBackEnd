@@ -16,12 +16,11 @@ public class Datasource {
     //TODO change all the fields (oh god) with the psfs above
     public static final String DATABASE_CREATION_STRING =
             "CREATE TABLE IF NOT EXISTS \"users\" (\n" +
-            "        \"_id\"   INTEGER,\n" +
             "        \"username\"      TEXT,\n" +
             "        \"email\"      TEXT,\n" +
             "        \"hash\"  TEXT,\n" +
             "        \"type\"  INTEGER,\n" +
-            "        PRIMARY KEY(\"_id\" AUTOINCREMENT)\n" +
+            "        PRIMARY KEY(\"username\")\n" +
             ");\n" +
             "CREATE TABLE IF NOT EXISTS \"sales\" (\n" +
             "        \"_id\"   INTEGER,\n" +
@@ -65,7 +64,7 @@ public class Datasource {
     private PreparedStatement insertUserPrep;
     private PreparedStatement deleteUserPrep;
     private PreparedStatement changeUserPrep;
-    private PreparedStatement queryUserByID;
+    private PreparedStatement queryUserByUsername;
     private PreparedStatement queryAllUsers;
     private PreparedStatement queryAllTraders;
 
@@ -92,7 +91,7 @@ public class Datasource {
            insertUserPrep = conn.prepareStatement(TableUsers.INSERT_NEW_USER_PREP);
            deleteUserPrep = conn.prepareStatement(TableUsers.DELETE_USER_PREP);
            changeUserPrep = conn.prepareStatement(TableUsers.CHANGE_USER_PREP);
-           queryUserByID = conn.prepareStatement(TableUsers.QUERY_USER_BY_ID_PREP);
+           queryUserByUsername = conn.prepareStatement(TableUsers.QUERY_USER_BY_USERNAME_PREP);
            queryAllUsers = conn.prepareStatement(TableUsers.QUERY_ALL_USERS_PREP);
            queryAllTraders = conn.prepareStatement(TableUsers.QUERY_ALL_TRADERS_PREP);
 
@@ -116,8 +115,8 @@ public class Datasource {
         }
     }
 
-    public PreparedStatement getQueryUserByID() {
-        return queryUserByID;
+    public PreparedStatement getQueryUserByUsername() {
+        return queryUserByUsername;
     }
 
     public PreparedStatement getChangeUserPrep() {

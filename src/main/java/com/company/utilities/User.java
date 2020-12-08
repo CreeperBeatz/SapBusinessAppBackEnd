@@ -2,7 +2,6 @@ package com.company.utilities;
 
 public class User {
 
-    private int id;
     private String username;
     private String password_hash;
     private String email;
@@ -17,7 +16,6 @@ public class User {
         this.username = username;
         this.email = email;
         this.type = type;
-        this.id = id;
     }
 
     public String getPassword_hash() {
@@ -50,13 +48,5 @@ public class User {
 
     public void setType(int type) {
         this.type = type;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 }

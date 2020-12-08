@@ -20,10 +20,10 @@ public class Main {
         //    System.out.println(user.getId() + "|" + user.getUsername()+"|" + user.getEmail() + "|" + user.getType());
         //}
 
-        //TableUsers.insertUser("GPotPochivka", "silnaParola123", "gp@kaisa.com", 2);
-        //TableUsers.deleteUser(7);
+        //TableUsers.insertUser("TestUser", "silnaParola123", "gp@kaisa.com", 1);
+        TableUsers.deleteUser("TestUser");
 
-        TableUsers.changeUser(5, "", "", "golemiqGoshko123", 0);
+        //TableUsers.changeUser("gpPochivka", "", "", "Administrator123", 0);
 
        datasource.close();
 

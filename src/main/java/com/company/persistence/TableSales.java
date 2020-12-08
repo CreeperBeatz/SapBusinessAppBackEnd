@@ -40,5 +40,5 @@ public class TableSales {
     public void deleteSale(){}; //maybe only admin having access
     public void changeSale(){}; //Maybe protection only if it's the last one
 
-    public List<SaleUserProduct> querySalesByTrader(String username)
+    public List<SaleUserProduct> querySalesByTrader(String username){return null;}
 }
