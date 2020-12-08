@@ -1,4 +1,4 @@
-package com.company.model;
+package com.company.utilities;
 
 public class Sale {
     private int id;

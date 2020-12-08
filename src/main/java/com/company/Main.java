@@ -1,11 +1,8 @@
 package com.company;
 
-import com.company.model.Datasource;
-import com.company.model.TableUsers;
-import com.company.model.User;
-import com.company.utilities.MD5Hash;
+import com.company.persistence.Datasource;
+import com.company.persistence.TableUsers;
 
-import java.util.List;
 import java.util.Scanner;
 
 public class Main {

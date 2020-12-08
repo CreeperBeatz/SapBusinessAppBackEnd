@@ -1,4 +1,4 @@
-package com.company.model;
+package com.company.persistence;
 
 public class TableClients {
     public static final String TABLE_CLIENTS = "clients";

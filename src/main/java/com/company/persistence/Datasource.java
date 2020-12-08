@@ -1,4 +1,4 @@
-package com.company.model;
+package com.company.persistence;
 
 import com.company.utilities.MD5Hash;
 
@@ -66,6 +66,8 @@ public class Datasource {
     private PreparedStatement deleteUserPrep;
     private PreparedStatement changeUserPrep;
     private PreparedStatement queryUserByID;
+    private PreparedStatement queryAllUsers;
+    private PreparedStatement queryAllTraders;
 
     //Singleton design pattern, Thread safe
     private static Datasource instance = new Datasource();
@@ -91,6 +93,8 @@ public class Datasource {
            deleteUserPrep = conn.prepareStatement(TableUsers.DELETE_USER_PREP);
            changeUserPrep = conn.prepareStatement(TableUsers.CHANGE_USER_PREP);
            queryUserByID = conn.prepareStatement(TableUsers.QUERY_USER_BY_ID_PREP);
+           queryAllUsers = conn.prepareStatement(TableUsers.QUERY_ALL_USERS_PREP);
+           queryAllTraders = conn.prepareStatement(TableUsers.QUERY_ALL_TRADERS_PREP);
 
            return true;
         } catch(SQLException e) {
@@ -127,6 +131,10 @@ public class Datasource {
     public PreparedStatement getInsertUserPrep() {
         return insertUserPrep;
     }
+
+    public PreparedStatement getQueryAllUsers() {return  queryAllUsers;}
+
+    public PreparedStatement getQueryAllTraders() {return queryAllTraders;}
 
     public Connection getConn() {
         return conn;

@@ -1,12 +1,13 @@
-package com.company.model;
+package com.company.persistence;
 
 import com.company.exceptions.InvalidTypeException;
 import com.company.exceptions.UserDoesNotExistException;
 import com.company.utilities.MD5Hash;
+import com.company.utilities.User;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -48,11 +49,11 @@ public class TableUsers {
             COLUMN_USERS_ID + " = ?";
 
     //query all users
-    public static final String QUERY_ALL_USERS = "SELECT * FROM " + TABLE_USERS + " ORDER BY " +
+    public static final String QUERY_ALL_USERS_PREP = "SELECT * FROM " + TABLE_USERS + " ORDER BY " +
             TABLE_USERS + "." + COLUMN_USERS_TYPE;
 
     //query all traders
-    public static final String QUERY_ALL_TRADERS = "SELECT * FROM " + TABLE_USERS + " WHERE " +
+    public static final String QUERY_ALL_TRADERS_PREP = "SELECT * FROM " + TABLE_USERS + " WHERE " +
             TABLE_USERS + "." + COLUMN_USERS_TYPE + " = " + INDEX_TRADER;
 
 
@@ -89,12 +90,14 @@ public class TableUsers {
         }
 
         try {
-            Datasource.getInstance().getInsertUserPrep().setString(1 , username);
-            Datasource.getInstance().getInsertUserPrep().setString(2, email);
-            Datasource.getInstance().getInsertUserPrep().setString(3, MD5Hash.getHash(password));
-            Datasource.getInstance().getInsertUserPrep().setString(4, Integer.toString(userType)); //TODO might change later, cuz spaghetti
+            PreparedStatement insertUser = Datasource.getInstance().getInsertUserPrep();
 
-            Datasource.getInstance().getInsertUserPrep().execute();
+            insertUser.setString(1 , username);
+            insertUser.setString(2, email);
+            insertUser.setString(3, MD5Hash.getHash(password));
+            insertUser.setString(4, Integer.toString(userType)); //TODO might change later, cuz spaghetti
+
+            insertUser.execute();
         } catch (SQLException e) {
             System.out.println("Couldn't insert user! - " + e.getMessage());
             e.printStackTrace();
@@ -107,8 +110,9 @@ public class TableUsers {
      */
     public static void deleteUser(int id){
         try {
-            Datasource.getInstance().getDeleteUserPrep().setInt(1, id);
-            Datasource.getInstance().getDeleteUserPrep().execute();
+            PreparedStatement deleteUser = Datasource.getInstance().getDeleteUserPrep();
+            deleteUser.setInt(1, id);
+            deleteUser.execute();
         } catch (SQLException e) {
             System.out.println("Couldn't delete user - " + e.getMessage());
             e.printStackTrace();
@@ -139,36 +143,38 @@ public class TableUsers {
              throw new UserDoesNotExistException();
          }
 
-         Datasource.getInstance().getChangeUserPrep().setInt(5, id);
+         PreparedStatement changeUser = Datasource.getInstance().getChangeUserPrep();
+
+         changeUser.setInt(5, id);
 
          //TODO split into methods, so code isn't duped
          //Checking and setting all params for the user
          if(username.equals("")) {
-             Datasource.getInstance().getChangeUserPrep().setString(1, result.getString(INDEX_USERS_USERNAME));
+             changeUser.setString(1, result.getString(INDEX_USERS_USERNAME));
          } else {
-             Datasource.getInstance().getChangeUserPrep().setString(1, username);
+             changeUser.setString(1, username);
          }
 
          if(email.equals("")) {
-             Datasource.getInstance().getChangeUserPrep().setString(2, result.getString(INDEX_USERS_EMAIL));
+             changeUser.setString(2, result.getString(INDEX_USERS_EMAIL));
          } else {
-             Datasource.getInstance().getChangeUserPrep().setString(2, email);
+             changeUser.setString(2, email);
          }
 
          if(password.equals("")) {
-             Datasource.getInstance().getChangeUserPrep().setString(3, result.getString(INDEX_USERS_PASSWORD_HASH));
+             changeUser.setString(3, result.getString(INDEX_USERS_PASSWORD_HASH));
          } else {
-             Datasource.getInstance().getChangeUserPrep().setString(3, MD5Hash.getHash(MD5Hash.getHash(password)));
+             changeUser.setString(3, MD5Hash.getHash(MD5Hash.getHash(password)));
          }
 
          if(type == 0) {
-             Datasource.getInstance().getChangeUserPrep().setInt(4, result.getInt(INDEX_USERS_TYPE));
+             changeUser.setInt(4, result.getInt(INDEX_USERS_TYPE));
          } else {
-             Datasource.getInstance().getChangeUserPrep().setInt(4, type);
+             changeUser.setInt(4, type);
          }
 
          //Writing the changes
-         Datasource.getInstance().getChangeUserPrep().execute();
+         changeUser.execute();
 
      } catch (SQLException e) {
          System.out.println("Couldn't change user -" + e.getMessage());
@@ -191,21 +197,10 @@ public class TableUsers {
      * @return ArrayList of User, containing ID, Username, Email, Type of user WITHOUT password hash!
      */
     public static List<User> queryAllUsers() {//TODO change queries to prep statements if performance is better
-        try(Statement statement = Datasource.getInstance().getConn().createStatement();
-            ResultSet results = statement.executeQuery(QUERY_ALL_USERS)) {
+        try {
+            ResultSet results = Datasource.getInstance().getQueryAllUsers().executeQuery();
 
-            List<User> query = new ArrayList<>();
-            while(results.next()) {
-                User currUser = new User();
-                currUser.setId(results.getInt(INDEX_USERS_ID));
-                currUser.setUsername(results.getString(INDEX_USERS_USERNAME));
-                currUser.setEmail(results.getString(INDEX_USERS_EMAIL));
-                currUser.setType(results.getInt(INDEX_USERS_TYPE));
-
-                query.add(currUser);
-            }
-
-            return query;
+            return getUsersFromResultSet(results);
 
         } catch (SQLException e) {
             System.out.println("Couldn't execute query: " + e.getMessage());
@@ -214,29 +209,17 @@ public class TableUsers {
         }
 
     }
-
 
     /**
      * Query that utilizes the DataSource class and the connection in it. Returns Traders only, without Admins
+     *
      * @return ArrayList of User, containing ID, Username, Email, Type of user WITHOUT password hash!
      */
     public static List<User> queryTraders() {//TODO change queries to prep statements if performance is better
-        try(Statement statement = Datasource.getInstance().getConn().createStatement();
-            ResultSet results = statement.executeQuery(QUERY_ALL_TRADERS)) {
+        try {
+            ResultSet results = Datasource.getInstance().getQueryAllTraders().executeQuery();
 
-            List<User> query = new ArrayList<>();
-            while(results.next()) {
-                User currUser = new User();
-                currUser.setId(results.getInt(INDEX_USERS_ID));
-                currUser.setUsername(results.getString(INDEX_USERS_USERNAME));
-                currUser.setEmail(results.getString(INDEX_USERS_EMAIL));
-                currUser.setType(results.getInt(INDEX_USERS_TYPE));
-
-                query.add(currUser);
-            }
-
-            return query;
-
+            return getUsersFromResultSet(results);
         } catch (SQLException e) {
             System.out.println("Couldn't execute query: " + e.getMessage());
             e.printStackTrace();
@@ -244,4 +227,20 @@ public class TableUsers {
         }
     }
 
+    private static List<User> getUsersFromResultSet(ResultSet results) throws SQLException {
+        List<User> query = new ArrayList<>();
+
+        while(results.next()) {
+            User currUser = new User();
+
+            currUser.setId(results.getInt(INDEX_USERS_ID));
+            currUser.setUsername(results.getString(INDEX_USERS_USERNAME));
+            currUser.setEmail(results.getString(INDEX_USERS_EMAIL));
+            currUser.setType(results.getInt(INDEX_USERS_TYPE));
+
+            query.add(currUser);
+        }
+
+        return query;
+    }
 }
