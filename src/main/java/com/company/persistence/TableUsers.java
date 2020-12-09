@@ -3,7 +3,7 @@ package com.company.persistence;
 import com.company.exceptions.InvalidTypeException;
 import com.company.exceptions.UserDoesNotExistException;
 import com.company.utilities.MD5Hash;
-import com.company.utilities.User;
+import com.company.shared.User;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

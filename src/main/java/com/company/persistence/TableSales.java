@@ -1,6 +1,6 @@
 package com.company.persistence;
 
-import com.company.utilities.SaleUserProduct;
+import com.company.shared.SaleUserProduct;
 
 import java.util.List;
 
@@ -40,5 +40,11 @@ public class TableSales {
     public void deleteSale(){}; //maybe only admin having access
     public void changeSale(){}; //Maybe protection only if it's the last one
 
+    /**
+     *
+     *
+     * @param username String of the Trader whose sales you want to check
+     * @return
+     */
     public List<SaleUserProduct> querySalesByTrader(String username){return null;}
 }

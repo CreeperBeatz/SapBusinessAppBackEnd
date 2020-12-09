@@ -21,7 +21,7 @@ public class Main {
         //}
 
         //TableUsers.insertUser("TestUser", "silnaParola123", "gp@kaisa.com", 1);
-        TableUsers.deleteUser("TestUser");
+        //TableUsers.deleteUser("TestUser");
 
         //TableUsers.changeUser("gpPochivka", "", "", "Administrator123", 0);
 
