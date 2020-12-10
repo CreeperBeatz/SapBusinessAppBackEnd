@@ -2,6 +2,10 @@ package com.company.persistence;
 
 import com.company.shared.SaleUserProduct;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TableSales {
@@ -25,18 +29,42 @@ public class TableSales {
     public static final int INDEX_SALES_DATE = 8;
 
     public static final String QUERY_SALE_BY_TRADER_PREP = "SELECT " + TABLE_SALES + "." + COLUMN_SALES_ID + ", " +
-            TableUsers.TABLE_USERS + "." + TableUsers.COLUMN_USERS_USERNAME + ", " +
+            TABLE_SALES + "." + COLUMN_SALES_SALESMAN + ", " +
+            TableClients.TABLE_CLIENTS + "." + TableClients.COLUMN_CLIENTS_NAME + ", " +
             TableProducts.TABLE_PRODUCTS + "." + TableProducts.COLUMN_PRODUCTS_NAME + ", " +
             TABLE_SALES + "." + COLUMN_SALES_QUANTITY + ", " +
             TABLE_SALES + "." + COLUMN_SALES_DISCOUNT + ", " +
             TABLE_SALES + "." + COLUMN_SALES_PRICE + ", " +
             TABLE_SALES + "." + COLUMN_SALES_DATE +
-            " WHERE " + TableUsers.TABLE_USERS + "." + TableUsers.COLUMN_USERS_USERNAME + " = ?";
+            " FROM " + TABLE_SALES + " INNER JOIN " + TableProducts.TABLE_PRODUCTS +
+            " ON " + TableProducts.TABLE_PRODUCTS + "." + TableProducts.COLUMN_PRODUCTS_ID + " = " +
+            TABLE_SALES + "." + COLUMN_SALES_PRODUCT + ", INNER JOIN " +
+            TableClients.TABLE_CLIENTS + " ON " + TableClients.TABLE_CLIENTS + "." + TableClients.COLUMN_CLIENTS_ID +
+            " = " + TABLE_SALES + "." + COLUMN_SALES_CLIENT +
+            " WHERE " + TABLE_SALES + "." + COLUMN_SALES_SALESMAN + " = ?";
 
+    public static final String QUERY_SALE_BY_DATE_PREP = "SELECT " + TABLE_SALES + "." + COLUMN_SALES_ID + ", " +
+            TABLE_SALES + "." + COLUMN_SALES_SALESMAN + ", " +
+            TableClients.TABLE_CLIENTS + "." + TableClients.COLUMN_CLIENTS_NAME + ", " +
+            TableProducts.TABLE_PRODUCTS + "." + TableProducts.COLUMN_PRODUCTS_NAME + ", " +
+            TABLE_SALES + "." + COLUMN_SALES_QUANTITY + ", " +
+            TABLE_SALES + "." + COLUMN_SALES_DISCOUNT + ", " +
+            TABLE_SALES + "." + COLUMN_SALES_PRICE + ", " +
+            TABLE_SALES + "." + COLUMN_SALES_DATE +
+            " FROM " + TABLE_SALES + " INNER JOIN " + TableProducts.TABLE_PRODUCTS +
+            " ON " + TableProducts.TABLE_PRODUCTS + "." + TableProducts.COLUMN_PRODUCTS_ID + " = " +
+            TABLE_SALES + "." + COLUMN_SALES_PRODUCT + ", INNER JOIN " +
+            TableClients.TABLE_CLIENTS + " ON " + TableClients.TABLE_CLIENTS + "." + TableClients.COLUMN_CLIENTS_ID +
+            " = " + TABLE_SALES + "." + COLUMN_SALES_CLIENT +
+            " WHERE " + TABLE_SALES + "." + COLUMN_SALES_DATE + " > ? AND " + TABLE_SALES + "." + COLUMN_SALES_DATE + " < ?";
     //QUERY get transactions by trader
     //QUERY get transactions by date
 
-    public void insertSale(){}; //TODO transaction that inserts new sale and modifies quantity in the same time
+    public void insertSale(String salesman, int client, int product, int quantity, double discount, double price){
+        //TODO transaction that inserts new sale and modifies quantity in the same time
+        //TODO query if salesman exists
+        //TODO query if product exists
+    }
     public void deleteSale(){}; //maybe only admin having access
     public void changeSale(){}; //Maybe protection only if it's the last one
 
@@ -46,5 +74,60 @@ public class TableSales {
      * @param username String of the Trader whose sales you want to check
      * @return
      */
-    public List<SaleUserProduct> querySalesByTrader(String username){return null;}
+    public List<SaleUserProduct> querySalesBySalesman(String username){
+        try {
+            PreparedStatement statement = Datasource.getInstance().getQuerySaleBySalesman();
+            List<SaleUserProduct> query = new ArrayList<>();
+            statement.setString(1, username);
+            ResultSet results = statement.executeQuery();
+
+            return writeSaleUserProductsArray(results , query);
+        } catch (SQLException e) {
+            //TODO log
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * If you give -1 as a param, lowest or highest value will be assigned
+     *
+     * @param fromDate begin date of the sale, if = -1, fromDate = 0
+     * @param toDate end date of the sale, if = -1, toDate = currDate
+     * @return
+     */
+    public List<SaleUserProduct> querySalesByDate(long fromDate, long toDate){
+        try {
+            PreparedStatement statement = Datasource.getInstance().getQuerySaleBySalesman();
+            List<SaleUserProduct> query = new ArrayList<>();
+
+            statement.setLong(1, fromDate);
+            statement.setLong(2, toDate);
+
+            ResultSet results = statement.executeQuery();
+            return writeSaleUserProductsArray(results , query);
+        } catch (SQLException e) {
+            //TODO log
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    private List<SaleUserProduct> writeSaleUserProductsArray(ResultSet results , List<SaleUserProduct> query) throws SQLException {
+
+        while(results.next()){
+            SaleUserProduct currResult = new SaleUserProduct();
+            currResult.setId(results.getInt(INDEX_SALES_ID));
+            currResult.setDate(results.getInt(INDEX_SALES_DATE));
+            currResult.setDiscount(results.getDouble(INDEX_SALES_DISCOUNT));
+            currResult.setPrice(results.getDouble(INDEX_SALES_PRICE));
+            currResult.setProductName(results.getString(INDEX_SALES_PRODUCT));
+            currResult.setClientName(results.getString(INDEX_SALES_CLIENT));
+            currResult.setSalesmanUsername(results.getString(INDEX_SALES_SALESMAN));
+            currResult.setQuantity(results.getInt(INDEX_SALES_QUANTITY));
+
+            query.add(currResult);
+        }
+        return query;
+    }
 }

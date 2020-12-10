@@ -24,7 +24,7 @@ public class Datasource {
             ");\n" +
             "CREATE TABLE IF NOT EXISTS \"sales\" (\n" +
             "        \"_id\"   INTEGER,\n" +
-            "        \"salesman\"      INTEGER,\n" +
+            "        \"salesman\"      TEXT,\n" +
             "        \"client\"        INTEGER,\n" +
             "        \"product\"       INTEGER,\n" +
             "        \"quantity\"      INTEGER,\n" +
@@ -60,13 +60,17 @@ public class Datasource {
 
     private Connection conn;
 
-    //TODO prepared statements
+    //Users statements
     private PreparedStatement insertUserPrep;
     private PreparedStatement deleteUserPrep;
     private PreparedStatement changeUserPrep;
     private PreparedStatement queryUserByUsername;
     private PreparedStatement queryAllUsers;
     private PreparedStatement queryAllTraders;
+
+    //Sales statements
+    private PreparedStatement querySaleBySalesman;
+    private PreparedStatement querySaleByDate;
 
     //Singleton design pattern, Thread safe
     private static Datasource instance = new Datasource();
@@ -95,6 +99,9 @@ public class Datasource {
            queryAllUsers = conn.prepareStatement(TableUsers.QUERY_ALL_USERS_PREP);
            queryAllTraders = conn.prepareStatement(TableUsers.QUERY_ALL_TRADERS_PREP);
 
+           querySaleBySalesman = conn.prepareStatement(TableSales.QUERY_SALE_BY_TRADER_PREP);
+           querySaleByDate = conn.prepareStatement(TableSales.QUERY_SALE_BY_DATE_PREP);
+
            return true;
         } catch(SQLException e) {
             System.out.println("Couldn't connect to database: " + e.getMessage());
@@ -118,22 +125,28 @@ public class Datasource {
     public PreparedStatement getQueryUserByUsername() {
         return queryUserByUsername;
     }
-
     public PreparedStatement getChangeUserPrep() {
         return changeUserPrep;
     }
-
     public PreparedStatement getDeleteUserPrep() {
         return deleteUserPrep;
     }
-
     public PreparedStatement getInsertUserPrep() {
         return insertUserPrep;
     }
+    public PreparedStatement getQueryAllUsers() {
+        return queryAllUsers;
+    }
+    public PreparedStatement getQueryAllTraders() {
+        return queryAllTraders;
+    }
 
-    public PreparedStatement getQueryAllUsers() {return  queryAllUsers;}
-
-    public PreparedStatement getQueryAllTraders() {return queryAllTraders;}
+    public PreparedStatement getQuerySaleBySalesman() {
+        return querySaleBySalesman;
+    }
+    public PreparedStatement getQuerySaleByDate() {
+        return querySaleByDate;
+    }
 
     public Connection getConn() {
         return conn;

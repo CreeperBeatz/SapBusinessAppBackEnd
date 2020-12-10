@@ -2,12 +2,21 @@ package com.company.shared;
 
 public class SaleUserProduct {
     int id;
-    String username;
+    String salesmanUsername;
     String productName;
+    String clientName;
     int quantity;
     double discount;
     double price;
     long date;
+
+    public String getClientName() {
+        return clientName;
+    }
+
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
+    }
 
     public int getId() {
         return id;
@@ -17,12 +26,12 @@ public class SaleUserProduct {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getSalesmanUsername() {
+        return salesmanUsername;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setSalesmanUsername(String salesmanUsername) {
+        this.salesmanUsername = salesmanUsername;
     }
 
     public String getProductName() {

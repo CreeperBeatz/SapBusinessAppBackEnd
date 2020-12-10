@@ -2,6 +2,7 @@ package com.company.persistence;
 
 import com.company.exceptions.InvalidTypeException;
 import com.company.exceptions.UserDoesNotExistException;
+import com.company.shared.VerificationSyntax;
 import com.company.utilities.MD5Hash;
 import com.company.shared.User;
 
@@ -67,14 +68,13 @@ public class TableUsers {
     public static void insertUser(String username, String password, String email, int userType){
         String password_hash;
 
-        //must contain word, followed by @, followed by word, followed by . , followed by 2-4 chars
-        if(!Pattern.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", email)) {
+        if(!VerificationSyntax.verifyEmail(email)) {
+            //TODO exception
             System.out.println("invalid email @user " +  username);
             return;
         }
 
-        //Minimum eight characters, at least one letter and one number:
-        if(Pattern.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$", password)){
+        if(VerificationSyntax.verifyPassword(password)){
             password_hash = MD5Hash.getHash(password);
         }
         else {
@@ -132,6 +132,7 @@ public class TableUsers {
          if(type > NUM_TYPES_USERS || type < 0) {
              throw new InvalidTypeException();
          }
+
 
          PreparedStatement queryUserByUsername = Datasource.getInstance().getQueryUserByUsername();
          PreparedStatement changeUser = Datasource.getInstance().getChangeUserPrep();
