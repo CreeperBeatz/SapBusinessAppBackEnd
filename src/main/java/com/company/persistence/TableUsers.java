@@ -11,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class TableUsers {
 
@@ -27,7 +26,7 @@ public class TableUsers {
 
     public static final int NUM_TYPES_USERS = 2;
     public static final int INDEX_ADMIN = 1;
-    public static final int INDEX_TRADER = 2;
+    public static final int INDEX_SALESMAN = 2;
 
     //insert new record prep
     public static final String INSERT_NEW_USER_PREP = "INSERT INTO " + TABLE_USERS + "(" +
@@ -47,13 +46,18 @@ public class TableUsers {
     public static final String QUERY_USER_BY_USERNAME_PREP = "SELECT * FROM " + TABLE_USERS + " WHERE " + TABLE_USERS + "." +
             COLUMN_USERS_USERNAME + " = ?";
 
+    //query user by username and type
+    public static final String QUERY_USER_BY_USERNAME_TYPE_PREP = "SELECT * FROM " + TABLE_USERS + " WHERE " + TABLE_USERS + "." +
+            COLUMN_USERS_USERNAME + " = ? AND " + TABLE_USERS + "." + COLUMN_USERS_TYPE + " = ?";
+
     //query all users
     public static final String QUERY_ALL_USERS_PREP = "SELECT * FROM " + TABLE_USERS + " ORDER BY " +
             TABLE_USERS + "." + COLUMN_USERS_TYPE;
 
     //query all traders
     public static final String QUERY_ALL_TRADERS_PREP = "SELECT * FROM " + TABLE_USERS + " WHERE " +
-            TABLE_USERS + "." + COLUMN_USERS_TYPE + " = " + INDEX_TRADER;
+            TABLE_USERS + "." + COLUMN_USERS_TYPE + " = " + INDEX_SALESMAN;
+
 
 
     /**
@@ -68,26 +72,27 @@ public class TableUsers {
     public static void insertUser(String username, String password, String email, int userType){
         String password_hash;
 
-        if(!VerificationSyntax.verifyEmail(email)) {
-            //TODO exception
-            System.out.println("invalid email @user " +  username);
-            return;
-        }
-
-        if(VerificationSyntax.verifyPassword(password)){
-            password_hash = MD5Hash.getHash(password);
-        }
-        else {
-            System.out.println("invalid password @user " + username);
-            return;
-        }
-
-        if(userType > NUM_TYPES_USERS) {
-            System.out.println("invalid user type @user " + username);
-            return;
-        }
-
         try {
+            if(!VerificationSyntax.verifyEmail(email)) {
+                //TODO exception?
+                System.out.println("invalid email @user " +  username);
+                return;
+            }
+
+            if(VerificationSyntax.verifyPassword(password)){
+                password_hash = MD5Hash.getHash(password);
+            }
+            else {
+                System.out.println("invalid password @user " + username);
+                return;
+            }
+
+            if(userType > NUM_TYPES_USERS) {
+                System.out.println("invalid user type @user " + username);
+                return;
+            }
+
+
             PreparedStatement insertUser = Datasource.getInstance().getInsertUserPrep();
 
             insertUser.setString(1 , username);
@@ -217,15 +222,33 @@ public class TableUsers {
      *
      * @return ArrayList of User, containing ID, Username, Email, Type of user WITHOUT password hash!
      */
-    public static List<User> queryTraders() {//TODO change queries to prep statements if performance is better
+    public static List<User> querySalesmen() {//TODO change queries to prep statements if performance is better
         try {
             ResultSet results = Datasource.getInstance().getQueryAllTraders().executeQuery();
-
             return getUsersFromResultSet(results);
         } catch (SQLException e) {
             System.out.println("Couldn't execute query: " + e.getMessage());
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public static boolean salesmanExists(String username) {
+        try {
+            PreparedStatement statement = Datasource.getInstance().getQueryUserByUsernameType();
+            statement.setString(1 , username);
+            statement.setInt(2, INDEX_SALESMAN);
+            ResultSet results = statement.executeQuery();
+
+            if(results.next()) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (SQLException e) { //If results.next throws an exception, it means there was no record
+            System.out.println(e.getMessage());
+            //TODO better error checking
+            return false;
         }
     }
 

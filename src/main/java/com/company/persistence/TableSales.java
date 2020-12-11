@@ -1,5 +1,9 @@
 package com.company.persistence;
 
+import com.company.exceptions.ClientDoesNotExistException;
+import com.company.exceptions.NotEnoughStockException;
+import com.company.exceptions.ProductDoesNotExistException;
+import com.company.exceptions.UserDoesNotExistException;
 import com.company.shared.SaleUserProduct;
 
 import java.sql.PreparedStatement;
@@ -38,7 +42,7 @@ public class TableSales {
             TABLE_SALES + "." + COLUMN_SALES_DATE +
             " FROM " + TABLE_SALES + " INNER JOIN " + TableProducts.TABLE_PRODUCTS +
             " ON " + TableProducts.TABLE_PRODUCTS + "." + TableProducts.COLUMN_PRODUCTS_ID + " = " +
-            TABLE_SALES + "." + COLUMN_SALES_PRODUCT + ", INNER JOIN " +
+            TABLE_SALES + "." + COLUMN_SALES_PRODUCT + ", " +
             TableClients.TABLE_CLIENTS + " ON " + TableClients.TABLE_CLIENTS + "." + TableClients.COLUMN_CLIENTS_ID +
             " = " + TABLE_SALES + "." + COLUMN_SALES_CLIENT +
             " WHERE " + TABLE_SALES + "." + COLUMN_SALES_SALESMAN + " = ?";
@@ -53,20 +57,37 @@ public class TableSales {
             TABLE_SALES + "." + COLUMN_SALES_DATE +
             " FROM " + TABLE_SALES + " INNER JOIN " + TableProducts.TABLE_PRODUCTS +
             " ON " + TableProducts.TABLE_PRODUCTS + "." + TableProducts.COLUMN_PRODUCTS_ID + " = " +
-            TABLE_SALES + "." + COLUMN_SALES_PRODUCT + ", INNER JOIN " +
+            TABLE_SALES + "." + COLUMN_SALES_PRODUCT + ", " +
             TableClients.TABLE_CLIENTS + " ON " + TableClients.TABLE_CLIENTS + "." + TableClients.COLUMN_CLIENTS_ID +
             " = " + TABLE_SALES + "." + COLUMN_SALES_CLIENT +
             " WHERE " + TABLE_SALES + "." + COLUMN_SALES_DATE + " > ? AND " + TABLE_SALES + "." + COLUMN_SALES_DATE + " < ?";
-    //QUERY get transactions by trader
-    //QUERY get transactions by date
 
-    public void insertSale(String salesman, int client, int product, int quantity, double discount, double price){
+
+    public void insertSale(String salesman, int client, int product, int quantity, double discount, double price)
+            throws NotEnoughStockException, UserDoesNotExistException, ProductDoesNotExistException, ClientDoesNotExistException {
+
+        //VALIDATION
+        if(!TableUsers.salesmanExists("salesman")) {
+            throw new UserDoesNotExistException();
+        }
+
+        if(TableProducts.getStockByID(product) < quantity) { //getStockByID throws ProductNowExistsException
+            throw new NotEnoughStockException();
+        }
+
+        if(!TableClients.clientExists(client)) {
+            throw new ClientDoesNotExistException();
+        }
+
+        //INSERTION
         //TODO transaction that inserts new sale and modifies quantity in the same time
-        //TODO query if salesman exists
-        //TODO query if product exists
     }
     public void deleteSale(){}; //maybe only admin having access
     public void changeSale(){}; //Maybe protection only if it's the last one
+
+    private void querySalesmanByID(int ID) {
+
+    }
 
     /**
      *

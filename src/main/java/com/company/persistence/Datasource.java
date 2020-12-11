@@ -67,10 +67,18 @@ public class Datasource {
     private PreparedStatement queryUserByUsername;
     private PreparedStatement queryAllUsers;
     private PreparedStatement queryAllTraders;
+    private PreparedStatement queryUserByUsernameType;
 
     //Sales statements
     private PreparedStatement querySaleBySalesman;
     private PreparedStatement querySaleByDate;
+
+    //Products statements
+    private PreparedStatement queryProductByID;
+    private PreparedStatement queryProductByName;
+
+    //Client statements
+    private PreparedStatement queryClientByID;
 
     //Singleton design pattern, Thread safe
     private static Datasource instance = new Datasource();
@@ -98,13 +106,20 @@ public class Datasource {
            queryUserByUsername = conn.prepareStatement(TableUsers.QUERY_USER_BY_USERNAME_PREP);
            queryAllUsers = conn.prepareStatement(TableUsers.QUERY_ALL_USERS_PREP);
            queryAllTraders = conn.prepareStatement(TableUsers.QUERY_ALL_TRADERS_PREP);
+           queryUserByUsernameType = conn.prepareStatement(TableUsers.QUERY_USER_BY_USERNAME_TYPE_PREP);
 
            querySaleBySalesman = conn.prepareStatement(TableSales.QUERY_SALE_BY_TRADER_PREP);
            querySaleByDate = conn.prepareStatement(TableSales.QUERY_SALE_BY_DATE_PREP);
 
+           queryProductByID = conn.prepareStatement(TableProducts.QUERY_PRODUCT_BY_ID_PREP);
+           queryProductByName = conn.prepareStatement(TableProducts.QUERY_PRODUCT_BY_NAME_PREP);
+
+           queryClientByID = conn.prepareStatement(TableClients.QUERY_CLIENT_BY_ID_PREP);
+
+
            return true;
         } catch(SQLException e) {
-            System.out.println("Couldn't connect to database: " + e.getMessage());
+            System.out.println(e.getMessage());
             e.printStackTrace();
             return false;
         }
@@ -122,6 +137,9 @@ public class Datasource {
         }
     }
 
+    public PreparedStatement getQueryUserByUsernameType() {
+        return  queryUserByUsernameType;
+    }
     public PreparedStatement getQueryUserByUsername() {
         return queryUserByUsername;
     }
@@ -146,6 +164,17 @@ public class Datasource {
     }
     public PreparedStatement getQuerySaleByDate() {
         return querySaleByDate;
+    }
+
+    public PreparedStatement getQueryProductByID() {
+        return queryProductByID;
+    }
+    public PreparedStatement getQueryProductByName() {
+        return queryProductByName;
+    }
+
+    public PreparedStatement getQueryClientByID() {
+        return queryClientByID;
     }
 
     public Connection getConn() {

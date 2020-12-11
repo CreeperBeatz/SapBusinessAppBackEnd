@@ -1,6 +1,8 @@
 package com.company;
 
+import com.company.exceptions.ProductDoesNotExistException;
 import com.company.persistence.Datasource;
+import com.company.persistence.TableProducts;
 import com.company.persistence.TableUsers;
 
 import java.util.Scanner;
@@ -24,7 +26,13 @@ public class Main {
         //TableUsers.deleteUser("TestUser");
 
         //TableUsers.changeUser("gpPochivka", "", "", "Administrator123", 0);
+        //System.out.println(TableUsers.traderExists("gpPochivka"));
 
+        try {
+            System.out.println(TableProducts.getStockByID(5));
+        } catch (ProductDoesNotExistException e) {
+            e.printStackTrace();
+        }
        datasource.close();
 
     }

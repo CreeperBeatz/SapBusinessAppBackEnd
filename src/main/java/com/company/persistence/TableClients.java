@@ -1,5 +1,9 @@
 package com.company.persistence;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public class TableClients {
     public static final String TABLE_CLIENTS = "clients";
     public static final String COLUMN_CLIENTS_ID = "_id";
@@ -14,6 +18,9 @@ public class TableClients {
     public static final String QUERY_ALL_CLIENTS_PREP = "SELECT * FROM " + TABLE_CLIENTS + " ORDER BY " +
             TABLE_CLIENTS + "." + COLUMN_CLIENTS_NAME + ", " + TABLE_CLIENTS + "." + COLUMN_CLIENTS_SURNAME;
 
+    public static final String QUERY_CLIENT_BY_ID_PREP = "SELECT * FROM " + TABLE_CLIENTS + " WHERE " +
+            TABLE_CLIENTS + "." + COLUMN_CLIENTS_ID + " = ?";
+
 
     public void insertClient(){};
     //INSERT INTO CLIENTS(name, surname, address, country, city, postalCode, purchases)
@@ -23,5 +30,23 @@ public class TableClients {
 
     //TODO get all clients query
     //TODO get client by first name
+
+    public static boolean clientExists(int id) {
+        try {
+            PreparedStatement statement = Datasource.getInstance().getQueryClientByID();
+            statement.setInt(1 , id);
+            ResultSet results = statement.executeQuery();
+
+            if(results.next()) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (SQLException e) {
+            //TODO change with log
+            e.printStackTrace();
+            return false;
+        }
+    }
 
 }
