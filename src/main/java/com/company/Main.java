@@ -4,6 +4,8 @@ import com.company.exceptions.ProductDoesNotExistException;
 import com.company.persistence.Datasource;
 import com.company.persistence.TableProducts;
 import com.company.persistence.TableUsers;
+import com.company.shared.Product;
+import com.company.shared.User;
 
 import java.util.Scanner;
 
@@ -27,6 +29,10 @@ public class Main {
 
         //TableUsers.changeUser("gpPochivka", "", "", "Administrator123", 0);
         //System.out.println(TableUsers.traderExists("gpPochivka"));
+
+        Product product = TableProducts.queryProductByID(2);
+
+        System.out.println(product.getId() + "|" + product.getStock() + "|" + product.getDiscount() + "|" + product.getPrice());
 
         try {
             System.out.println(TableProducts.getStockByID(5));

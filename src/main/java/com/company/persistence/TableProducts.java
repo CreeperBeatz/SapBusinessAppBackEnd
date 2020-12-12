@@ -42,7 +42,8 @@ public class TableProducts {
     //INSERT INTO PRODUCTS(name, price, available, discount, description, imageUrl)
     //VALUES ('cooler', 99.99, 14, 0, 'cools your room really well', 'https://4.imimg.com/data4/BV/LP/MY-4223299/air-cooler-500x500.jpg')
     public void deleteProduct(){};
-    public void changeProduct(){};
+
+    public void changeProduct(){}
 
 
     public List<Product> queryProductByName(String name) {
@@ -64,6 +65,32 @@ public class TableProducts {
             //TODO replace with log
             e.printStackTrace();
             return -1;
+        }
+    }
+
+    public static Product queryProductByID(int id) {
+        try {
+            PreparedStatement statement = Datasource.getInstance().getQueryProductByID();
+            statement.setInt(1, id);
+            ResultSet result = statement.executeQuery();
+
+            if(!result.next()) {
+                return null;
+            } else {
+                Product product = new Product();
+                product.setId(id);
+                product.setDescription(result.getString(INDEX_PRODUCTS_DESCRIPTION));
+                product.setDiscount(result.getDouble(INDEX_PRODUCTS_DISCOUNT));
+                product.setImageUrl(result.getString(INDEX_PRODUCTS_IMAGE_URL));
+                product.setName(result.getString(INDEX_PRODUCTS_NAME));
+                product.setPrice(result.getDouble(INDEX_PRODUCTS_PRICE));
+                product.setStock(result.getInt(INDEX_PRODUCTS_STOCK));
+
+                return product;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

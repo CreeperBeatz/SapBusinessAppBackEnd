@@ -4,8 +4,10 @@ import com.company.exceptions.ClientDoesNotExistException;
 import com.company.exceptions.NotEnoughStockException;
 import com.company.exceptions.ProductDoesNotExistException;
 import com.company.exceptions.UserDoesNotExistException;
+import com.company.shared.Product;
 import com.company.shared.SaleUserProduct;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -31,6 +33,13 @@ public class TableSales {
     public static final int INDEX_SALES_DISCOUNT = 6;
     public static final int INDEX_SALES_PRICE = 7;
     public static final int INDEX_SALES_DATE = 8;
+
+    public static final String INSERT_SALE_PREP = "INSERT INTO " + TABLE_SALES +
+            "(" + COLUMN_SALES_SALESMAN + ", " +
+            COLUMN_SALES_CLIENT + ", " + COLUMN_SALES_PRODUCT + ", " +
+            COLUMN_SALES_QUANTITY + ", " + COLUMN_SALES_DISCOUNT + ", " +
+            COLUMN_SALES_PRICE + ", " + COLUMN_SALES_DATE + ") VALUES(?, ?, ?, ?, ?, ?, ?)";
+
 
     public static final String QUERY_SALE_BY_TRADER_PREP = "SELECT " + TABLE_SALES + "." + COLUMN_SALES_ID + ", " +
             TABLE_SALES + "." + COLUMN_SALES_SALESMAN + ", " +
@@ -63,15 +72,22 @@ public class TableSales {
             " WHERE " + TABLE_SALES + "." + COLUMN_SALES_DATE + " > ? AND " + TABLE_SALES + "." + COLUMN_SALES_DATE + " < ?";
 
 
-    public void insertSale(String salesman, int client, int product, int quantity, double discount, double price)
+    public void insertSale(String salesman, int client, int productID, int quantity, double discount)
             throws NotEnoughStockException, UserDoesNotExistException, ProductDoesNotExistException, ClientDoesNotExistException {
+
+        Product product = TableProducts.queryProductByID(productID);
 
         //VALIDATION
         if(!TableUsers.salesmanExists("salesman")) {
             throw new UserDoesNotExistException();
         }
 
-        if(TableProducts.getStockByID(product) < quantity) { //getStockByID throws ProductNowExistsException
+
+        if(product == null) { //getStockByID throws ProductNowExistsException
+            throw new ProductDoesNotExistException();
+        }
+
+        if(product.getStock() < quantity) {
             throw new NotEnoughStockException();
         }
 
@@ -79,15 +95,42 @@ public class TableSales {
             throw new ClientDoesNotExistException();
         }
 
+        Connection conn = Datasource.getInstance().getConn();
+        PreparedStatement statement = Datasource.getInstance().getInsertSale();
+
         //INSERTION
+        try {
+            conn.setAutoCommit(false);
+
+            statement.setString(1, salesman);
+            statement.setInt(2, client);
+            statement.setInt(3, productID);
+            statement.setInt(4, quantity);
+            statement.setDouble(5, discount);
+            statement.setDouble(6, calculatePrice(product, discount, quantity));
+            statement.setLong(7, System.currentTimeMillis());
+
+        } catch (SQLException e) {
+            //TODO change with logging
+            e.printStackTrace();
+            try {
+                System.out.println("performing rollback");
+                conn.rollback();
+            } catch (SQLException e2) {
+                System.out.println("RED ALERT");
+            }
+        } finally {
+            try {
+                //Resetting default commit behavior
+                conn.setAutoCommit(true);
+            } catch (SQLException e3) {
+                System.out.println("CRITICAL ERROR: couldn't reset autocommit");
+            }
+        }
         //TODO transaction that inserts new sale and modifies quantity in the same time
     }
-    public void deleteSale(){}; //maybe only admin having access
-    public void changeSale(){}; //Maybe protection only if it's the last one
-
-    private void querySalesmanByID(int ID) {
-
-    }
+    public void deleteSale(int id){}; //maybe only admin having access
+    //TODO public void changeSale(){}; //Maybe protection only if it's the last one
 
     /**
      *
@@ -113,8 +156,8 @@ public class TableSales {
     /**
      * If you give -1 as a param, lowest or highest value will be assigned
      *
-     * @param fromDate begin date of the sale, if = -1, fromDate = 0
-     * @param toDate end date of the sale, if = -1, toDate = currDate
+     * @param fromDate begin date of the sale query in millis
+     * @param toDate end date of the sale query in millis
      * @return
      */
     public List<SaleUserProduct> querySalesByDate(long fromDate, long toDate){
@@ -150,5 +193,9 @@ public class TableSales {
             query.add(currResult);
         }
         return query;
+    }
+
+    private double calculatePrice(Product product, double discount, int quantity) {
+        return (product.getPrice()*quantity) - (product.getPrice()*quantity*discount);
     }
 }

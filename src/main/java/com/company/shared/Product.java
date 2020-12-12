@@ -2,14 +2,16 @@ package com.company.shared;
 
 public class Product {
     private int id;
+    private int stock;
     private String name;
-    private float price;
-    private float discount;
+    private double price;
+    private double discount;
     private String description;
     private String imageUrl;
 
     public Product() {
     }
+
 
     public Product(int id , String name , float price , float discount , String description , String imageUrl) {
         this.id = id;
@@ -18,6 +20,14 @@ public class Product {
         this.discount = discount;
         this.description = description;
         this.imageUrl = imageUrl;
+    }
+
+    public int getStock() {
+        return stock;
+    }
+
+    public void setStock(int stock) {
+        this.stock = stock;
     }
 
     public int getId() {
@@ -36,19 +46,19 @@ public class Product {
         this.name = name;
     }
 
-    public float getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(float price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
-    public float getDiscount() {
+    public double getDiscount() {
         return discount;
     }
 
-    public void setDiscount(float discount) {
+    public void setDiscount(double discount) {
         this.discount = discount;
     }
 

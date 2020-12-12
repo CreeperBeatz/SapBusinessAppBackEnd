@@ -1,7 +1,5 @@
 package com.company.persistence;
 
-import com.company.utilities.MD5Hash;
-
 import java.io.File;
 import java.sql.*;
 
@@ -11,52 +9,6 @@ public class Datasource {
     public static final String DB_NAME = "project.db";
     public static final String CONNECTION_STRING = "jdbc:sqlite:" +
             System.getProperty("user.dir") + "\\" + DB_NAME;
-
-    //Database creation
-    //TODO change all the fields (oh god) with the psfs above
-    public static final String DATABASE_CREATION_STRING =
-            "CREATE TABLE IF NOT EXISTS \"users\" (\n" +
-            "        \"username\"      TEXT,\n" +
-            "        \"email\"      TEXT,\n" +
-            "        \"hash\"  TEXT,\n" +
-            "        \"type\"  INTEGER,\n" +
-            "        PRIMARY KEY(\"username\")\n" +
-            ");\n" +
-            "CREATE TABLE IF NOT EXISTS \"sales\" (\n" +
-            "        \"_id\"   INTEGER,\n" +
-            "        \"salesman\"      TEXT,\n" +
-            "        \"client\"        INTEGER,\n" +
-            "        \"product\"       INTEGER,\n" +
-            "        \"quantity\"      INTEGER,\n" +
-            "        \"discount\"      INTEGER,\n" +
-            "        \"price\" INTEGER,\n" +
-            "        \"date\" INTEGER,\n" +
-            "        PRIMARY KEY(\"_id\" AUTOINCREMENT)\n" +
-            ");\n" +
-            "CREATE TABLE IF NOT EXISTS \"products\" (\n" +
-            "        \"_id\"   INTEGER,\n" +
-            "        \"name\"  TEXT,\n" +
-            "        \"price\" NUMERIC,\n" +
-            "        \"available\" INTEGER\n" +
-            "        \"discount\"      NUMERIC,\n" +
-            "        \"description\"   TEXT,\n" +
-            "        \"imageUrl\"      TEXT,\n" +
-            "        PRIMARY KEY(\"_id\" AUTOINCREMENT)\n" +
-            ");\n" +
-            "CREATE TABLE IF NOT EXISTS \"clients\" (\n" +
-            "        \"_id\"   INTEGER,\n" +
-            "        \"name\"  TEXT,\n" +
-            "        \"surname\"       TEXT,\n" +
-            "        \"address\"       TEXT,\n" +
-            "        \"country\"       TEXT,\n" +
-            "        \"city\"  TEXT,\n" +
-            "        \"postalCode\"    TEXT,\n" +
-            "        \"purchases\"     INTEGER,\n" +
-            "        PRIMARY KEY(\"_id\" AUTOINCREMENT)\n" +
-            ");\n" +
-            "INSERT INTO users(username, email ,hash, type) VALUES('administrator', 'random@mail.com', '" +
-            MD5Hash.getHash("administrator") +
-            "', 1);";
 
     private Connection conn;
 
@@ -72,6 +24,7 @@ public class Datasource {
     //Sales statements
     private PreparedStatement querySaleBySalesman;
     private PreparedStatement querySaleByDate;
+    private PreparedStatement insertSale;
 
     //Products statements
     private PreparedStatement queryProductByID;
@@ -99,7 +52,7 @@ public class Datasource {
                createDB();
            }
 
-           //Prepared statements
+           //Table users
            insertUserPrep = conn.prepareStatement(TableUsers.INSERT_NEW_USER_PREP);
            deleteUserPrep = conn.prepareStatement(TableUsers.DELETE_USER_PREP);
            changeUserPrep = conn.prepareStatement(TableUsers.CHANGE_USER_PREP);
@@ -108,12 +61,16 @@ public class Datasource {
            queryAllTraders = conn.prepareStatement(TableUsers.QUERY_ALL_TRADERS_PREP);
            queryUserByUsernameType = conn.prepareStatement(TableUsers.QUERY_USER_BY_USERNAME_TYPE_PREP);
 
+           //table sales
            querySaleBySalesman = conn.prepareStatement(TableSales.QUERY_SALE_BY_TRADER_PREP);
            querySaleByDate = conn.prepareStatement(TableSales.QUERY_SALE_BY_DATE_PREP);
+           insertSale = conn.prepareStatement(TableSales.INSERT_SALE_PREP);
 
+           //table products
            queryProductByID = conn.prepareStatement(TableProducts.QUERY_PRODUCT_BY_ID_PREP);
            queryProductByName = conn.prepareStatement(TableProducts.QUERY_PRODUCT_BY_NAME_PREP);
 
+           //table clients
            queryClientByID = conn.prepareStatement(TableClients.QUERY_CLIENT_BY_ID_PREP);
 
 
@@ -128,7 +85,29 @@ public class Datasource {
     public void close(){
         try {
             if(conn!=null) {
-                //TODO close statements
+
+                //Table users
+                if(insertUserPrep!=null) insertUserPrep.close();
+                if(deleteUserPrep!=null) deleteUserPrep.close();
+                if(changeUserPrep!=null) changeUserPrep.close();
+                if(queryUserByUsername!=null) queryUserByUsername.close();
+                if(queryAllUsers!=null) queryAllUsers.close();
+                if(queryAllTraders!=null) queryAllTraders.close();
+                if(queryUserByUsernameType!=null) queryUserByUsernameType.close();
+
+                //TODO if not null, then close
+                //Table sales
+                querySaleBySalesman.close();
+                querySaleByDate.close();
+                insertSale.close();
+
+                //Table products
+                queryProductByID.close();
+                queryProductByName.close();
+
+                //Table clients
+                queryClientByID.close();
+
                 conn.close();
             }
         } catch(SQLException e) {
@@ -165,6 +144,9 @@ public class Datasource {
     public PreparedStatement getQuerySaleByDate() {
         return querySaleByDate;
     }
+    public PreparedStatement getInsertSale() {
+        return insertSale;
+    }
 
     public PreparedStatement getQueryProductByID() {
         return queryProductByID;
@@ -188,7 +170,7 @@ public class Datasource {
 
     private void createDB() throws SQLException{
         Statement statement = conn.createStatement();
-        statement.execute(DATABASE_CREATION_STRING);
+        statement.execute(DBCreation.DATABASE_CREATION_STRING);
         statement.close();
         System.out.println("Default database with admin account administrator:administrator created");
     }

@@ -92,6 +92,8 @@ public class TableUsers {
                 return;
             }
 
+            //TODO check if user already exists
+
 
             PreparedStatement insertUser = Datasource.getInstance().getInsertUserPrep();
 

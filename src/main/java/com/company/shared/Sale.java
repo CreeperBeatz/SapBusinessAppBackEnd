@@ -6,8 +6,8 @@ public class Sale {
     private int clientID;
     private int productID;
     private int quantity;
-    private float discount;
-    private float price;
+    private double discount;
+    private double price;
 
     public Sale() {
     }
@@ -63,19 +63,19 @@ public class Sale {
         this.quantity = quantity;
     }
 
-    public float getDiscount() {
+    public double getDiscount() {
         return discount;
     }
 
-    public void setDiscount(float discount) {
+    public void setDiscount(double discount) {
         this.discount = discount;
     }
 
-    public float getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(float price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 }
