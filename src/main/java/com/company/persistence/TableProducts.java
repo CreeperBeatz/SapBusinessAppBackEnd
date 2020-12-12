@@ -27,6 +27,16 @@ public class TableProducts {
     public static final int INDEX_PRODUCTS_IMAGE_URL = 7;
 
 
+    //change product
+    public static final String CHANGE_PRODUCT_PREP = "UPDATE " + TABLE_PRODUCTS + " SET " +
+            COLUMN_PRODUCTS_NAME + " = ?, " +
+            COLUMN_PRODUCTS_PRICE + " = ?, " +
+            COLUMN_PRODUCTS_STOCK + " = ?, " +
+            COLUMN_PRODUCTS_DISCOUNT + " = ?, " +
+            COLUMN_PRODUCTS_DESCRIPTION + " = ?, " +
+            COLUMN_PRODUCTS_IMAGE_URL + " = ? WHERE " +
+            COLUMN_PRODUCTS_ID + " = ?";
+
     //query by price
     public static final String QUERY_PRODUCT_BY_PRICE_PREP = "";
 
@@ -43,7 +53,73 @@ public class TableProducts {
     //VALUES ('cooler', 99.99, 14, 0, 'cools your room really well', 'https://4.imimg.com/data4/BV/LP/MY-4223299/air-cooler-500x500.jpg')
     public void deleteProduct(){};
 
-    public void changeProduct(){}
+    /**
+     * Change an existing product
+     *
+     * @param id Product to be changed
+     * @param name if "", remains the same
+     * @param price if <0, remains the same
+     * @param stock if <0, remains the same
+     * @param discount if <0, remains the same
+     * @param description if "", remains the same
+     * @param imgUrl if "", remains the same
+     * @throws ProductDoesNotExistException product not found in database
+     */
+    public static void changeProduct(int id, String name, double price, int stock, double discount, String description, String imgUrl)
+        throws ProductDoesNotExistException{
+
+        Product product = queryProductByID(id);
+        PreparedStatement statement = Datasource.getInstance().getChangeProduct();
+
+        if(product == null) throw new ProductDoesNotExistException();
+
+
+        try {
+            if (!name.equals("")) {
+                statement.setString(1 , name);
+            } else {
+                statement.setString(1, product.getName());
+            }
+
+            if (price >=0) {
+                statement.setDouble(2, price);
+            } else {
+                statement.setDouble(2, product.getPrice());
+            }
+
+            if (stock > -1) {
+                statement.setInt(3, stock);
+            } else {
+                statement.setInt(3, product.getStock());
+            }
+
+            if (discount >= 0) {
+                statement.setDouble(4, discount);
+            } else {
+                statement.setDouble(4, product.getDiscount());
+            }
+
+            if (!description.equals("")) {
+               statement.setString(5, description);
+            } else {
+                statement.setString(5, product.getDescription());
+            }
+
+            if (!imgUrl.equals("")) {
+                statement.setString(6, imgUrl);
+            } else {
+                statement.setString(6, product.getImageUrl());
+            }
+
+            statement.setInt(7, id);
+            statement.execute();
+
+        } catch (SQLException e) {
+            System.out.println("Couldnt execute changeProduct");
+            e.printStackTrace();
+            //TODO change to log
+        }
+    }
 
 
     public List<Product> queryProductByName(String name) {

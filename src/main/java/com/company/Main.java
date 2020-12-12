@@ -15,7 +15,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         Datasource datasource = Datasource.getInstance();
 
-        System.out.println(System.currentTimeMillis());
+        //System.out.println(System.currentTimeMillis());
 
        datasource.open();
 
@@ -30,15 +30,16 @@ public class Main {
         //TableUsers.changeUser("gpPochivka", "", "", "Administrator123", 0);
         //System.out.println(TableUsers.traderExists("gpPochivka"));
 
-        Product product = TableProducts.queryProductByID(2);
-
-        System.out.println(product.getId() + "|" + product.getStock() + "|" + product.getDiscount() + "|" + product.getPrice());
+        //Product product = TableProducts.queryProductByID(2);
+        //System.out.println(product.getId() + "|" + product.getStock() + "|" + product.getDiscount() + "|" + product.getPrice());
 
         try {
-            System.out.println(TableProducts.getStockByID(5));
+            TableProducts.changeProduct(1, "Samsung SmartTV", -4.34, 40, 0, "smartTV 120fps 1440p", "");
         } catch (ProductDoesNotExistException e) {
             e.printStackTrace();
         }
+
+
        datasource.close();
 
     }

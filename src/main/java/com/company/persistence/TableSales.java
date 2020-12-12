@@ -75,6 +75,8 @@ public class TableSales {
     public void insertSale(String salesman, int client, int productID, int quantity, double discount)
             throws NotEnoughStockException, UserDoesNotExistException, ProductDoesNotExistException, ClientDoesNotExistException {
 
+        Connection conn = Datasource.getInstance().getConn();
+        PreparedStatement statementSale = Datasource.getInstance().getInsertSale();
         Product product = TableProducts.queryProductByID(productID);
 
         //VALIDATION
@@ -95,20 +97,19 @@ public class TableSales {
             throw new ClientDoesNotExistException();
         }
 
-        Connection conn = Datasource.getInstance().getConn();
-        PreparedStatement statement = Datasource.getInstance().getInsertSale();
+
 
         //INSERTION
         try {
             conn.setAutoCommit(false);
 
-            statement.setString(1, salesman);
-            statement.setInt(2, client);
-            statement.setInt(3, productID);
-            statement.setInt(4, quantity);
-            statement.setDouble(5, discount);
-            statement.setDouble(6, calculatePrice(product, discount, quantity));
-            statement.setLong(7, System.currentTimeMillis());
+            statementSale.setString(1, salesman);
+            statementSale.setInt(2, client);
+            statementSale.setInt(3, productID);
+            statementSale.setInt(4, quantity);
+            statementSale.setDouble(5, discount);
+            statementSale.setDouble(6, calculatePrice(product, discount, quantity));
+            statementSale.setLong(7, System.currentTimeMillis());
 
         } catch (SQLException e) {
             //TODO change with logging
@@ -117,7 +118,7 @@ public class TableSales {
                 System.out.println("performing rollback");
                 conn.rollback();
             } catch (SQLException e2) {
-                System.out.println("RED ALERT");
+                System.out.println("CRITICAL ERROR: couldnt revert");
             }
         } finally {
             try {
