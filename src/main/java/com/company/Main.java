@@ -34,11 +34,8 @@ public class Main {
         //Product product = TableProducts.queryProductByID(2);
         //System.out.println(product.getId() + "|" + product.getStock() + "|" + product.getDiscount() + "|" + product.getPrice());
 
-        try {
-            TableSales.insertSale("NormalTrader", 2, 2, 5, 0);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        System.out.println(TableSales.deleteSale(5));
+
 
 
        datasource.close();

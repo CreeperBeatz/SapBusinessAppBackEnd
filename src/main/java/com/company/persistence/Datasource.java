@@ -25,6 +25,7 @@ public class Datasource {
     private PreparedStatement querySaleBySalesman;
     private PreparedStatement querySaleByDate;
     private PreparedStatement insertSale;
+    private PreparedStatement deleteSale;
 
     //Products statements
     private PreparedStatement queryProductByID;
@@ -66,6 +67,7 @@ public class Datasource {
            querySaleBySalesman = conn.prepareStatement(TableSales.QUERY_SALE_BY_TRADER_PREP);
            querySaleByDate = conn.prepareStatement(TableSales.QUERY_SALE_BY_DATE_PREP);
            insertSale = conn.prepareStatement(TableSales.INSERT_SALE_PREP);
+           deleteSale = conn.prepareStatement(TableSales.DELETE_SALE_PREP);
 
            //table products
            queryProductByID = conn.prepareStatement(TableProducts.QUERY_PRODUCT_BY_ID_PREP);
@@ -86,29 +88,30 @@ public class Datasource {
 
     public void close(){
         try {
-            if(conn!=null) {
+            if (conn != null) {
 
                 //Table users
-                if(insertUserPrep!=null) insertUserPrep.close();
-                if(deleteUserPrep!=null) deleteUserPrep.close();
-                if(changeUserPrep!=null) changeUserPrep.close();
-                if(queryUserByUsername!=null) queryUserByUsername.close();
-                if(queryAllUsers!=null) queryAllUsers.close();
-                if(queryAllTraders!=null) queryAllTraders.close();
-                if(queryUserByUsernameType!=null) queryUserByUsernameType.close();
+                if (insertUserPrep != null) insertUserPrep.close();
+                if (deleteUserPrep != null) deleteUserPrep.close();
+                if (changeUserPrep != null) changeUserPrep.close();
+                if (queryUserByUsername != null) queryUserByUsername.close();
+                if (queryAllUsers != null) queryAllUsers.close();
+                if (queryAllTraders != null) queryAllTraders.close();
+                if (queryUserByUsernameType != null) queryUserByUsernameType.close();
 
                 //TODO if not null, then close
                 //Table sales
-                querySaleBySalesman.close();
-                querySaleByDate.close();
-                insertSale.close();
+                if (querySaleBySalesman != null) querySaleBySalesman.close();
+                if (querySaleByDate != null) querySaleByDate.close();
+                if (insertSale != null) insertSale.close();
+                if (deleteSale != null) deleteSale.close();
 
                 //Table products
-                queryProductByID.close();
-                queryProductByName.close();
+                if (queryProductByID != null) queryProductByID.close();
+                if (queryProductByName != null) queryProductByName.close();
 
                 //Table clients
-                queryClientByID.close();
+                if (queryClientByID != null) queryClientByID.close();
 
                 conn.close();
             }
@@ -148,6 +151,9 @@ public class Datasource {
     }
     public PreparedStatement getInsertSale() {
         return insertSale;
+    }
+    public PreparedStatement getDeleteSale() {
+        return deleteSale;
     }
 
     public PreparedStatement getQueryProductByID() {

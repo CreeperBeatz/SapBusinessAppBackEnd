@@ -40,6 +40,9 @@ public class TableSales {
             COLUMN_SALES_QUANTITY + ", " + COLUMN_SALES_DISCOUNT + ", " +
             COLUMN_SALES_PRICE + ", " + COLUMN_SALES_DATE + ") VALUES(?, ?, ?, ?, ?, ?, ?)";
 
+    public static final String DELETE_SALE_PREP = "DELETE FROM " + TABLE_SALES + " WHERE " +
+            COLUMN_SALES_ID + " = ?";
+
 
     public static final String QUERY_SALE_BY_TRADER_PREP = "SELECT " + TABLE_SALES + "." + COLUMN_SALES_ID + ", " +
             TABLE_SALES + "." + COLUMN_SALES_SALESMAN + ", " +
@@ -134,10 +137,24 @@ public class TableSales {
                 System.out.println("CRITICAL ERROR: couldn't reset autocommit");
             }
         }
-        //TODO transaction that inserts new sale and modifies quantity in the same time
     }
-    public void deleteSale(int id){}; //maybe only admin having access
-    //TODO public void changeSale(){}; //Maybe protection only if it's the last one
+
+    /**
+     * Only admin should have access to that, in order to delete corrupt sales
+     * UNSAFE
+     * @param id sale to be deleted
+     */
+    public static int deleteSale(int id) {
+        PreparedStatement statement = Datasource.getInstance().getDeleteSale();
+        try {
+            statement.setInt(1 , id);
+            return statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace(); //TODO change to log
+            return -1;
+        }
+    }
+    //TODO change sale?
 
     /**
      *
