@@ -3,6 +3,7 @@ package com.company;
 import com.company.exceptions.ProductDoesNotExistException;
 import com.company.persistence.Datasource;
 import com.company.persistence.TableProducts;
+import com.company.persistence.TableSales;
 import com.company.persistence.TableUsers;
 import com.company.shared.Product;
 import com.company.shared.User;
@@ -34,8 +35,8 @@ public class Main {
         //System.out.println(product.getId() + "|" + product.getStock() + "|" + product.getDiscount() + "|" + product.getPrice());
 
         try {
-            TableProducts.changeProduct(1, "Samsung SmartTV", -4.34, 40, 0, "smartTV 120fps 1440p", "");
-        } catch (ProductDoesNotExistException e) {
+            TableSales.insertSale("NormalTrader", 2, 2, 5, 0);
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

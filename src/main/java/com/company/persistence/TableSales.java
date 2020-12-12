@@ -72,7 +72,7 @@ public class TableSales {
             " WHERE " + TABLE_SALES + "." + COLUMN_SALES_DATE + " > ? AND " + TABLE_SALES + "." + COLUMN_SALES_DATE + " < ?";
 
 
-    public void insertSale(String salesman, int client, int productID, int quantity, double discount)
+    public static void insertSale(String salesman, int client, int productID, int quantity, double discount)
             throws NotEnoughStockException, UserDoesNotExistException, ProductDoesNotExistException, ClientDoesNotExistException {
 
         Connection conn = Datasource.getInstance().getConn();
@@ -80,28 +80,28 @@ public class TableSales {
         Product product = TableProducts.queryProductByID(productID);
 
         //VALIDATION
-        if(!TableUsers.salesmanExists("salesman")) {
+        if(!TableUsers.salesmanExists(salesman)) {
             throw new UserDoesNotExistException();
         }
-
-
         if(product == null) { //getStockByID throws ProductNowExistsException
             throw new ProductDoesNotExistException();
         }
-
         if(product.getStock() < quantity) {
             throw new NotEnoughStockException();
         }
-
         if(!TableClients.clientExists(client)) {
             throw new ClientDoesNotExistException();
         }
-
-
+        if(quantity < 0) {
+            throw new IllegalArgumentException("Only positive numbers for quantity!");
+        }
+        if(discount < 0) {
+            throw new IllegalArgumentException("Only possitive numbers for discount!");
+        }
 
         //INSERTION
         try {
-            conn.setAutoCommit(false);
+            conn.setAutoCommit(false); //initiating a transaction
 
             statementSale.setString(1, salesman);
             statementSale.setInt(2, client);
@@ -111,6 +111,12 @@ public class TableSales {
             statementSale.setDouble(6, calculatePrice(product, discount, quantity));
             statementSale.setLong(7, System.currentTimeMillis());
 
+            if(TableProducts.changeProduct(productID, "",-1 , product.getStock()-quantity, -1, "", "") == 1) {
+                statementSale.execute();
+                conn.commit();
+            } else {
+                throw new SQLException(); //Performing rollback, since more than 1 row was affected
+            }
         } catch (SQLException e) {
             //TODO change with logging
             e.printStackTrace();
@@ -118,7 +124,7 @@ public class TableSales {
                 System.out.println("performing rollback");
                 conn.rollback();
             } catch (SQLException e2) {
-                System.out.println("CRITICAL ERROR: couldnt revert");
+                System.out.println("CRITICAL ERROR: couldn't rollback");
             }
         } finally {
             try {
@@ -139,7 +145,7 @@ public class TableSales {
      * @param username String of the Trader whose sales you want to check
      * @return
      */
-    public List<SaleUserProduct> querySalesBySalesman(String username){
+    public static List<SaleUserProduct> querySalesBySalesman(String username){
         try {
             PreparedStatement statement = Datasource.getInstance().getQuerySaleBySalesman();
             List<SaleUserProduct> query = new ArrayList<>();
@@ -161,7 +167,7 @@ public class TableSales {
      * @param toDate end date of the sale query in millis
      * @return
      */
-    public List<SaleUserProduct> querySalesByDate(long fromDate, long toDate){
+    public static List<SaleUserProduct> querySalesByDate(long fromDate, long toDate){
         try {
             PreparedStatement statement = Datasource.getInstance().getQuerySaleBySalesman();
             List<SaleUserProduct> query = new ArrayList<>();
@@ -178,7 +184,7 @@ public class TableSales {
         }
     }
 
-    private List<SaleUserProduct> writeSaleUserProductsArray(ResultSet results , List<SaleUserProduct> query) throws SQLException {
+    private static List<SaleUserProduct> writeSaleUserProductsArray(ResultSet results , List<SaleUserProduct> query) throws SQLException {
 
         while(results.next()){
             SaleUserProduct currResult = new SaleUserProduct();
@@ -196,7 +202,7 @@ public class TableSales {
         return query;
     }
 
-    private double calculatePrice(Product product, double discount, int quantity) {
-        return (product.getPrice()*quantity) - (product.getPrice()*quantity*discount);
+    private static double calculatePrice(Product product, double discount, int quantity) {
+        return (product.getPrice()*quantity) - (product.getPrice()*quantity*discount/100);
     }
 }

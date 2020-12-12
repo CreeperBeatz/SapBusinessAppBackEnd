@@ -64,8 +64,9 @@ public class TableProducts {
      * @param description if "", remains the same
      * @param imgUrl if "", remains the same
      * @throws ProductDoesNotExistException product not found in database
+     * @return number of rows affected. If > 1, there is a problem. returns -1 if there's an sql error
      */
-    public static void changeProduct(int id, String name, double price, int stock, double discount, String description, String imgUrl)
+    public static int changeProduct(int id, String name, double price, int stock, double discount, String description, String imgUrl)
         throws ProductDoesNotExistException{
 
         Product product = queryProductByID(id);
@@ -112,11 +113,12 @@ public class TableProducts {
             }
 
             statement.setInt(7, id);
-            statement.execute();
+            return statement.executeUpdate();
 
         } catch (SQLException e) {
             System.out.println("Couldnt execute changeProduct");
             e.printStackTrace();
+            return -1;
             //TODO change to log
         }
     }
