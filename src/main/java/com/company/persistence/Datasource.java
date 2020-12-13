@@ -112,6 +112,7 @@ public class Datasource {
                 if (queryProductByID != null) queryProductByID.close();
                 if (queryProductByName != null) queryProductByName.close();
                 if (queryProductByPrice != null) queryProductByPrice.close();
+                if (changeProduct != null) changeProduct.close();
 
                 //Table clients
                 if (queryClientByID != null) queryClientByID.close();
@@ -167,6 +168,9 @@ public class Datasource {
     }
     public PreparedStatement getChangeProduct() {
         return  changeProduct;
+    }
+    public PreparedStatement getQueryProductByPrice() {
+        return queryProductByPrice;
     }
 
     public PreparedStatement getQueryClientByID() {

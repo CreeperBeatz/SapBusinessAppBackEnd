@@ -40,7 +40,7 @@ public class TableProducts {
 
     //query by price
     public static final String QUERY_PRODUCT_BY_PRICE_PREP = "SELECT * FROM " + TABLE_PRODUCTS + " WHERE " +
-            TABLE_PRODUCTS + "." + COLUMN_PRODUCTS_PRICE + " > ?, " +
+            TABLE_PRODUCTS + "." + COLUMN_PRODUCTS_PRICE + " > ? AND " +
             TABLE_PRODUCTS + "." + COLUMN_PRODUCTS_PRICE + " < ?";
 
     //query by name, method should implement wild card
@@ -136,6 +136,7 @@ public class TableProducts {
 
             while(results.next()) {
                 Product product = new Product();
+
                 product.setId(results.getInt(INDEX_PRODUCTS_ID));
                 product.setName(results.getString(INDEX_PRODUCTS_NAME));
                 product.setDescription(results.getString(INDEX_PRODUCTS_DESCRIPTION));
@@ -156,7 +157,40 @@ public class TableProducts {
     }
 
     public static List<Product> queryProductByPrice(double lowPrice, double highPrice) {
-        return null;
+        try {
+            if(lowPrice > highPrice) {
+                highPrice += lowPrice;
+                lowPrice = highPrice - lowPrice;
+                highPrice -= lowPrice;
+            }
+            PreparedStatement statement = Datasource.getInstance().getQueryProductByPrice();
+            statement.setDouble(1, lowPrice);
+            statement.setDouble(2, highPrice);
+            ResultSet result = statement.executeQuery();
+
+            List<Product> query = new ArrayList<>();
+
+            while(result.next()){
+                Product product = new Product();
+
+                product.setId(result.getInt(INDEX_PRODUCTS_ID));
+                product.setDescription(result.getString(INDEX_PRODUCTS_DESCRIPTION));
+                product.setDiscount(result.getDouble(INDEX_PRODUCTS_DISCOUNT));
+                product.setImageUrl(result.getString(INDEX_PRODUCTS_IMAGE_URL));
+                product.setName(result.getString(INDEX_PRODUCTS_NAME));
+                product.setPrice(result.getDouble(INDEX_PRODUCTS_PRICE));
+                product.setStock(result.getInt(INDEX_PRODUCTS_STOCK));
+
+                query.add(product);
+            }
+
+            return query;
+
+        } catch (SQLException e) {
+            //TODO logging
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public static int getStockByID(int id) throws ProductDoesNotExistException {

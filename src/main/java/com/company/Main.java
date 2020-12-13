@@ -35,12 +35,12 @@ public class Main {
         //Product product = TableProducts.queryProductByID(2);
         //System.out.println(product.getId() + "|" + product.getStock() + "|" + product.getDiscount() + "|" + product.getPrice());
 
-        System.out.println(TableSales.deleteSale(5));
+        //System.out.println(TableSales.deleteSale(5));
 
-        List<Product> products = TableProducts.queryProductByName("tv");
+        List<Product> products = TableProducts.queryProductByPrice(700, 0);
 
-        for(Product pr: products) {
-            System.out.println(pr.getId()+ "|" + pr.getName());
+        for(Product e: products) {
+            System.out.println(e.getId()+"|" + e.getName() + "|" + e.getPrice());
         }
 
        datasource.close();
