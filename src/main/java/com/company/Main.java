@@ -8,6 +8,7 @@ import com.company.persistence.TableUsers;
 import com.company.shared.Product;
 import com.company.shared.User;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -36,7 +37,11 @@ public class Main {
 
         System.out.println(TableSales.deleteSale(5));
 
+        List<Product> products = TableProducts.queryProductByName("tv");
 
+        for(Product pr: products) {
+            System.out.println(pr.getId()+ "|" + pr.getName());
+        }
 
        datasource.close();
 

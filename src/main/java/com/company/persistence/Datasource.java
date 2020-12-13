@@ -31,6 +31,7 @@ public class Datasource {
     private PreparedStatement queryProductByID;
     private PreparedStatement queryProductByName;
     private PreparedStatement changeProduct;
+    private PreparedStatement queryProductByPrice;
 
     //Client statements
     private PreparedStatement queryClientByID;
@@ -73,6 +74,7 @@ public class Datasource {
            queryProductByID = conn.prepareStatement(TableProducts.QUERY_PRODUCT_BY_ID_PREP);
            queryProductByName = conn.prepareStatement(TableProducts.QUERY_PRODUCT_BY_NAME_PREP);
            changeProduct = conn.prepareStatement(TableProducts.CHANGE_PRODUCT_PREP);
+           queryProductByPrice = conn.prepareStatement(TableProducts.QUERY_PRODUCT_BY_PRICE_PREP);
 
            //table clients
            queryClientByID = conn.prepareStatement(TableClients.QUERY_CLIENT_BY_ID_PREP);
@@ -109,6 +111,7 @@ public class Datasource {
                 //Table products
                 if (queryProductByID != null) queryProductByID.close();
                 if (queryProductByName != null) queryProductByName.close();
+                if (queryProductByPrice != null) queryProductByPrice.close();
 
                 //Table clients
                 if (queryClientByID != null) queryClientByID.close();

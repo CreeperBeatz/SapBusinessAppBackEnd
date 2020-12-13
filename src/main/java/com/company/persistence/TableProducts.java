@@ -6,6 +6,7 @@ import com.company.shared.Product;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TableProducts {
@@ -38,11 +39,13 @@ public class TableProducts {
             COLUMN_PRODUCTS_ID + " = ?";
 
     //query by price
-    public static final String QUERY_PRODUCT_BY_PRICE_PREP = "";
+    public static final String QUERY_PRODUCT_BY_PRICE_PREP = "SELECT * FROM " + TABLE_PRODUCTS + " WHERE " +
+            TABLE_PRODUCTS + "." + COLUMN_PRODUCTS_PRICE + " > ?, " +
+            TABLE_PRODUCTS + "." + COLUMN_PRODUCTS_PRICE + " < ?";
 
     //query by name, method should implement wild card
     public static final String QUERY_PRODUCT_BY_NAME_PREP = "SELECT * FROM " + TABLE_PRODUCTS + " WHERE " +
-            TABLE_PRODUCTS + "." + COLUMN_PRODUCTS_NAME + " = ?";
+            TABLE_PRODUCTS + "." + COLUMN_PRODUCTS_NAME + " LIKE ?";
 
     //query by id
     public static final String QUERY_PRODUCT_BY_ID_PREP = "SELECT * FROM " + TABLE_PRODUCTS + " WHERE " +
@@ -124,7 +127,35 @@ public class TableProducts {
     }
 
 
-    public List<Product> queryProductByName(String name) {
+    public static List<Product> queryProductByName(String name) {
+        try {
+            PreparedStatement statement = Datasource.getInstance().getQueryProductByName();
+            statement.setString(1,'%' + name + '%');
+            ResultSet results = statement.executeQuery();
+            List<Product> query = new ArrayList<>();
+
+            while(results.next()) {
+                Product product = new Product();
+                product.setId(results.getInt(INDEX_PRODUCTS_ID));
+                product.setName(results.getString(INDEX_PRODUCTS_NAME));
+                product.setDescription(results.getString(INDEX_PRODUCTS_DESCRIPTION));
+                product.setStock(results.getInt(INDEX_PRODUCTS_STOCK));
+                product.setDiscount(results.getDouble(INDEX_PRODUCTS_DISCOUNT));
+                product.setImageUrl(results.getString(INDEX_PRODUCTS_IMAGE_URL));
+
+                query.add(product);
+            }
+
+            return query;
+
+        } catch (SQLException e) {
+            //TODO change with logging
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static List<Product> queryProductByPrice(double lowPrice, double highPrice) {
         return null;
     }
 
