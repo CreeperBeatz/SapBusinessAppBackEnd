@@ -30,6 +30,14 @@
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.32.3.2</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.guicedee.services/slf4j -->
+        <dependency>
+            <groupId>com.guicedee.services</groupId>
+            <artifactId>slf4j</artifactId>
+            <version>1.1.0.6</version>
+        </dependency>
+
     </dependencies>
 
     

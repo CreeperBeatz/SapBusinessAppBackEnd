@@ -3,6 +3,8 @@ package com.company.persistence;
 import com.company.exceptions.ProductDoesNotExistException;
 import com.company.shared.Product;
 
+import javax.xml.crypto.Data;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,6 +29,16 @@ public class TableProducts {
     public static final int INDEX_PRODUCTS_DESCRIPTION = 6;
     public static final int INDEX_PRODUCTS_IMAGE_URL = 7;
 
+    //insert product
+    public static final String INSERT_PRODUCT_PREP = "INSERT INTO " + TABLE_PRODUCTS +
+            "(" + COLUMN_PRODUCTS_ID + ", " + COLUMN_PRODUCTS_NAME + ", " +
+            COLUMN_PRODUCTS_PRICE + ", " + COLUMN_PRODUCTS_STOCK + ", " +
+            COLUMN_PRODUCTS_DISCOUNT + ", " + COLUMN_PRODUCTS_DESCRIPTION + ", " +
+            COLUMN_PRODUCTS_IMAGE_URL + ") VALUES(?, ?, ?, ?, ?, ?, ?)";
+
+    //delete product
+    public static final String DELETE_PRODUCT_PREP = "DELETE FROM " + TABLE_PRODUCTS +
+            " WHERE " + COLUMN_PRODUCTS_ID + " = ?";
 
     //change product
     public static final String CHANGE_PRODUCT_PREP = "UPDATE " + TABLE_PRODUCTS + " SET " +
@@ -54,7 +66,40 @@ public class TableProducts {
     public void insertProduct(){};
     //INSERT INTO PRODUCTS(name, price, available, discount, description, imageUrl)
     //VALUES ('cooler', 99.99, 14, 0, 'cools your room really well', 'https://4.imimg.com/data4/BV/LP/MY-4223299/air-cooler-500x500.jpg')
-    public void deleteProduct(){};
+    public void deleteProduct(int id) {
+        Connection conn = Datasource.getInstance().getConn();
+        PreparedStatement statement = Datasource.getInstance().getDeleteProduct();
+
+        //Initiating transaction
+        try {
+            conn.setAutoCommit(false);
+            statement.setInt(1, id);
+            if(statement.executeUpdate() > 1) { //if affected rows > 1
+                throw new SQLException();
+            } else {
+                conn.commit();
+            }
+        } catch (SQLException e) {
+            //Reverting changes
+            //TODO logging
+            e.printStackTrace();
+            try{
+                conn.rollback();
+            } catch (SQLException e2) {
+                e2.printStackTrace();
+                //couldnt revert
+                //TODO end program
+            }
+        } finally {
+            //reseting autocommit
+            try {
+                conn.setAutoCommit(true);
+            } catch (SQLException e) {
+                //TODO end program
+            }
+        }
+
+    }
 
     /**
      * Change an existing product
