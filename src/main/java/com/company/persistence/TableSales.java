@@ -117,6 +117,7 @@ public class TableSales {
             if(TableProducts.changeProduct(productID, "",-1 , product.getStock()-quantity, -1, "", "") == 1) {
                 statementSale.execute();
                 conn.commit();
+                //TODO client sales++
             } else {
                 throw new SQLException(); //Performing rollback, since more than 1 row was affected
             }

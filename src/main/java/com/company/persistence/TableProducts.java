@@ -31,7 +31,7 @@ public class TableProducts {
 
     //insert product
     public static final String INSERT_PRODUCT_PREP = "INSERT INTO " + TABLE_PRODUCTS +
-            "(" + COLUMN_PRODUCTS_ID + ", " + COLUMN_PRODUCTS_NAME + ", " +
+            "(" + COLUMN_PRODUCTS_NAME + ", " +
             COLUMN_PRODUCTS_PRICE + ", " + COLUMN_PRODUCTS_STOCK + ", " +
             COLUMN_PRODUCTS_DISCOUNT + ", " + COLUMN_PRODUCTS_DESCRIPTION + ", " +
             COLUMN_PRODUCTS_IMAGE_URL + ") VALUES(?, ?, ?, ?, ?, ?, ?)";
@@ -63,9 +63,26 @@ public class TableProducts {
     public static final String QUERY_PRODUCT_BY_ID_PREP = "SELECT * FROM " + TABLE_PRODUCTS + " WHERE " +
             TABLE_PRODUCTS + "." + COLUMN_PRODUCTS_ID + " = ?";
 
-    public void insertProduct(){};
-    //INSERT INTO PRODUCTS(name, price, available, discount, description, imageUrl)
-    //VALUES ('cooler', 99.99, 14, 0, 'cools your room really well', 'https://4.imimg.com/data4/BV/LP/MY-4223299/air-cooler-500x500.jpg')
+    public void insertProduct(String name, double price, int stock, double discount, String description, String imgUrl){
+        try {
+            PreparedStatement statement = Datasource.getInstance().getInsertSale();
+
+            statement.setString(1, name);
+            statement.setDouble(2, price);
+            statement.setInt(3, stock);
+            statement.setDouble(3, discount);
+            statement.setString(4, description);
+            statement.setString(5, imgUrl);
+
+            statement.execute();
+            //TODO verification
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            //TODO logging
+        }
+    }
+
     public void deleteProduct(int id) {
         Connection conn = Datasource.getInstance().getConn();
         PreparedStatement statement = Datasource.getInstance().getDeleteProduct();

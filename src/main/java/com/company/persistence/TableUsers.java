@@ -28,16 +28,16 @@ public class TableUsers {
     public static final int INDEX_ADMIN = 1;
     public static final int INDEX_SALESMAN = 2;
 
-    //insert new record prep
+    //insert new user prep
     public static final String INSERT_NEW_USER_PREP = "INSERT INTO " + TABLE_USERS + "(" +
             COLUMN_USERS_USERNAME + ", " + COLUMN_USERS_EMAIL + ", " + COLUMN_USERS_PASSWORD_HASH +
             ", " + COLUMN_USERS_TYPE + ") values(?, ?, ?, ?)";
 
-    //delete record prep
+    //delete user prep
     public static final String DELETE_USER_PREP = "DELETE FROM " + TABLE_USERS + " WHERE " + TABLE_USERS +
             "." + COLUMN_USERS_USERNAME + " = ?";
 
-    //change record prep
+    //change user prep
     public static final String CHANGE_USER_PREP = "UPDATE " + TABLE_USERS + " SET " + COLUMN_USERS_USERNAME +
             " = ?, " + COLUMN_USERS_EMAIL + " = ?, " + COLUMN_USERS_PASSWORD_HASH + " = ? , " + COLUMN_USERS_TYPE +
             " = ? WHERE " + COLUMN_USERS_USERNAME + " = ?";
@@ -99,8 +99,8 @@ public class TableUsers {
 
             insertUser.setString(1 , username);
             insertUser.setString(2, email);
-            insertUser.setString(3, MD5Hash.getHash(password));
-            insertUser.setString(4, Integer.toString(userType)); //TODO might change later, cuz spaghetti
+            insertUser.setString(3, password_hash);
+            insertUser.setString(4, Integer.toString(userType));
 
             insertUser.execute();
         } catch (SQLException e) {
@@ -110,7 +110,7 @@ public class TableUsers {
     }
 
     /**
-     * Deletes an user from given unique id number
+     * Deletes an user from given unique username
      * @param username unique String from the Users table, usernames Column
      */
     public static void deleteUser(String username){
