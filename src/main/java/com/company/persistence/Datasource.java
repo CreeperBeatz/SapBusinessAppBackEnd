@@ -37,6 +37,12 @@ public class Datasource {
 
     //Client statements
     private PreparedStatement queryClientByID;
+    private PreparedStatement queryClientByName;
+    private PreparedStatement queryAllClients;
+    private PreparedStatement insertClient;
+    private PreparedStatement deleteClient;
+    private PreparedStatement changeClient;
+    private PreparedStatement updateClientPurchases;
 
     //Singleton design pattern, Thread safe
     private static Datasource instance = new Datasource();
@@ -82,7 +88,12 @@ public class Datasource {
 
            //table clients
            queryClientByID = conn.prepareStatement(TableClients.QUERY_CLIENT_BY_ID_PREP);
-
+           queryClientByName = conn.prepareStatement(TableClients.QUERY_CLIENT_BY_NAME);
+           queryAllClients = conn.prepareStatement(TableClients.QUERY_ALL_CLIENTS_PREP);
+           insertClient = conn.prepareStatement(TableClients.INSERT_CLIENT_PREP);
+           deleteClient = conn.prepareStatement(TableClients.DELETE_CLIENT_PREP);
+           changeClient = conn.prepareStatement(TableClients.CHANGE_CLIENT_PREP);
+           updateClientPurchases = conn.prepareStatement(TableClients.UPDATE_CLIENT_NUM_PURCHASES_PREP);
 
            return true;
         } catch(SQLException e) {
@@ -121,6 +132,12 @@ public class Datasource {
 
                 //Table clients
                 if (queryClientByID != null) queryClientByID.close();
+                if (queryAllClients != null) queryAllClients.close();
+                if (queryClientByName != null) queryClientByName.close();
+                if (insertClient != null) insertClient.close();
+                if (deleteClient != null) deleteClient.close();
+                if (changeClient != null) changeClient.close();
+                if (updateClientPurchases != null) updateClientPurchases.close();
 
                 conn.close();
             }
@@ -186,6 +203,24 @@ public class Datasource {
 
     public PreparedStatement getQueryClientByID() {
         return queryClientByID;
+    }
+    public PreparedStatement getQueryClientByName() {
+        return queryClientByName;
+    }
+    public PreparedStatement getChangeClient() {
+        return changeClient;
+    }
+    public PreparedStatement getDeleteClient() {
+        return deleteClient;
+    }
+    public PreparedStatement getInsertClient() {
+        return insertClient;
+    }
+    public PreparedStatement getQueryAllClients() {
+        return queryAllClients;
+    }
+    public PreparedStatement getUpdateClientPurchases() {
+        return updateClientPurchases;
     }
 
     public Connection getConn() {

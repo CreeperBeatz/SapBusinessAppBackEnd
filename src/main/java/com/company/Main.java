@@ -1,12 +1,10 @@
 package com.company;
 
 import com.company.exceptions.ProductDoesNotExistException;
-import com.company.persistence.Datasource;
-import com.company.persistence.TableProducts;
-import com.company.persistence.TableSales;
-import com.company.persistence.TableUsers;
+import com.company.persistence.*;
 import com.company.shared.Product;
 import com.company.shared.User;
+
 
 import java.util.List;
 import java.util.Scanner;
@@ -42,6 +40,13 @@ public class Main {
         for(Product e: products) {
             System.out.println(e.getId()+"|" + e.getName() + "|" + e.getPrice());
         }
+
+        System.out.println(TableClients.QUERY_ALL_CLIENTS_PREP);
+        System.out.println(TableClients.QUERY_CLIENT_BY_NAME);
+        System.out.println(TableClients.INSERT_CLIENT_PREP);
+        System.out.println(TableClients.DELETE_CLIENT_PREP);
+        System.out.println(TableClients.CHANGE_CLIENT_PREP);
+        System.out.println(TableClients.UPDATE_CLIENT_NUM_PURCHASES_PREP);
 
        datasource.close();
 

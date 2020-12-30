@@ -1,6 +1,6 @@
 package com.company.persistence;
 
-import com.company.exceptions.InvalidTypeException;
+import com.company.exceptions.InvalidUserTypeException;
 import com.company.exceptions.UserDoesNotExistException;
 import com.company.shared.VerificationSyntax;
 import com.company.utilities.MD5Hash;
@@ -137,7 +137,7 @@ public class TableUsers {
      try {
          //Validation
          if(type > NUM_TYPES_USERS || type < 0) {
-             throw new InvalidTypeException();
+             throw new InvalidUserTypeException();
          }
 
 
@@ -188,7 +188,7 @@ public class TableUsers {
      } catch (SQLException e) {
          System.out.println("Couldn't change user -" + e.getMessage());
          e.printStackTrace();
-     } catch (InvalidTypeException e) {
+     } catch (InvalidUserTypeException e) {
          System.out.println("Couldn't change user -" + e.getMessage());
          e.printStackTrace();
      } catch (UserDoesNotExistException e) {

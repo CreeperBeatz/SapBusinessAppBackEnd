@@ -34,7 +34,7 @@ public class TableProducts {
             "(" + COLUMN_PRODUCTS_NAME + ", " +
             COLUMN_PRODUCTS_PRICE + ", " + COLUMN_PRODUCTS_STOCK + ", " +
             COLUMN_PRODUCTS_DISCOUNT + ", " + COLUMN_PRODUCTS_DESCRIPTION + ", " +
-            COLUMN_PRODUCTS_IMAGE_URL + ") VALUES(?, ?, ?, ?, ?, ?, ?)";
+            COLUMN_PRODUCTS_IMAGE_URL + ") VALUES(?, ?, ?, ?, ?, ?)";
 
     //delete product
     public static final String DELETE_PRODUCT_PREP = "DELETE FROM " + TABLE_PRODUCTS +
@@ -70,9 +70,9 @@ public class TableProducts {
             statement.setString(1, name);
             statement.setDouble(2, price);
             statement.setInt(3, stock);
-            statement.setDouble(3, discount);
-            statement.setString(4, description);
-            statement.setString(5, imgUrl);
+            statement.setDouble(4, discount);
+            statement.setString(5, description);
+            statement.setString(6, imgUrl);
 
             statement.execute();
             //TODO verification
