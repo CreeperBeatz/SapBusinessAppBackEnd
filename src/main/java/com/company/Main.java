@@ -1,7 +1,9 @@
 package com.company;
 
 import com.company.exceptions.ProductDoesNotExistException;
+import com.company.exceptions.WrapperException;
 import com.company.persistence.*;
+import com.company.shared.Client;
 import com.company.shared.Product;
 import com.company.shared.User;
 
@@ -35,19 +37,19 @@ public class Main {
 
         //System.out.println(TableSales.deleteSale(5));
 
-        List<Product> products = TableProducts.queryProductByPrice(700, 0);
+        //TableProducts.insertProduct("Samsung smart refrigerator", 599.99, 10, 0, "cools food to 3 degrees C", "default");
 
-        for(Product e: products) {
-            System.out.println(e.getId()+"|" + e.getName() + "|" + e.getPrice());
+        try {
+            TableClients.insertClient("iVaN", "iVaNoV", "plovdiv 1", "Bulgaria", "plovdiv", 5000);
+            List<Client> clients = TableClients.queryClientByName("ivan");
+
+            for(Client client : clients) {
+                System.out.println(client.getName()+ "|" + client.getId());
+            }
         }
+        catch (WrapperException e) {
 
-        System.out.println(TableClients.QUERY_ALL_CLIENTS_PREP);
-        System.out.println(TableClients.QUERY_CLIENT_BY_NAME);
-        System.out.println(TableClients.INSERT_CLIENT_PREP);
-        System.out.println(TableClients.DELETE_CLIENT_PREP);
-        System.out.println(TableClients.CHANGE_CLIENT_PREP);
-        System.out.println(TableClients.UPDATE_CLIENT_NUM_PURCHASES_PREP);
-
+        }
        datasource.close();
 
     }

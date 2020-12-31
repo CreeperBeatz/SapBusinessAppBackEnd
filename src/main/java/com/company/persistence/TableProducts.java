@@ -1,6 +1,7 @@
 package com.company.persistence;
 
 import com.company.exceptions.ProductDoesNotExistException;
+import com.company.exceptions.WrapperException;
 import com.company.shared.Product;
 
 import javax.xml.crypto.Data;
@@ -63,9 +64,9 @@ public class TableProducts {
     public static final String QUERY_PRODUCT_BY_ID_PREP = "SELECT * FROM " + TABLE_PRODUCTS + " WHERE " +
             TABLE_PRODUCTS + "." + COLUMN_PRODUCTS_ID + " = ?";
 
-    public void insertProduct(String name, double price, int stock, double discount, String description, String imgUrl){
+    public static void insertProduct(String name, double price, int stock, double discount, String description, String imgUrl){
         try {
-            PreparedStatement statement = Datasource.getInstance().getInsertSale();
+            PreparedStatement statement = Datasource.getInstance().getInsertProduct();
 
             statement.setString(1, name);
             statement.setDouble(2, price);
@@ -83,7 +84,7 @@ public class TableProducts {
         }
     }
 
-    public void deleteProduct(int id) {
+    public static void deleteProduct(int id) {
         Connection conn = Datasource.getInstance().getConn();
         PreparedStatement statement = Datasource.getInstance().getDeleteProduct();
 
@@ -132,12 +133,12 @@ public class TableProducts {
      * @return number of rows affected. If > 1, there is a problem. returns -1 if there's an sql error
      */
     public static int changeProduct(int id, String name, double price, int stock, double discount, String description, String imgUrl)
-        throws ProductDoesNotExistException{
+        throws WrapperException {
 
         Product product = queryProductByID(id);
         PreparedStatement statement = Datasource.getInstance().getChangeProduct();
 
-        if(product == null) throw new ProductDoesNotExistException();
+        if(product == null) throw new WrapperException(new ProductDoesNotExistException());
 
 
         try {

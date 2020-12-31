@@ -1,9 +1,6 @@
 package com.company.persistence;
 
-import com.company.exceptions.ClientDoesNotExistException;
-import com.company.exceptions.NotEnoughStockException;
-import com.company.exceptions.ProductDoesNotExistException;
-import com.company.exceptions.UserDoesNotExistException;
+import com.company.exceptions.*;
 import com.company.shared.Product;
 import com.company.shared.SaleUserProduct;
 
@@ -76,7 +73,7 @@ public class TableSales {
 
 
     public static void insertSale(String salesman, int client, int productID, int quantity, double discount)
-            throws NotEnoughStockException, UserDoesNotExistException, ProductDoesNotExistException, ClientDoesNotExistException {
+            throws WrapperException {
 
         Connection conn = Datasource.getInstance().getConn();
         PreparedStatement statementSale = Datasource.getInstance().getInsertSale();
@@ -84,22 +81,22 @@ public class TableSales {
 
         //VALIDATION
         if(!TableUsers.salesmanExists(salesman)) {
-            throw new UserDoesNotExistException();
+            throw new WrapperException(new UserDoesNotExistException());
         }
         if(product == null) { //getStockByID throws ProductNowExistsException
-            throw new ProductDoesNotExistException();
+            throw new WrapperException(new ProductDoesNotExistException());
         }
         if(product.getStock() < quantity) {
-            throw new NotEnoughStockException();
+            throw new WrapperException(new NotEnoughStockException());
         }
         if(!TableClients.clientExists(client)) {
-            throw new ClientDoesNotExistException();
+            throw new WrapperException(new ClientDoesNotExistException());
         }
         if(quantity < 0) {
-            throw new IllegalArgumentException("Only positive numbers for quantity!");
+            throw new WrapperException(new IllegalArgumentException(),"Only positive numbers for quantity!");
         }
         if(discount < 0) {
-            throw new IllegalArgumentException("Only possitive numbers for discount!");
+            throw new WrapperException(new IllegalArgumentException(), "Only possitive numbers for discount!");
         }
 
         //INSERTION
@@ -116,8 +113,8 @@ public class TableSales {
 
             if(TableProducts.changeProduct(productID, "",-1 , product.getStock()-quantity, -1, "", "") == 1) {
                 statementSale.execute();
+                TableClients.addClientPurchase(client); //adding a purchase to the client ID
                 conn.commit();
-                //TODO client sales++
             } else {
                 throw new SQLException(); //Performing rollback, since more than 1 row was affected
             }
@@ -125,10 +122,11 @@ public class TableSales {
             //TODO change with logging
             e.printStackTrace();
             try {
-                System.out.println("performing rollback");
+                System.out.println("performing rollback"); //TODO change to logger
                 conn.rollback();
             } catch (SQLException e2) {
                 System.out.println("CRITICAL ERROR: couldn't rollback");
+                //TODO end operation
             }
         } finally {
             try {
@@ -136,6 +134,7 @@ public class TableSales {
                 conn.setAutoCommit(true);
             } catch (SQLException e3) {
                 System.out.println("CRITICAL ERROR: couldn't reset autocommit");
+                //TODO end opperation
             }
         }
     }

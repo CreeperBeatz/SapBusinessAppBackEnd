@@ -32,31 +32,25 @@ public class TableClients {
     public static final int INDEX_CLIENTS_POSTAL_CODE = 7;
     public static final int INDEX_CLIENTS_NUMBER_OF_PURCHASES = 8;
 
-    //TODO method insert client
     public static final String INSERT_CLIENT_PREP = "INSERT INTO " + TABLE_CLIENTS + "(" + COLUMN_CLIENTS_NAME + ", " +
             COLUMN_CLIENTS_SURNAME + ", " + COLUMN_CLIENTS_ADDRESS +  ", " + COLUMN_CLIENTS_COUNTRY +  ", "
-            + COLUMN_CLIENTS_CITY +  ", " + COLUMN_CLIENTS_POSTAL_CODE + ") VALUES(?, ?, ?, ?, ?, ?)";
+            + COLUMN_CLIENTS_CITY +  ", " + COLUMN_CLIENTS_POSTAL_CODE + ", " + COLUMN_CLIENTS_NUMBER_OF_PURCHASES + ") VALUES(?, ?, ?, ?, ?, ?, 0)";
 
-    //TODO method delete client
     public static final String DELETE_CLIENT_PREP = "DELETE FROM " + TABLE_CLIENTS + " WHERE " + COLUMN_CLIENTS_ID +
             " = ?";
 
-    //TODO method update client
     public static final String CHANGE_CLIENT_PREP = "UPDATE " + TABLE_CLIENTS + " SET " + COLUMN_CLIENTS_NAME + " = ?, " +
             COLUMN_CLIENTS_SURNAME + " = ?, " + COLUMN_CLIENTS_ADDRESS + " = ?, " + COLUMN_CLIENTS_COUNTRY + " = ?, " +
             COLUMN_CLIENTS_CITY + " = ?, " + COLUMN_CLIENTS_POSTAL_CODE + " = ? WHERE " + COLUMN_CLIENTS_ID + " = ?";
 
-    //TODO method update purchases
     public static final String UPDATE_CLIENT_NUM_PURCHASES_PREP = "UPDATE " + TABLE_CLIENTS + " SET " + COLUMN_CLIENTS_NUMBER_OF_PURCHASES +
             " = " + COLUMN_CLIENTS_NUMBER_OF_PURCHASES + " + 1 WHERE " + COLUMN_CLIENTS_ID + " = ?";
 
-    //TODO get all clients query
     public static final String QUERY_ALL_CLIENTS_PREP = "SELECT * FROM " + TABLE_CLIENTS + " ORDER BY " +
             TABLE_CLIENTS + "." + COLUMN_CLIENTS_NAME + ", " + TABLE_CLIENTS + "." + COLUMN_CLIENTS_SURNAME;
 
-    //TODO query by name method
-    public static final String QUERY_CLIENT_BY_NAME = "SELECT * FROM " + TABLE_CLIENTS + " WHERE " +
-            COLUMN_CLIENTS_NAME + " = ? ORDER BY " + COLUMN_CLIENTS_SURNAME + " ASC";
+    public static final String QUERY_CLIENT_BY_NAME = "SELECT * FROM " + TABLE_CLIENTS + " WHERE UPPER(" +
+            COLUMN_CLIENTS_NAME + ") = ? ORDER BY " + COLUMN_CLIENTS_SURNAME + " ASC";
 
     public static final String QUERY_CLIENT_BY_ID_PREP = "SELECT * FROM " + TABLE_CLIENTS + " WHERE " +
             TABLE_CLIENTS + "." + COLUMN_CLIENTS_ID + " = ?";
@@ -183,7 +177,7 @@ public class TableClients {
     public static List<Client> queryClientByName(String name) throws WrapperException {
         try {
             PreparedStatement statement = Datasource.getInstance().getQueryClientByName();
-            statement.setString(1 , name);
+            statement.setString(1 , name.toUpperCase());
             ResultSet results = statement.executeQuery();
             return getClientsFromResultSet(results);
 
@@ -200,7 +194,7 @@ public class TableClients {
 
             List<Client> list = getClientsFromResultSet(results);
             //TODO if list.get(1)==null, throw client doesn't exist exception
-            return list.get(1);
+            return list.get(0);
 
         } catch (SQLException e) {
             throw new WrapperException(e);
