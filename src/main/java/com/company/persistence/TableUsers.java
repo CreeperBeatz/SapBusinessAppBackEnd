@@ -154,28 +154,27 @@ public class TableUsers {
 
          changeUser.setString(5, oldUsername);
 
-         //TODO split into methods, so code isn't duped
          //Checking and setting all params for the user
          if(newUsername.equals("")) {
-             changeUser.setString(1, result.getString(INDEX_USERS_USERNAME));
+             changeUser.setString(1, result.getString(1));
          } else {
              changeUser.setString(1, newUsername);
          }
 
          if(email.equals("")) {
-             changeUser.setString(2, result.getString(INDEX_USERS_EMAIL));
+             changeUser.setString(2, result.getString(2));
          } else {
              changeUser.setString(2, email);
          }
 
          if(password.equals("")) {
-             changeUser.setString(3, result.getString(INDEX_USERS_PASSWORD_HASH));
+             changeUser.setString(3, result.getString(3));
          } else {
              changeUser.setString(3, MD5Hash.getHash(MD5Hash.getHash(password)));
          }
 
          if(type == 0) {
-             changeUser.setInt(4, result.getInt(INDEX_USERS_TYPE));
+             changeUser.setInt(4, result.getInt(4));
          } else {
              changeUser.setInt(4, type);
          }
@@ -260,9 +259,9 @@ public class TableUsers {
         while(results.next()) {
             User currUser = new User();
 
-            currUser.setUsername(results.getString(INDEX_USERS_USERNAME));
-            currUser.setEmail(results.getString(INDEX_USERS_EMAIL));
-            currUser.setType(results.getInt(INDEX_USERS_TYPE));
+            currUser.setUsername(results.getString(1));
+            currUser.setEmail(results.getString(2));
+            currUser.setType(results.getInt(3));
 
             query.add(currUser);
         }
