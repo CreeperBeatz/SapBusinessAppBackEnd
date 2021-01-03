@@ -22,15 +22,28 @@ public class SalesmanScreen extends Thread{
     private JButton clientsByNameButton;
     private JButton allClientsButton;
     private JTable tableSaleHistory;
-    private JTextField textField2;
     private JButton saleBySalesmanButton;
-    private JTextField textField4;
     private JTable table1;
     private JTextField textField3;
     private JTextField textField5;
     private JButton queryByPriceButton;
     private JTextField textField6;
     private JButton queryByNameButton;
+    private JTextField textField4;
+    private JTextField textField7;
+    private JTextField textField8;
+    private JTextField textField9;
+    private JTextField textField10;
+    private JTextField textField11;
+    private JButton insertClientButton;
+    private JComboBox comboBox1;
+    private JComboBox comboBox2;
+    private JTextField textField12;
+    private JButton addSaleButton;
+    private JTextField a0TextField;
+    private JTextField textField13;
+    private JTextField textField14;
+    private JButton saleByDateButton;
 
 
     public SalesmanScreen(int id, String username, String email) {

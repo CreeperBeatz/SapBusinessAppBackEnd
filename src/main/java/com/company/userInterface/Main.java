@@ -17,6 +17,6 @@ public class Main {
         LoginScreen login = new LoginScreen();
         login.start();
 
-
+        //TableUsers.insertUser("testTrader", "testTrader1", "test@bg.com", 2);
     }
 }
