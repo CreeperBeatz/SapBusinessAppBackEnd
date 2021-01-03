@@ -20,6 +20,7 @@ public class Datasource {
     private PreparedStatement queryAllUsers;
     private PreparedStatement queryAllTraders;
     private PreparedStatement queryUserByUsernameType;
+    private PreparedStatement queryUserByUsernameHash;
 
     //Sales statements
     private PreparedStatement querySaleBySalesman;
@@ -71,6 +72,7 @@ public class Datasource {
            queryAllUsers = conn.prepareStatement(TableUsers.QUERY_ALL_USERS_PREP);
            queryAllTraders = conn.prepareStatement(TableUsers.QUERY_ALL_TRADERS_PREP);
            queryUserByUsernameType = conn.prepareStatement(TableUsers.QUERY_USER_BY_USERNAME_TYPE_PREP);
+           queryUserByUsernameHash = conn.prepareStatement(TableUsers.QUERY_USER_BY_USERNAME_HASH_PREP);
 
            //table sales
            querySaleBySalesman = conn.prepareStatement(TableSales.QUERY_SALE_BY_TRADER_PREP);
@@ -115,6 +117,7 @@ public class Datasource {
                 if (queryAllUsers != null) queryAllUsers.close();
                 if (queryAllTraders != null) queryAllTraders.close();
                 if (queryUserByUsernameType != null) queryUserByUsernameType.close();
+                if (queryUserByUsernameHash != null) queryUserByUsernameHash.close();
 
                 //Table sales
                 if (querySaleBySalesman != null) querySaleBySalesman.close();
@@ -167,6 +170,9 @@ public class Datasource {
     }
     public PreparedStatement getQueryAllTraders() {
         return queryAllTraders;
+    }
+    public PreparedStatement getQueryUserByUsernameHash() {
+        return queryUserByUsernameHash;
     }
 
     public PreparedStatement getQuerySaleBySalesman() {

@@ -6,6 +6,7 @@ public class User {
     private String password_hash;
     private String email;
     private int type;
+    private int id;
 
 
     public User() {
@@ -16,10 +17,19 @@ public class User {
         this.username = username;
         this.email = email;
         this.type = type;
+        this.id = id;
     }
 
     public String getPassword_hash() {
         return password_hash;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setPassword_hash(String password_hash) {

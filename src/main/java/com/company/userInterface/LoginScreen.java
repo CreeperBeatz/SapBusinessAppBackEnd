@@ -1,6 +1,9 @@
 package com.company.userInterface;
 
+import com.company.exceptions.WrapperException;
 import com.company.persistence.Datasource;
+import com.company.persistence.TableUsers;
+import com.company.shared.User;
 
 import javax.swing.*;
 import java.awt.event.*;
@@ -16,7 +19,36 @@ public class LoginScreen extends Thread {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String username = textField1.getText();
-                String password = passwordField1.getSelectedText();
+                char[] passwordRaw = passwordField1.getPassword();
+                String password = new String(passwordRaw);
+                try {
+                    User user = TableUsers.queryUserByUsernamePassword(username , password);
+
+                    //If user doesn't exist
+                    if (user == null) {
+                        PopupCatalog.userDoesntExist();
+                    }
+                    else { //if user exists
+                        switch (user.getType()){
+                            case TableUsers.INDEX_ADMIN:
+                                AdminScreen adminScreen =
+                                        new AdminScreen(user.getId(), user.getUsername(), user.getEmail());
+                                adminScreen.run();
+                                break;
+                            case TableUsers.INDEX_SALESMAN:
+                                SalesmanScreen salesmanScreen =
+                                        new SalesmanScreen(user.getId(), user.getUsername(), user.getEmail());
+                                salesmanScreen.run();
+                                break;
+                            default:
+                                PopupCatalog.unrecognisedUserType();
+                                break;
+                        }
+
+                    }
+                } catch (WrapperException e1) {
+                    System.out.println(e1.getWrapperMessage()); //change to debugger?
+                }
             }
         });
 

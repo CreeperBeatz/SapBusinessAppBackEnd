@@ -2,9 +2,11 @@ package com.company.persistence;
 
 import com.company.exceptions.InvalidUserTypeException;
 import com.company.exceptions.UserDoesNotExistException;
+import com.company.exceptions.WrapperException;
 import com.company.shared.VerificationSyntax;
 import com.company.utilities.MD5Hash;
 import com.company.shared.User;
+import com.jcabi.log.Logger;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,14 +17,16 @@ import java.util.List;
 public class TableUsers {
 
     public static final String TABLE_USERS = "users";
+    public static final String COLUMN_USERS_ID = "_id";
     public static final String COLUMN_USERS_USERNAME = "username";
     public static final String COLUMN_USERS_EMAIL = "email";
     public static final String COLUMN_USERS_PASSWORD_HASH = "hash";
     public static final String COLUMN_USERS_TYPE = "type";
-    public static final int INDEX_USERS_USERNAME = 1;
-    public static final int INDEX_USERS_EMAIL = 2;
-    public static final int INDEX_USERS_PASSWORD_HASH = 3;
-    public static final int INDEX_USERS_TYPE = 4;
+    public static final int INDEX_USERS_ID = 1;
+    public static final int INDEX_USERS_USERNAME = 2;
+    public static final int INDEX_USERS_EMAIL = 3;
+    public static final int INDEX_USERS_PASSWORD_HASH = 4;
+    public static final int INDEX_USERS_TYPE = 5;
 
     public static final int NUM_TYPES_USERS = 2;
     public static final int INDEX_ADMIN = 1;
@@ -35,7 +39,7 @@ public class TableUsers {
 
     //delete user prep
     public static final String DELETE_USER_PREP = "DELETE FROM " + TABLE_USERS + " WHERE " + TABLE_USERS +
-            "." + COLUMN_USERS_USERNAME + " = ?";
+            "." + COLUMN_USERS_ID + " = ?";
 
     //change user prep
     public static final String CHANGE_USER_PREP = "UPDATE " + TABLE_USERS + " SET " + COLUMN_USERS_USERNAME +
@@ -45,6 +49,10 @@ public class TableUsers {
     //query user by username
     public static final String QUERY_USER_BY_USERNAME_PREP = "SELECT * FROM " + TABLE_USERS + " WHERE " + TABLE_USERS + "." +
             COLUMN_USERS_USERNAME + " = ?";
+
+    //query user by username
+    public static final String QUERY_USER_BY_USERNAME_HASH_PREP = "SELECT * FROM " + TABLE_USERS + " WHERE " + TABLE_USERS + "." +
+            COLUMN_USERS_USERNAME + " = ? AND " + COLUMN_USERS_PASSWORD_HASH + " = ?";
 
     //query user by username and type
     public static final String QUERY_USER_BY_USERNAME_TYPE_PREP = "SELECT * FROM " + TABLE_USERS + " WHERE " + TABLE_USERS + "." +
@@ -111,12 +119,12 @@ public class TableUsers {
 
     /**
      * Deletes an user from given unique username
-     * @param username unique String from the Users table, usernames Column
+     * @param id unique ID from the Users table
      */
-    public static void deleteUser(String username){
+    public static void deleteUser(int id){
         try {
             PreparedStatement deleteUser = Datasource.getInstance().getDeleteUserPrep();
-            deleteUser.setString(1, username);
+            deleteUser.setInt(1, id);
             deleteUser.execute();
         } catch (SQLException e) {
             System.out.println("Couldn't delete user - " + e.getMessage());
@@ -204,7 +212,7 @@ public class TableUsers {
      * Query that utilizes the DataSource class and the connection in it
      * @return ArrayList of User, containing ID, Username, Email, Type of user WITHOUT password hash!
      */
-    public static List<User> queryAllUsers() {//TODO change queries to prep statements if performance is better
+    public static List<User> queryAllUsers() {
         try {
             ResultSet results = Datasource.getInstance().getQueryAllUsers().executeQuery();
 
@@ -241,15 +249,35 @@ public class TableUsers {
             statement.setInt(2, INDEX_SALESMAN);
             ResultSet results = statement.executeQuery();
 
-            if(results.next()) {
-                return true;
-            } else {
-                return false;
-            }
+            return results.next();
         } catch (SQLException e) { //If results.next throws an exception, it means there was no record
             System.out.println(e.getMessage());
             //TODO better error checking
             return false;
+        }
+    }
+
+    public static User queryUserByUsernamePassword(String username, String password) throws WrapperException{
+        password = MD5Hash.getHash(password);
+        try {
+            PreparedStatement statement = Datasource.getInstance().getQueryUserByUsernameHash();
+            statement.setString(1, username);
+            statement.setString(2, password);
+
+            ResultSet results = statement.executeQuery();
+
+            List<User> query = getUsersFromResultSet(results);
+
+            if(query.size()==0) {
+                return null;
+            } else if (query.size()>1){
+                throw new SQLException("User not unique");
+            } else {
+                return query.get(0);//method returns a List, we only need the first(and only) element
+            }
+        } catch (SQLException e) {
+           //TODO logger
+            throw new WrapperException(e, "Couldn't execute username/password query!");
         }
     }
 
@@ -259,9 +287,10 @@ public class TableUsers {
         while(results.next()) {
             User currUser = new User();
 
-            currUser.setUsername(results.getString(1));
-            currUser.setEmail(results.getString(2));
-            currUser.setType(results.getInt(3));
+            currUser.setId(results.getInt(INDEX_USERS_ID));
+            currUser.setUsername(results.getString(INDEX_USERS_USERNAME));
+            currUser.setEmail(results.getString(INDEX_USERS_EMAIL));
+            currUser.setType(results.getInt(INDEX_USERS_TYPE));
 
             query.add(currUser);
         }

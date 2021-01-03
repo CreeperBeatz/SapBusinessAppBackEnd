@@ -7,11 +7,12 @@ public class DBCreation {
     //TODO change all the fields (oh god) with the psfs above
     public static final String DATABASE_CREATION_STRING =
             "CREATE TABLE IF NOT EXISTS \"users\" (\n" +
-                    "        \"username\"      TEXT,\n" +
+                    "        \"_id\"         INTEGER,\n"+
+                    "        \"username\"      TEXT UNIQUE,\n" +
                     "        \"email\"      TEXT,\n" +
                     "        \"hash\"  TEXT,\n" +
                     "        \"type\"  INTEGER,\n" +
-                    "        PRIMARY KEY(\"username\")\n" +
+                    "        PRIMARY KEY(\"_id\" AUTOINCREMENT)\n" +
                     ");\n" +
                     "CREATE TABLE IF NOT EXISTS \"sales\" (\n" +
                     "        \"_id\"   INTEGER,\n" +

@@ -2,6 +2,7 @@ package com.company.userInterface;
 
 import com.company.persistence.*;
 
+
 import javax.swing.*;
 
 public class Main {
@@ -15,6 +16,7 @@ public class Main {
         //Load the login page of the GUI
         LoginScreen login = new LoginScreen();
         login.start();
+
 
     }
 }
