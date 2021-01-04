@@ -1,9 +1,14 @@
 package com.company.userInterface;
 
 import com.company.persistence.Datasource;
+import com.company.persistence.TableClients;
 import com.toedter.calendar.JDateChooser;
 
 import javax.swing.*;
+import javax.swing.table.JTableHeader;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Properties;
@@ -16,12 +21,11 @@ public class SalesmanScreen extends Thread{
 
     private JPanel panel1;
     private JTabbedPane tabbedPane1;
-    private JPanel Clients;
+    private JPanel clientsPanel;
     private JTable tableClients;
-    private JTextField textField1;
+    private JTextField clientNameTextField;
     private JButton clientsByNameButton;
     private JButton allClientsButton;
-    private JTable tableSaleHistory;
     private JButton saleBySalesmanButton;
     private JTable table1;
     private JTextField textField3;
@@ -44,13 +48,10 @@ public class SalesmanScreen extends Thread{
     private JTextField textField13;
     private JTextField textField14;
     private JButton saleByDateButton;
+    private JTable tableSaleHistory;
+    private JScrollPane JScrollPaneClients;
+    private JPanel saleHistoryPanel;
 
-
-    public SalesmanScreen(int id, String username, String email) {
-        this.id = id;
-        this.username = username;
-        this.email = email;
-    }
 
     /**
      * Sets up the login page and keeps it active
@@ -64,7 +65,29 @@ public class SalesmanScreen extends Thread{
         salesmanScreen.setVisible(true);
 
         salesmanScreen.setLocationRelativeTo(null);
+        createUIComponents();
 
+
+    }
+
+    public SalesmanScreen(int id, String username, String email) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        clientsByNameButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                tableClients.setModel(new TableClientsModel(clientNameTextField.getText()));
+                TableClientsModel.setHeaders(tableClients); //this is the only way I found to update headers... sorry
+            }
+        });
+        allClientsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                tableClients.setModel(new TableClientsModel());
+                TableClientsModel.setHeaders(tableClients);
+            }
+        });
     }
 
     private WindowAdapter exitAppWindowAdapter() {
@@ -88,6 +111,7 @@ public class SalesmanScreen extends Thread{
     }
 
     public void createUIComponents(){
-
+        tableClients.setModel(new TableClientsModel());
+        TableClientsModel.setHeaders(tableClients);
     }
 }

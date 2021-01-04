@@ -46,6 +46,8 @@ public class TableClients {
     public static final String UPDATE_CLIENT_NUM_PURCHASES_PREP = "UPDATE " + TABLE_CLIENTS + " SET " + COLUMN_CLIENTS_NUMBER_OF_PURCHASES +
             " = " + COLUMN_CLIENTS_NUMBER_OF_PURCHASES + " + 1 WHERE " + COLUMN_CLIENTS_ID + " = ?";
 
+    public static final String COUNT_NUM_RECORDS_PREP = "SELECT COUNT(*) FROM " + TABLE_CLIENTS;
+
     public static final String QUERY_ALL_CLIENTS_PREP = "SELECT * FROM " + TABLE_CLIENTS + " ORDER BY " +
             TABLE_CLIENTS + "." + COLUMN_CLIENTS_NAME + ", " + TABLE_CLIENTS + "." + COLUMN_CLIENTS_SURNAME;
 
@@ -160,6 +162,15 @@ public class TableClients {
             //Add client purchase is a method, only accessible from TableSales
             //It's not possible to have invalid client number, as it's being verified in TableSales
             //Therefore, SQL error means something is wrong on a technical level
+        }
+    }
+
+    public static int countRowClients() throws WrapperException{
+        try {
+            ResultSet results = Datasource.getInstance().getCountNumClients().executeQuery();
+            return results.getInt(1);
+        } catch (SQLException e) {
+            throw new WrapperException(e, "counlnt get count of records in Clients table");
         }
     }
 

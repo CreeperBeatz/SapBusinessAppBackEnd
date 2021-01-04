@@ -13,6 +13,8 @@ public class LoginScreen extends Thread {
     private JTextField textField1;
     private JPasswordField passwordField1;
     private JPanel panelLogin;
+    private JButton logAsAdminButton;
+    private JButton logInAsSalesmanButton;
 
     public LoginScreen() {
         loginButton.addActionListener(new ActionListener() {
@@ -53,6 +55,20 @@ public class LoginScreen extends Thread {
         });
 
 
+        logAsAdminButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AdminScreen adminScreen = new AdminScreen(0,"Default", "Default@bg.com");
+                adminScreen.run();
+            }
+        });
+        logInAsSalesmanButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SalesmanScreen salesmanScreen = new SalesmanScreen(0, "Default", "Default@bg.com");
+                salesmanScreen.run();
+            }
+        });
     }
 
     /**

@@ -13,7 +13,6 @@ public class MD5Hash {
      */
     public static String getHash(String password) {
         try {
-            //TODO change to sha3
             MessageDigest md = MessageDigest.getInstance("MD5");
             md.update(password.getBytes());
 

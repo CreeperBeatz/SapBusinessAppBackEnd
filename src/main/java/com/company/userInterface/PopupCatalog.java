@@ -17,4 +17,11 @@ public class PopupCatalog {
                 "Invalid user",
                 JOptionPane.ERROR_MESSAGE);
     }
+
+    public static void customError(String message) {
+        JOptionPane.showMessageDialog(null,
+                message,
+                "Invalid user",
+                JOptionPane.ERROR_MESSAGE);
+    }
 }

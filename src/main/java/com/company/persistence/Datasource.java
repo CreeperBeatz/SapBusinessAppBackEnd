@@ -44,6 +44,7 @@ public class Datasource {
     private PreparedStatement deleteClient;
     private PreparedStatement changeClient;
     private PreparedStatement updateClientPurchases;
+    private PreparedStatement countNumClients;
 
     //Singleton design pattern, Thread safe
     private static Datasource instance = new Datasource();
@@ -96,6 +97,7 @@ public class Datasource {
            deleteClient = conn.prepareStatement(TableClients.DELETE_CLIENT_PREP);
            changeClient = conn.prepareStatement(TableClients.CHANGE_CLIENT_PREP);
            updateClientPurchases = conn.prepareStatement(TableClients.UPDATE_CLIENT_NUM_PURCHASES_PREP);
+           countNumClients = conn.prepareStatement(TableClients.COUNT_NUM_RECORDS_PREP);
 
            return true;
         } catch(SQLException e) {
@@ -141,6 +143,7 @@ public class Datasource {
                 if (deleteClient != null) deleteClient.close();
                 if (changeClient != null) changeClient.close();
                 if (updateClientPurchases != null) updateClientPurchases.close();
+                if (countNumClients != null) countNumClients.close();
 
                 conn.close();
             }
@@ -227,6 +230,9 @@ public class Datasource {
     }
     public PreparedStatement getUpdateClientPurchases() {
         return updateClientPurchases;
+    }
+    public PreparedStatement getCountNumClients() {
+        return countNumClients;
     }
 
     public Connection getConn() {
