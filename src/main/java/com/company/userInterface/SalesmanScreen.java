@@ -5,6 +5,7 @@ import com.company.persistence.TableClients;
 import com.toedter.calendar.JDateChooser;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -77,6 +78,7 @@ public class SalesmanScreen extends Thread{
         clientsByNameButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                //DefaultTableModel model = (DefaultTableModel) tableClients.getModel();
                 tableClients.setModel(new TableClientsModel(clientNameTextField.getText()));
                 TableClientsModel.setHeaders(tableClients); //this is the only way I found to update headers... sorry
             }

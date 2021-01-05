@@ -6,6 +6,7 @@ import com.company.shared.Client;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.sql.SQLException;
 import java.util.List;
@@ -16,7 +17,7 @@ public class TableClientsModel extends AbstractTableModel {
             TableClients.COLUMN_CLIENTS_ADDRESS, TableClients.COLUMN_CLIENTS_COUNTRY, TableClients.COLUMN_CLIENTS_CITY,
             TableClients.COLUMN_CLIENTS_POSTAL_CODE, TableClients.COLUMN_CLIENTS_NUMBER_OF_PURCHASES};
 
-    private Object [][] data;
+    private Object [][] data = {{"", "", "", "", "", 0, 0}};
 
     public TableClientsModel(String name) {
         data = getClientsByName(name);
@@ -39,6 +40,14 @@ public class TableClientsModel extends AbstractTableModel {
     @Override
     public Object getValueAt(int rowIndex , int columnIndex) {
         return data[rowIndex][columnIndex];
+    }
+
+    public void updateDataAllClients(){
+        this.data = getAllClients();
+    }
+
+    public void updateDateNameClient(String name) {
+        this.data = getClientsByName(name);
     }
 
     public Class getColumnClass(int c) {
@@ -71,7 +80,23 @@ public class TableClientsModel extends AbstractTableModel {
     }
 
     private Object[][] getClientObjectsFromClientList(List<Client> queryData, int ySize, int xSize) {
-        Object[][] clients = new Object[ySize][xSize];
+        Object[][] clients;
+
+        //Bandage fix, I dont have the time to see the origin of the issue
+        //Prevents bricking the jTable if rowCount == 0
+        if (ySize == 0) {
+            clients = new Object[1][xSize];
+            clients[0][0] = "";
+            clients[0][1] = "";
+            clients[0][2] = "";
+            clients[0][3] = "";
+            clients[0][4] = "";
+            clients[0][5] = "";
+            clients[0][6] = "";
+            return clients;
+        }
+
+        clients = new Object[ySize][xSize];
 
         int j = 0; //very bandage, please dont kill me
         for(Client current:queryData) {
