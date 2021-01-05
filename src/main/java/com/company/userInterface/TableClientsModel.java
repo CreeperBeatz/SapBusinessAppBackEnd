@@ -42,14 +42,6 @@ public class TableClientsModel extends AbstractTableModel {
         return data[rowIndex][columnIndex];
     }
 
-    public void updateDataAllClients(){
-        this.data = getAllClients();
-    }
-
-    public void updateDateNameClient(String name) {
-        this.data = getClientsByName(name);
-    }
-
     public Class getColumnClass(int c) {
         return getValueAt(0, c).getClass();
     }
@@ -86,13 +78,9 @@ public class TableClientsModel extends AbstractTableModel {
         //Prevents bricking the jTable if rowCount == 0
         if (ySize == 0) {
             clients = new Object[1][xSize];
-            clients[0][0] = "";
-            clients[0][1] = "";
-            clients[0][2] = "";
-            clients[0][3] = "";
-            clients[0][4] = "";
-            clients[0][5] = "";
-            clients[0][6] = "";
+            for(int i = 0; i < columnNames.length; i++) {
+                clients[0][i] = "";
+            }
             return clients;
         }
 

@@ -64,6 +64,9 @@ public class TableProducts {
     public static final String QUERY_PRODUCT_BY_ID_PREP = "SELECT * FROM " + TABLE_PRODUCTS + " WHERE " +
             TABLE_PRODUCTS + "." + COLUMN_PRODUCTS_ID + " = ?";
 
+    //query all products
+    public static final String QUERY_ALL_PRODUCTS = "SELECT * FROM " + TABLE_PRODUCTS;
+
     public static void insertProduct(String name, double price, int stock, double discount, String description, String imgUrl){
         try {
             PreparedStatement statement = Datasource.getInstance().getInsertProduct();
@@ -189,37 +192,30 @@ public class TableProducts {
         }
     }
 
+    public static List<Product> queryAllProducts() throws WrapperException{
+        try {
+            PreparedStatement statement = Datasource.getInstance().getQueryAllProducts();
+            ResultSet results = statement.executeQuery();
 
-    public static List<Product> queryProductByName(String name) {
+            return getProductsFromResultSet(results);
+        } catch (SQLException e) {
+            throw new WrapperException(e, "Couldn't execute all products query!");
+        }
+    }
+
+    public static List<Product> queryProductByName(String name) throws WrapperException{
         try {
             PreparedStatement statement = Datasource.getInstance().getQueryProductByName();
             statement.setString(1,'%' + name + '%');
             ResultSet results = statement.executeQuery();
-            List<Product> query = new ArrayList<>();
 
-            while(results.next()) {
-                Product product = new Product();
-
-                product.setId(results.getInt(INDEX_PRODUCTS_ID));
-                product.setName(results.getString(INDEX_PRODUCTS_NAME));
-                product.setDescription(results.getString(INDEX_PRODUCTS_DESCRIPTION));
-                product.setStock(results.getInt(INDEX_PRODUCTS_STOCK));
-                product.setDiscount(results.getDouble(INDEX_PRODUCTS_DISCOUNT));
-                product.setImageUrl(results.getString(INDEX_PRODUCTS_IMAGE_URL));
-
-                query.add(product);
-            }
-
-            return query;
-
+            return getProductsFromResultSet(results);
         } catch (SQLException e) {
-            //TODO change with logging
-            e.printStackTrace();
-            return null;
+            throw new WrapperException(e, "Couldn't execute query in Products!");
         }
     }
 
-    public static List<Product> queryProductByPrice(double lowPrice, double highPrice) {
+    public static List<Product> queryProductByPrice(double lowPrice, double highPrice) throws WrapperException{
         try {
             if(lowPrice > highPrice) {
                 highPrice += lowPrice;
@@ -231,28 +227,10 @@ public class TableProducts {
             statement.setDouble(2, highPrice);
             ResultSet result = statement.executeQuery();
 
-            List<Product> query = new ArrayList<>();
-
-            while(result.next()){
-                Product product = new Product();
-
-                product.setId(result.getInt(INDEX_PRODUCTS_ID));
-                product.setDescription(result.getString(INDEX_PRODUCTS_DESCRIPTION));
-                product.setDiscount(result.getDouble(INDEX_PRODUCTS_DISCOUNT));
-                product.setImageUrl(result.getString(INDEX_PRODUCTS_IMAGE_URL));
-                product.setName(result.getString(INDEX_PRODUCTS_NAME));
-                product.setPrice(result.getDouble(INDEX_PRODUCTS_PRICE));
-                product.setStock(result.getInt(INDEX_PRODUCTS_STOCK));
-
-                query.add(product);
-            }
-
-            return query;
+            return getProductsFromResultSet(result);
 
         } catch (SQLException e) {
-            //TODO logging
-            e.printStackTrace();
-            return null;
+            throw new WrapperException(e, "Couldn't execute All Products query!");
         }
     }
 
@@ -297,6 +275,31 @@ public class TableProducts {
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    private static List<Product> getProductsFromResultSet(ResultSet results) throws WrapperException{
+
+        try {
+            List<Product> query = new ArrayList<>();
+
+            while (results.next()) {
+                Product product = new Product();
+
+                product.setId(results.getInt(INDEX_PRODUCTS_ID));
+                product.setDescription(results.getString(INDEX_PRODUCTS_DESCRIPTION));
+                product.setDiscount(results.getDouble(INDEX_PRODUCTS_DISCOUNT));
+                product.setImageUrl(results.getString(INDEX_PRODUCTS_IMAGE_URL));
+                product.setName(results.getString(INDEX_PRODUCTS_NAME));
+                product.setPrice(results.getDouble(INDEX_PRODUCTS_PRICE));
+                product.setStock(results.getInt(INDEX_PRODUCTS_STOCK));
+
+                query.add(product);
+            }
+
+            return query;
+        } catch (SQLException e) {
+            throw new WrapperException(e, "Couldn't extract results from ResultSet in Products!");
         }
     }
 }

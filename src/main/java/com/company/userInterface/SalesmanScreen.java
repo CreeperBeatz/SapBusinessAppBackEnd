@@ -1,18 +1,12 @@
 package com.company.userInterface;
 
 import com.company.persistence.Datasource;
-import com.company.persistence.TableClients;
-import com.toedter.calendar.JDateChooser;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Properties;
 
 public class SalesmanScreen extends Thread{
     private int id;
@@ -23,16 +17,16 @@ public class SalesmanScreen extends Thread{
     private JPanel panel1;
     private JTabbedPane tabbedPane1;
     private JPanel clientsPanel;
-    private JTable tableClients;
+    private JTable jTableClients;
     private JTextField clientNameTextField;
     private JButton clientsByNameButton;
     private JButton allClientsButton;
-    private JButton saleBySalesmanButton;
-    private JTable table1;
-    private JTextField textField3;
-    private JTextField textField5;
+    private JButton allSalesButton;
+    private JTable jTableProducts;
+    private JTextField fromProductTextField;
+    private JTextField toProductTextField;
     private JButton queryByPriceButton;
-    private JTextField textField6;
+    private JTextField productByNameTextField;
     private JButton queryByNameButton;
     private JTextField textField4;
     private JTextField textField7;
@@ -52,6 +46,7 @@ public class SalesmanScreen extends Thread{
     private JTable tableSaleHistory;
     private JScrollPane JScrollPaneClients;
     private JPanel saleHistoryPanel;
+    private JButton queryAllProductsButton;
 
 
     /**
@@ -79,15 +74,29 @@ public class SalesmanScreen extends Thread{
             @Override
             public void actionPerformed(ActionEvent e) {
                 //DefaultTableModel model = (DefaultTableModel) tableClients.getModel();
-                tableClients.setModel(new TableClientsModel(clientNameTextField.getText()));
-                TableClientsModel.setHeaders(tableClients); //this is the only way I found to update headers... sorry
+                jTableClients.setModel(new TableClientsModel(clientNameTextField.getText()));
+                TableClientsModel.setHeaders(jTableClients); //this is the only way I found to update headers... sorry
             }
         });
         allClientsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                tableClients.setModel(new TableClientsModel());
-                TableClientsModel.setHeaders(tableClients);
+                jTableClients.setModel(new TableClientsModel());
+                TableClientsModel.setHeaders(jTableClients);
+            }
+        });
+        queryAllProductsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                jTableProducts.setModel(new TableProductsModel());
+                TableProductsModel.setHeaders(jTableProducts);
+            }
+        });
+        queryByNameButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                jTableProducts.setModel(new TableProductsModel(productByNameTextField.getText()));
+                TableProductsModel.setHeaders(jTableProducts);
             }
         });
     }
@@ -113,7 +122,10 @@ public class SalesmanScreen extends Thread{
     }
 
     public void createUIComponents(){
-        tableClients.setModel(new TableClientsModel());
-        TableClientsModel.setHeaders(tableClients);
+        jTableClients.setModel(new TableClientsModel());
+        TableClientsModel.setHeaders(jTableClients);
+
+        jTableProducts.setModel(new TableProductsModel());
+        TableProductsModel.setHeaders(jTableProducts);
     }
 }
