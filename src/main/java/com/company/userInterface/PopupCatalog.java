@@ -24,4 +24,12 @@ public class PopupCatalog {
                 "Invalid user",
                 JOptionPane.ERROR_MESSAGE);
     }
+
+    public static void invalidNumber() {
+        JOptionPane.showMessageDialog(null,
+                "Number not valid!\n Please enter a double with . separator",
+                "Invalid number",
+                JOptionPane.ERROR_MESSAGE);
+    }
+
 }

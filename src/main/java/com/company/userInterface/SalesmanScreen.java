@@ -99,6 +99,19 @@ public class SalesmanScreen extends Thread{
                 TableProductsModel.setHeaders(jTableProducts);
             }
         });
+        queryByPriceButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try{
+                    double from = Double.parseDouble(fromProductTextField.getText());
+                    double to = Double.parseDouble(toProductTextField.getText());
+
+                    jTableProducts.setModel(new TableProductsModel(from, to));
+                } catch (NumberFormatException e1) {
+                    PopupCatalog.invalidNumber();
+                }
+            }
+        });
     }
 
     private WindowAdapter exitAppWindowAdapter() {

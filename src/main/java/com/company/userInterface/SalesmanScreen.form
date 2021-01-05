@@ -152,19 +152,10 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="cab22" class="javax.swing.JTable" binding="jTableProducts">
-                <constraints>
-                  <grid row="0" column="0" row-span="6" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                    <minimum-size width="200" height="-1"/>
-                    <preferred-size width="500" height="50"/>
-                  </grid>
-                </constraints>
-                <properties/>
-              </component>
               <component id="78f2b" class="javax.swing.JTextField" binding="fromProductTextField">
                 <constraints>
                   <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="9" fill="1" indent="0" use-parent-layout="false">
-                    <preferred-size width="150" height="-1"/>
+                    <preferred-size width="75" height="-1"/>
                   </grid>
                 </constraints>
                 <properties/>
@@ -172,7 +163,7 @@
               <component id="5c475" class="javax.swing.JTextField" binding="toProductTextField">
                 <constraints>
                   <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="9" fill="1" indent="0" use-parent-layout="false">
-                    <preferred-size width="150" height="-1"/>
+                    <preferred-size width="75" height="-1"/>
                   </grid>
                 </constraints>
                 <properties>
@@ -181,7 +172,9 @@
               </component>
               <component id="bd851" class="javax.swing.JButton" binding="queryByPriceButton" default-binding="true">
                 <constraints>
-                  <grid row="2" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <grid row="2" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                    <preferred-size width="150" height="-1"/>
+                  </grid>
                 </constraints>
                 <properties>
                   <text value="Query by price"/>
@@ -189,7 +182,9 @@
               </component>
               <component id="3e421" class="javax.swing.JLabel">
                 <constraints>
-                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false">
+                    <preferred-size width="75" height="-1"/>
+                  </grid>
                 </constraints>
                 <properties>
                   <text value="from"/>
@@ -197,7 +192,9 @@
               </component>
               <component id="612f2" class="javax.swing.JLabel">
                 <constraints>
-                  <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                  <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false">
+                    <preferred-size width="75" height="-1"/>
+                  </grid>
                 </constraints>
                 <properties>
                   <text value="to"/>
@@ -215,7 +212,9 @@
               </component>
               <component id="bff06" class="javax.swing.JButton" binding="queryByNameButton" default-binding="true">
                 <constraints>
-                  <grid row="4" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <grid row="4" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                    <preferred-size width="150" height="-1"/>
+                  </grid>
                 </constraints>
                 <properties>
                   <text value="Query by name"/>
@@ -223,12 +222,27 @@
               </component>
               <component id="2410f" class="javax.swing.JButton" binding="queryAllProductsButton" default-binding="true">
                 <constraints>
-                  <grid row="5" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <grid row="5" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                    <preferred-size width="150" height="-1"/>
+                  </grid>
                 </constraints>
                 <properties>
                   <text value="Query all products"/>
                 </properties>
               </component>
+              <scrollpane id="8579a">
+                <constraints>
+                  <grid row="0" column="0" row-span="6" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="e709a" class="javax.swing.JTable" binding="jTableProducts">
+                    <constraints/>
+                    <properties/>
+                  </component>
+                </children>
+              </scrollpane>
             </children>
           </grid>
           <grid id="52377" layout-manager="GridLayoutManager" row-count="5" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">

@@ -11,7 +11,7 @@ import java.util.List;
 public class TableProductsModel extends AbstractTableModel {
 
     private static String[] columnNames = {TableProducts.COLUMN_PRODUCTS_NAME, TableProducts.COLUMN_PRODUCTS_PRICE,
-            TableProducts.COLUMN_PRODUCTS_STOCK, TableProducts.COLUMN_PRODUCTS_DISCOUNT,
+            TableProducts.COLUMN_PRODUCTS_STOCK,
             TableProducts.COLUMN_PRODUCTS_DESCRIPTION};
 
     private Object[][] data;
@@ -23,12 +23,12 @@ public class TableProductsModel extends AbstractTableModel {
 
     //products by name
     public TableProductsModel(String name){
-
+        data = getProductByName(name);
     }
 
     //products by price
     public TableProductsModel(double from, double to){
-
+        data = getProductsByPrice(from, to);
     }
 
     @Override
@@ -51,12 +51,32 @@ public class TableProductsModel extends AbstractTableModel {
         return getValueAt(0, c).getClass();
     }
 
-    public Object[][] getAllProducts(){
+    private Object[][] getAllProducts(){
         try {
             List<Product> products = TableProducts.queryAllProducts();
             return getObjectsFromProductList(products);
         } catch (WrapperException e) {
             PopupCatalog.customError(e.getWrapperMessage() + "\n" + e.getMessage());
+            return null;
+        }
+    }
+
+    private Object[][] getProductsByPrice(double from, double to) {
+        try {
+            List<Product> products = TableProducts.queryProductByPrice(from, to);
+            return getObjectsFromProductList(products);
+        } catch (WrapperException e) {
+            PopupCatalog.customError(e.getWrapperMessage());
+            return null;
+        }
+    }
+
+    private Object[][] getProductByName(String name) {
+        try {
+            List<Product> products = TableProducts.queryProductByName(name);
+            return getObjectsFromProductList(products);
+        } catch (WrapperException e) {
+            PopupCatalog.customError(e.getWrapperMessage());
             return null;
         }
     }
@@ -80,8 +100,8 @@ public class TableProductsModel extends AbstractTableModel {
             products[j][0] = current.getName();
             products[j][1] = current.getPrice();
             products[j][2] = current.getStock();
-            products[j][3] = current.getDiscount(); //TODO extend functionality
-            products[j][4] = current.getDescription();
+            //products[j][3] = current.getDiscount(); //TODO extend functionality
+            products[j][3] = current.getDescription();
             j++;
         }
 
@@ -91,7 +111,10 @@ public class TableProductsModel extends AbstractTableModel {
     public static void setHeaders(JTable table) {
         for(int i = 0; i< columnNames.length; i++) {
             table.getColumnModel().getColumn(i).setHeaderValue(columnNames[i]);
+
         }
+        table.getColumnModel().getColumn(1).setMaxWidth(55);
+        table.getColumnModel().getColumn(2).setMaxWidth(55);
     }
 
 }
