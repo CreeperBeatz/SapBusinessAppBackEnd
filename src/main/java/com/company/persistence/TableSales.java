@@ -2,7 +2,7 @@ package com.company.persistence;
 
 import com.company.exceptions.*;
 import com.company.shared.Product;
-import com.company.shared.SaleUserProduct;
+import com.company.shared.SaleClientProduct;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -70,6 +70,20 @@ public class TableSales {
             TableClients.TABLE_CLIENTS + " ON " + TableClients.TABLE_CLIENTS + "." + TableClients.COLUMN_CLIENTS_ID +
             " = " + TABLE_SALES + "." + COLUMN_SALES_CLIENT +
             " WHERE " + TABLE_SALES + "." + COLUMN_SALES_DATE + " > ? AND " + TABLE_SALES + "." + COLUMN_SALES_DATE + " < ?";
+
+    public static final String QUERY_ALL_SALES = "SELECT " + TABLE_SALES + "." + COLUMN_SALES_ID + ", " +
+            TABLE_SALES + "." + COLUMN_SALES_SALESMAN + ", " +
+            TableClients.TABLE_CLIENTS + "." + TableClients.COLUMN_CLIENTS_NAME + ", " +
+            TableProducts.TABLE_PRODUCTS + "." + TableProducts.COLUMN_PRODUCTS_NAME + ", " +
+            TABLE_SALES + "." + COLUMN_SALES_QUANTITY + ", " +
+            TABLE_SALES + "." + COLUMN_SALES_DISCOUNT + ", " +
+            TABLE_SALES + "." + COLUMN_SALES_PRICE + ", " +
+            TABLE_SALES + "." + COLUMN_SALES_DATE +
+            " FROM " + TABLE_SALES + " INNER JOIN " + TableProducts.TABLE_PRODUCTS +
+            " ON " + TableProducts.TABLE_PRODUCTS + "." + TableProducts.COLUMN_PRODUCTS_ID + " = " +
+            TABLE_SALES + "." + COLUMN_SALES_PRODUCT + ", " +
+            TableClients.TABLE_CLIENTS + " ON " + TableClients.TABLE_CLIENTS + "." + TableClients.COLUMN_CLIENTS_ID +
+            " = " + TABLE_SALES + "." + COLUMN_SALES_CLIENT;
 
 
     public static void insertSale(String salesman, int client, int productID, int quantity, double discount)
@@ -162,18 +176,15 @@ public class TableSales {
      * @param username String of the Trader whose sales you want to check
      * @return
      */
-    public static List<SaleUserProduct> querySalesBySalesman(String username){
+    public static List<SaleClientProduct> querySalesBySalesman(String username) throws WrapperException{
         try {
             PreparedStatement statement = Datasource.getInstance().getQuerySaleBySalesman();
-            List<SaleUserProduct> query = new ArrayList<>();
             statement.setString(1, username);
             ResultSet results = statement.executeQuery();
 
-            return writeSaleUserProductsArray(results , query);
+            return getListFromResultSet(results);
         } catch (SQLException e) {
-            //TODO log
-            System.out.println(e.getMessage());
-            return null;
+            throw new WrapperException(e, "Couldnt execute sale by salesman query");
         }
     }
 
@@ -184,27 +195,36 @@ public class TableSales {
      * @param toDate end date of the sale query in millis
      * @return
      */
-    public static List<SaleUserProduct> querySalesByDate(long fromDate, long toDate){
+    public static List<SaleClientProduct> querySalesByDate(long fromDate, long toDate) throws WrapperException{
         try {
-            PreparedStatement statement = Datasource.getInstance().getQuerySaleBySalesman();
-            List<SaleUserProduct> query = new ArrayList<>();
-
+            PreparedStatement statement = Datasource.getInstance().getQuerySaleByDate();
             statement.setLong(1, fromDate);
             statement.setLong(2, toDate);
 
             ResultSet results = statement.executeQuery();
-            return writeSaleUserProductsArray(results , query);
+            return getListFromResultSet(results);
         } catch (SQLException e) {
-            //TODO log
-            System.out.println(e.getMessage());
-            return null;
+            throw new WrapperException(e, "Couldnt execute sale by date query");
         }
     }
 
-    private static List<SaleUserProduct> writeSaleUserProductsArray(ResultSet results , List<SaleUserProduct> query) throws SQLException {
+    public static List<SaleClientProduct> queryAllSales() throws WrapperException{
+        try {
+            PreparedStatement statement = Datasource.getInstance().getQueryAllSales();
+            ResultSet results = statement.executeQuery();
+
+            return getListFromResultSet(results);
+
+        } catch (SQLException e) {
+            throw new WrapperException(e, "Couldnt execute all sales query");
+        }
+    }
+
+    private static List<SaleClientProduct> getListFromResultSet(ResultSet results) throws SQLException {
+        List<SaleClientProduct> query = new ArrayList<>();
 
         while(results.next()){
-            SaleUserProduct currResult = new SaleUserProduct();
+            SaleClientProduct currResult = new SaleClientProduct();
             currResult.setId(results.getInt(INDEX_SALES_ID));
             currResult.setDate(results.getInt(INDEX_SALES_DATE));
             currResult.setDiscount(results.getDouble(INDEX_SALES_DISCOUNT));

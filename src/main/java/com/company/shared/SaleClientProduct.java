@@ -1,6 +1,6 @@
 package com.company.shared;
 
-public class SaleUserProduct {
+public class SaleClientProduct {
     int id;
     String salesmanUsername;
     String productName;

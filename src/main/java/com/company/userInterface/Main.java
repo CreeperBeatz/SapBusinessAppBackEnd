@@ -17,6 +17,7 @@ public class Main {
         LoginScreen login = new LoginScreen();
         login.start();
 
+        System.out.println(TableSales.QUERY_ALL_SALES);
         //TableUsers.insertUser("testTrader", "testTrader1", "test@bg.com", 2);
     }
 }

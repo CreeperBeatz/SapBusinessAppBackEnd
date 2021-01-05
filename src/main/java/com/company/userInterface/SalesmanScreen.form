@@ -136,7 +136,7 @@
                 <properties/>
                 <border type="none"/>
                 <children>
-                  <component id="6af8d" class="javax.swing.JTable" binding="tableSaleHistory">
+                  <component id="6af8d" class="javax.swing.JTable" binding="jTableSaleHistory">
                     <constraints/>
                     <properties/>
                   </component>

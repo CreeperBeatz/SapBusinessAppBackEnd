@@ -43,7 +43,7 @@ public class SalesmanScreen extends Thread{
     private JTextField textField13;
     private JTextField textField14;
     private JButton saleByDateButton;
-    private JTable tableSaleHistory;
+    private JTable jTableSaleHistory;
     private JScrollPane JScrollPaneClients;
     private JPanel saleHistoryPanel;
     private JButton queryAllProductsButton;
@@ -140,5 +140,8 @@ public class SalesmanScreen extends Thread{
 
         jTableProducts.setModel(new TableProductsModel());
         TableProductsModel.setHeaders(jTableProducts);
+
+        jTableSaleHistory.setModel(new TableSalesModel());
+        TableSalesModel.setHeaders(jTableSaleHistory);
     }
 }
