@@ -46,7 +46,6 @@ public class LoginScreen extends Thread {
                                 PopupCatalog.unrecognisedUserType();
                                 break;
                         }
-
                     }
                 } catch (WrapperException e1) {
                     System.out.println(e1.getWrapperMessage()); //change to debugger?
@@ -54,18 +53,17 @@ public class LoginScreen extends Thread {
             }
         });
 
-
         logAsAdminButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                AdminScreen adminScreen = new AdminScreen(0,"Default", "Default@bg.com");
+                AdminScreen adminScreen = new AdminScreen(1,"administrator", "random@mail.com");
                 adminScreen.run();
             }
         });
         logInAsSalesmanButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                SalesmanScreen salesmanScreen = new SalesmanScreen(0, "Default", "Default@bg.com");
+                SalesmanScreen salesmanScreen = new SalesmanScreen(2, "default", "random@mail.com");
                 salesmanScreen.run();
             }
         });

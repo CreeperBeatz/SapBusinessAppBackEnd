@@ -168,7 +168,6 @@ public class TableSales {
             return -1;
         }
     }
-    //TODO change sale?
 
     /**
      *
@@ -226,7 +225,7 @@ public class TableSales {
         while(results.next()){
             SaleClientProduct currResult = new SaleClientProduct();
             currResult.setId(results.getInt(INDEX_SALES_ID));
-            currResult.setDate(results.getInt(INDEX_SALES_DATE));
+            currResult.setDate(results.getLong(INDEX_SALES_DATE));
             currResult.setDiscount(results.getDouble(INDEX_SALES_DISCOUNT));
             currResult.setPrice(results.getDouble(INDEX_SALES_PRICE));
             currResult.setProductName(results.getString(INDEX_SALES_PRODUCT));

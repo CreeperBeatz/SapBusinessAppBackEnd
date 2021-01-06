@@ -4,6 +4,8 @@ import com.company.persistence.*;
 
 
 import javax.swing.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Main {
 
@@ -17,7 +19,8 @@ public class Main {
         LoginScreen login = new LoginScreen();
         login.start();
 
-        System.out.println(TableSales.QUERY_ALL_SALES);
+        System.out.println(System.currentTimeMillis());
+
         //TableUsers.insertUser("testTrader", "testTrader1", "test@bg.com", 2);
     }
 }

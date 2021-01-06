@@ -1,12 +1,16 @@
 package com.company.userInterface;
 
+import com.company.exceptions.WrapperException;
 import com.company.persistence.Datasource;
+import com.company.utilities.TimeConverter;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SalesmanScreen extends Thread{
     private int id;
@@ -40,8 +44,8 @@ public class SalesmanScreen extends Thread{
     private JTextField textField12;
     private JButton addSaleButton;
     private JTextField a0TextField;
-    private JTextField textField13;
-    private JTextField textField14;
+    private JTextField fromSalesTextField;
+    private JTextField toSalesTextField;
     private JButton saleByDateButton;
     private JTable jTableSaleHistory;
     private JScrollPane JScrollPaneClients;
@@ -110,6 +114,39 @@ public class SalesmanScreen extends Thread{
                 } catch (NumberFormatException e1) {
                     PopupCatalog.invalidNumber();
                 }
+            }
+        });
+        allSalesButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                jTableSaleHistory.setModel(new TableSalesModel());
+                TableSalesModel.setHeaders(jTableSaleHistory);
+            }
+        });
+        saleByDateButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Pattern pattern = Pattern.compile("^\\d{2}\\.\\d{2}\\.\\d{4}$");
+                Matcher matcherFrom = pattern.matcher(fromSalesTextField.getText());
+                Matcher matcherTo = pattern.matcher(toSalesTextField.getText());
+
+                if(!matcherFrom.matches() || !matcherTo.matches()){
+                    PopupCatalog.invalidDate();
+                    fromSalesTextField.setText("");
+                    toSalesTextField.setText("");
+                    return;
+                }
+
+                try {
+                    long from = TimeConverter.StringToMillis(fromSalesTextField.getText());
+                    long to = TimeConverter.StringToMillis(toSalesTextField.getText());
+                    jTableSaleHistory.setModel(new TableSalesModel(from, to));
+                    TableSalesModel.setHeaders(jTableSaleHistory);
+                } catch (WrapperException e1) {
+                    PopupCatalog.customError(e1.getWrapperMessage());
+                }
+
+
             }
         });
     }

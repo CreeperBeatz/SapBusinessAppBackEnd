@@ -4,6 +4,7 @@ import com.company.exceptions.WrapperException;
 import com.company.persistence.TableSales;
 import com.company.shared.Sale;
 import com.company.shared.SaleClientProduct;
+import com.company.utilities.TimeConverter;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -27,7 +28,7 @@ public class TableSalesModel extends AbstractTableModel {
 
     //Sale by date
     public TableSalesModel(long from, long to) {
-
+        data = getSaleByDate(from, to);
     }
 
     //TODO Sale by trader, if needed
@@ -62,6 +63,16 @@ public class TableSalesModel extends AbstractTableModel {
         }
     }
 
+    private Object[][] getSaleByDate(long from, long to) {
+        try {
+            List<SaleClientProduct> sales = TableSales.querySalesByDate(from, to);
+            return getObjectFromListSales(sales);
+        } catch (WrapperException e) {
+            PopupCatalog.customError(e.getWrapperMessage());
+            return null;
+        }
+    }
+
     private Object[][] getObjectFromListSales(List<SaleClientProduct> queryData){
         Object[][] sales;
 
@@ -74,11 +85,6 @@ public class TableSalesModel extends AbstractTableModel {
             return sales;
         }
 
-        //spaggheti pls fix
-        Date date = new Date();
-        DateFormat formatter = new SimpleDateFormat("yyyy:")
-        //TODO remove
-
         sales = new Object[queryData.size()][columnNames.length];
         int j = 0;
         for(SaleClientProduct current : queryData) {
@@ -89,7 +95,8 @@ public class TableSalesModel extends AbstractTableModel {
             sales[j][4] = current.getQuantity();
             sales[j][5] = Double.toString(current.getDiscount()) + '%';
             sales[j][6] = current.getPrice();
-            sales[j][7] =
+            sales[j][7] = TimeConverter.MillisToString(current.getDate());
+            System.out.println(current.getDate());
             j++;
         }
         return sales;
@@ -100,8 +107,12 @@ public class TableSalesModel extends AbstractTableModel {
             table.getColumnModel().getColumn(i).setHeaderValue(columnNames[i]);
 
         }
+        table.getColumnModel().getColumn(0).setMaxWidth(30);
         table.getColumnModel().getColumn(4).setMaxWidth(55);
         table.getColumnModel().getColumn(5).setMaxWidth(55);
         table.getColumnModel().getColumn(6).setMaxWidth(55);
+        table.getColumnModel().getColumn(7).setPreferredWidth(130);
+        table.getColumnModel().getColumn(3).setPreferredWidth(130);
+        table.getColumnModel().getColumn(2).setPreferredWidth(100);
     }
 }

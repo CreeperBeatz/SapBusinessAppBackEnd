@@ -32,4 +32,11 @@ public class PopupCatalog {
                 JOptionPane.ERROR_MESSAGE);
     }
 
+    public static void invalidDate() {
+        JOptionPane.showMessageDialog(null,
+                "Date not recognised!\nPlease follow the pattern!\n'dd.mm.yyyy'",
+                "Invalid date",
+                JOptionPane.ERROR_MESSAGE);
+    }
+
 }
