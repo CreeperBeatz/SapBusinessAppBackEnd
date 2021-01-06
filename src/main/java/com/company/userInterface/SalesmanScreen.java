@@ -80,6 +80,14 @@ public class SalesmanScreen extends Thread {
     private JLabel labelAddStock;
     private JLabel labelTotalPurchases;
     private JLabel labelAddSaleCurrentStock;
+    private JComboBox comboBoxChangeClient;
+    private JTextField textFieldChangeClientName;
+    private JTextField textFieldChangeClientSurname;
+    private JTextField textFieldChangeClientAddress;
+    private JTextField textFieldChangeClientCountry;
+    private JTextField textFieldChangeClientCity;
+    private JTextField textFieldChangeClientPostalCode;
+    private JButton changeClientButton;
 
 
     /**
@@ -207,6 +215,7 @@ public class SalesmanScreen extends Thread {
                     ComboBoxProductLogic.setElements(comboBoxProduct);
                     ComboBoxProductLogic.setElements(comboBoxModifyProduct);
                     ComboBoxClientLogic.updateComboBox(comboBoxClient);
+                    ComboBoxClientLogic.updateComboBox(comboBoxChangeClient);
                 } catch (WrapperException e1) {
                     PopupCatalog.customError(e1.getWrapperMessage());
                 } catch (NullPointerException e2) {
@@ -232,6 +241,7 @@ public class SalesmanScreen extends Thread {
                     } else {
                         TableClients.insertClient(name , surname , address , country , city , postalCode);
                         ComboBoxClientLogic.updateComboBox(comboBoxClient);//TODO automate this
+                        ComboBoxClientLogic.updateComboBox(comboBoxChangeClient);
                     }
                 } catch (WrapperException e1) {
                     PopupCatalog.customError(e1.getWrapperMessage());
@@ -334,6 +344,36 @@ public class SalesmanScreen extends Thread {
                 }
             }
         });
+        changeClientButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    Client client = (Client) comboBoxChangeClient.getSelectedItem();
+
+                    String name = textFieldChangeClientName.getText();
+                    String surname = textFieldChangeClientSurname.getText();
+                    String address = textFieldChangeClientAddress.getText();
+                    String country = textFieldChangeClientCountry.getText();
+                    String city = textFieldChangeClientCity.getText();
+
+                    int postalCode;
+                    if(textFieldChangeClientPostalCode.getText().equals("")){
+                        postalCode = -1;
+                    } else {
+                        postalCode = Integer.parseInt(textFieldChangeClientPostalCode.getText());
+                    }
+
+                    TableClients.changeClient(client.getId(), name, surname, address, country, city, postalCode);
+
+                    ComboBoxClientLogic.updateComboBox(comboBoxClient);
+                    ComboBoxClientLogic.updateComboBox(comboBoxChangeClient);
+                } catch (WrapperException e1) {
+                    PopupCatalog.customError(e1.getWrapperMessage());
+                } catch (NumberFormatException e2) {
+                    PopupCatalog.invalidNumber();
+                }
+            }
+        });
     }
 
     private WindowAdapter exitAppWindowAdapter() {
@@ -368,6 +408,7 @@ public class SalesmanScreen extends Thread {
             TableSalesModel.setHeaders(jTableSaleHistory);
 
             ComboBoxClientLogic.updateComboBox(comboBoxClient);
+            ComboBoxClientLogic.updateComboBox(comboBoxChangeClient);
             ComboBoxProductLogic.updateElements();
             ComboBoxProductLogic.setElements(comboBoxProduct);
             ComboBoxProductLogic.setElements(comboBoxModifyProduct);
