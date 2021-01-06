@@ -1,5 +1,6 @@
 package com.company.userInterface;
 
+import com.company.exceptions.EmptyTextFieldException;
 import com.company.exceptions.WrapperException;
 import com.company.persistence.Datasource;
 import com.company.persistence.TableClients;
@@ -58,11 +59,11 @@ public class SalesmanScreen extends Thread{
     private JScrollPane JScrollPaneClients;
     private JPanel saleHistoryPanel;
     private JButton queryAllProductsButton;
-    private JTextField textField1;
-    private JTextField textField2;
-    private JTextField textField3;
-    private JTextField textField5;
-    private JTextField textField6;
+    private JTextField textFieldAddProductName;
+    private JTextField textFieldAddProductPrice;
+    private JTextField textFieldAddProductStock;
+    private JTextField textFieldAddProductDescription;
+    private JTextField textFieldAddProductImageURL;
     private JButton insertProductButton;
     private JComboBox comboBoxModifyProduct;
     private JTextField textField13;
@@ -70,6 +71,11 @@ public class SalesmanScreen extends Thread{
     private JTextField textField15;
     private JTextField textField16;
     private JButton changeProductButton;
+    private JPanel productsPanel;
+    private JPanel addSalePanel;
+    private JPanel addClientPanel;
+    private JPanel addProduct;
+    private JPanel modifyProduct;
 
 
     /**
@@ -132,7 +138,7 @@ public class SalesmanScreen extends Thread{
                     jTableProducts.setModel(new TableProductsModel(from, to));
                     TableProductsModel.setHeaders(jTableProducts);
                 } catch (NumberFormatException e1) {
-                    PopupCatalog.invalidNumber();
+                    PopupCatalog.invalidDouble();
                 }
             }
         });
@@ -200,24 +206,55 @@ public class SalesmanScreen extends Thread{
         insertClientButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                try {
+                    String name = textFieldAddClientName.getText();
+                    String surname = textFieldAddClientSurname.getText();
+                    String address = textFieldAddClientAddress.getText();
+                    String country = textFieldAddClientCountry.getText();
+                    String city = textFieldAddClientCity.getText();
+                    int postalCode = Integer.parseInt(textFieldAddClientPostalCode.getText());
 
-                String name = textFieldAddClientName.getText();
-                String surname = textFieldAddClientSurname.getText();
-                String address = textFieldAddClientAddress.getText();
-                String country = textFieldAddClientCountry.getText();
-                String city = textFieldAddClientCity.getText();
-                int postalCode = Integer.parseInt(textFieldAddClientPostalCode.getText());
-
-                if (name.equals("") || surname.equals("") || address.equals("") || country.equals("") || city.equals("")) {
-                    PopupCatalog.customError("Please enter data in all the fields!");
-                } else if (postalCode < 0 || postalCode > 99999) {
-                    PopupCatalog.customError("Please enter a valid postal code!");
-                } else {
-                    try {
+                    if (name.equals("") || surname.equals("") || address.equals("") || country.equals("") || city.equals("")) {
+                        PopupCatalog.customError("Please enter data in all the fields!");
+                    } else if (postalCode < 0 || postalCode > 99999) {
+                        PopupCatalog.customError("Please enter a valid postal code!");
+                    } else {
                         TableClients.insertClient(name , surname , address , country , city , postalCode);
-                    } catch (WrapperException e1) {
-                        PopupCatalog.customError(e1.getWrapperMessage());
                     }
+                } catch (WrapperException e1) {
+                    PopupCatalog.customError(e1.getWrapperMessage());
+                }
+            }
+        });
+        insertProductButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    String name = textFieldAddProductName.getText();
+                    double price = Double.parseDouble(textFieldAddProductPrice.getText());
+                    int stock = Integer.parseInt(textFieldAddProductStock.getText());
+                    double discount = 0; //TODO implement functionality
+                    String description = textFieldAddProductDescription.getText();
+                    String imgUrl = textFieldAddProductImageURL.getText();
+
+                    if(name.equals("") || description.equals("") || imgUrl.equals("")) {
+                        throw new WrapperException(new EmptyTextFieldException(), "Please enter information on all the fields!");
+                    }
+                    if(price < 0) {
+                        textFieldAddProductPrice.setText("");
+                        throw new WrapperException(new NumberFormatException(), "Price can't be lower than 0!");
+                    }
+                    if(stock < 0) {
+                        textFieldAddProductStock.setText("");
+                        throw new WrapperException(new NumberFormatException(), "Stock can't be lower than 0!");
+                    }
+
+                    TableProducts.insertProduct(name, price, stock, discount, description, imgUrl);
+
+                } catch (WrapperException e1) {
+                    PopupCatalog.customError(e1.getWrapperMessage());
+                } catch (NumberFormatException e2) {
+                    PopupCatalog.invalidNumber();
                 }
             }
         });

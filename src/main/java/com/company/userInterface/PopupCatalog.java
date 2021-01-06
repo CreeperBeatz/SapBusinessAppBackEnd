@@ -25,7 +25,7 @@ public class PopupCatalog {
                 JOptionPane.ERROR_MESSAGE);
     }
 
-    public static void invalidNumber() {
+    public static void invalidDouble() {
         JOptionPane.showMessageDialog(null,
                 "Number not valid!\n Please enter a double with . separator",
                 "Invalid number",
@@ -39,4 +39,10 @@ public class PopupCatalog {
                 JOptionPane.ERROR_MESSAGE);
     }
 
+    public static void invalidNumber() {
+        JOptionPane.showMessageDialog(null,
+                "Invalid number!\nPlease enter a Number in the Number fields!",
+                "Invalid number",
+                JOptionPane.ERROR_MESSAGE);
+    }
 }
