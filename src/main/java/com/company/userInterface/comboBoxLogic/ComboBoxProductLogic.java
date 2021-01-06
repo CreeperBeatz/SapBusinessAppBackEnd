@@ -12,14 +12,15 @@ import java.util.List;
 
 public class ComboBoxProductLogic {
 
-    public static List<Product> elements = new ArrayList<>();
+    private static volatile List<Product> elements = new ArrayList<>();
 
-    public static void updateElements(JComboBox<Product> comboBox) throws WrapperException {
+    public static void updateElements() throws WrapperException {
         elements.clear();
-        comboBox.removeAllItems();
-
         elements = TableProducts.queryAllProducts();
+    }
 
+    public static final synchronized void setElements(JComboBox comboBox) {
+        comboBox.removeAllItems();
         for(Product current: elements) {
             comboBox.addItem(current);
         }

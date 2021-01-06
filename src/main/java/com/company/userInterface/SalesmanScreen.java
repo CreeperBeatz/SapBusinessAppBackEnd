@@ -20,7 +20,7 @@ import java.awt.event.WindowEvent;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SalesmanScreen extends Thread{
+public class SalesmanScreen extends Thread {
     private final int id;
     private final String username;
     private final String email;
@@ -66,16 +66,20 @@ public class SalesmanScreen extends Thread{
     private JTextField textFieldAddProductImageURL;
     private JButton insertProductButton;
     private JComboBox comboBoxModifyProduct;
-    private JTextField textField13;
-    private JTextField textField14;
-    private JTextField textField15;
-    private JTextField textField16;
+    private JTextField textFieldChangeProductName;
+    private JTextField textFieldChangeProductPrice;
+    private JTextField textFieldChangeProductDesc;
+    private JTextField textFieldChangeProductImg;
     private JButton changeProductButton;
     private JPanel productsPanel;
     private JPanel addSalePanel;
     private JPanel addClientPanel;
     private JPanel addProduct;
     private JPanel modifyProduct;
+    private JTextField textFieldChangeProductStock;
+    private JLabel labelAddStock;
+    private JLabel labelTotalPurchases;
+    private JLabel labelAddSaleCurrentStock;
 
 
     /**
@@ -95,7 +99,7 @@ public class SalesmanScreen extends Thread{
 
     }
 
-    public SalesmanScreen(int id, final String username, String email) {
+    public SalesmanScreen(int id , final String username , String email) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -131,11 +135,11 @@ public class SalesmanScreen extends Thread{
         queryByPriceButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try{
+                try {
                     double from = Double.parseDouble(fromProductTextField.getText());
                     double to = Double.parseDouble(toProductTextField.getText());
 
-                    jTableProducts.setModel(new TableProductsModel(from, to));
+                    jTableProducts.setModel(new TableProductsModel(from , to));
                     TableProductsModel.setHeaders(jTableProducts);
                 } catch (NumberFormatException e1) {
                     PopupCatalog.invalidDouble();
@@ -156,7 +160,7 @@ public class SalesmanScreen extends Thread{
                 Matcher matcherFrom = pattern.matcher(fromSalesTextField.getText());
                 Matcher matcherTo = pattern.matcher(toSalesTextField.getText());
 
-                if(!matcherFrom.matches() || !matcherTo.matches()){
+                if (!matcherFrom.matches() || !matcherTo.matches()) {
                     PopupCatalog.invalidDate();
                     fromSalesTextField.setText("");
                     toSalesTextField.setText("");
@@ -166,7 +170,7 @@ public class SalesmanScreen extends Thread{
                 try {
                     long from = TimeConverter.StringToMillis(fromSalesTextField.getText());
                     long to = TimeConverter.StringToMillis(toSalesTextField.getText());
-                    jTableSaleHistory.setModel(new TableSalesModel(from, to));
+                    jTableSaleHistory.setModel(new TableSalesModel(from , to));
                     TableSalesModel.setHeaders(jTableSaleHistory);
                 } catch (WrapperException e1) {
                     PopupCatalog.customError(e1.getWrapperMessage());
@@ -196,6 +200,13 @@ public class SalesmanScreen extends Thread{
                     Product product = (Product) comboBoxProduct.getSelectedItem();
 
                     TableSales.insertSale(username , client.getId() , product.getId() , quantity , discount);
+
+                    PopupCatalog.successfulSale();
+
+                    ComboBoxProductLogic.updateElements(); //TODO make this automatic
+                    ComboBoxProductLogic.setElements(comboBoxProduct);
+                    ComboBoxProductLogic.setElements(comboBoxModifyProduct);
+                    ComboBoxClientLogic.updateComboBox(comboBoxClient);
                 } catch (WrapperException e1) {
                     PopupCatalog.customError(e1.getWrapperMessage());
                 } catch (NullPointerException e2) {
@@ -215,11 +226,12 @@ public class SalesmanScreen extends Thread{
                     int postalCode = Integer.parseInt(textFieldAddClientPostalCode.getText());
 
                     if (name.equals("") || surname.equals("") || address.equals("") || country.equals("") || city.equals("")) {
-                        PopupCatalog.customError("Please enter data in all the fields!");
+                        throw new WrapperException(new EmptyTextFieldException() , "Please enter values on all the fields!");
                     } else if (postalCode < 0 || postalCode > 99999) {
-                        PopupCatalog.customError("Please enter a valid postal code!");
+                        throw new WrapperException(new NumberFormatException() , "Please enter a valid postal code!");
                     } else {
                         TableClients.insertClient(name , surname , address , country , city , postalCode);
+                        ComboBoxClientLogic.updateComboBox(comboBoxClient);//TODO automate this
                     }
                 } catch (WrapperException e1) {
                     PopupCatalog.customError(e1.getWrapperMessage());
@@ -237,24 +249,88 @@ public class SalesmanScreen extends Thread{
                     String description = textFieldAddProductDescription.getText();
                     String imgUrl = textFieldAddProductImageURL.getText();
 
-                    if(name.equals("") || description.equals("") || imgUrl.equals("")) {
-                        throw new WrapperException(new EmptyTextFieldException(), "Please enter information on all the fields!");
+                    if (name.equals("") || description.equals("") || imgUrl.equals("")) {
+                        throw new WrapperException(new EmptyTextFieldException() , "Please enter information on all the fields!");
                     }
-                    if(price < 0) {
+                    if (price < 0) {
                         textFieldAddProductPrice.setText("");
-                        throw new WrapperException(new NumberFormatException(), "Price can't be lower than 0!");
+                        throw new WrapperException(new NumberFormatException() , "Price can't be lower than 0!");
                     }
-                    if(stock < 0) {
+                    if (stock < 0) {
                         textFieldAddProductStock.setText("");
-                        throw new WrapperException(new NumberFormatException(), "Stock can't be lower than 0!");
+                        throw new WrapperException(new NumberFormatException() , "Stock can't be lower than 0!");
                     }
 
-                    TableProducts.insertProduct(name, price, stock, discount, description, imgUrl);
+                    TableProducts.insertProduct(name , price , stock , discount , description , imgUrl);
+
+                    ComboBoxProductLogic.updateElements(); //TODO make this automatic
+                    ComboBoxProductLogic.setElements(comboBoxProduct);
+                    ComboBoxProductLogic.setElements(comboBoxModifyProduct);
 
                 } catch (WrapperException e1) {
                     PopupCatalog.customError(e1.getWrapperMessage());
                 } catch (NumberFormatException e2) {
                     PopupCatalog.invalidNumber();
+                }
+            }
+        });
+        changeProductButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    Product product = (Product) comboBoxModifyProduct.getSelectedItem();
+                    String name = textFieldChangeProductName.getText();
+                    String description = textFieldChangeProductDesc.getText();
+                    String imgUrl = textFieldChangeProductImg.getText();
+                    int stock = Integer.parseInt(textFieldChangeProductStock.getText());
+                    double price;
+                    if (textFieldChangeProductPrice.getText().equals("")) {
+                        price = -1;
+                    } else {
+                        price = Double.parseDouble(textFieldChangeProductPrice.getText());
+                    }
+
+                    TableProducts.changeProduct(product.getId() , name , price , product.getStock() + stock , 0 , description , imgUrl);
+
+                    //TODO change on focus gain to modify products
+                    ComboBoxProductLogic.updateElements();
+                    ComboBoxProductLogic.setElements(comboBoxModifyProduct);
+                    ComboBoxProductLogic.setElements(comboBoxProduct);
+                } catch (NumberFormatException e1) {
+                    PopupCatalog.invalidDouble();
+                } catch (WrapperException e2) {
+                    PopupCatalog.customError(e2.getWrapperMessage());
+                }
+            }
+        });
+        //TODO ok, this fix is so bandage, I want to die just looking at it
+        comboBoxModifyProduct.addActionListener(new ActionListener() {
+            @Override
+            public synchronized void actionPerformed(ActionEvent e) {
+                try {
+                    Product product = (Product) comboBoxModifyProduct.getSelectedItem();
+                    labelAddStock.setText("Current stock: " + product.getStock());
+                } catch (NullPointerException ignored) {
+                }
+            }
+        });
+        comboBoxProduct.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    Product product = (Product) comboBoxProduct.getSelectedItem();
+                    labelAddSaleCurrentStock.setText("Current stock: " + product.getStock());
+                } catch (NullPointerException ignored) {
+                }
+            }
+        });
+        comboBoxClient.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    Client client = (Client) comboBoxClient.getSelectedItem();
+                    labelTotalPurchases.setText("Total purchases: " + client.getNumOfPurchases());
+                } catch (NullPointerException ignored) {
                 }
             }
         });
@@ -280,7 +356,7 @@ public class SalesmanScreen extends Thread{
         return exit_application;
     }
 
-    public void createUIComponents(){
+    public void createUIComponents() {
         try {
             jTableClients.setModel(new TableClientsModel());
             TableClientsModel.setHeaders(jTableClients);
@@ -292,8 +368,9 @@ public class SalesmanScreen extends Thread{
             TableSalesModel.setHeaders(jTableSaleHistory);
 
             ComboBoxClientLogic.updateComboBox(comboBoxClient);
-            ComboBoxProductLogic.updateElements(comboBoxProduct);
-            ComboBoxProductLogic.updateElements(comboBoxModifyProduct);
+            ComboBoxProductLogic.updateElements();
+            ComboBoxProductLogic.setElements(comboBoxProduct);
+            ComboBoxProductLogic.setElements(comboBoxModifyProduct);
         } catch (WrapperException e1) {
             PopupCatalog.customError(e1.getWrapperMessage());
         }

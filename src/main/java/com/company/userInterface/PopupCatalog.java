@@ -45,4 +45,11 @@ public class PopupCatalog {
                 "Invalid number",
                 JOptionPane.ERROR_MESSAGE);
     }
+
+    public static void successfulSale() {
+        JOptionPane.showMessageDialog(null,
+                "Sale added successfully",
+                "Success",
+                JOptionPane.INFORMATION_MESSAGE);
+    }
 }
