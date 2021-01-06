@@ -77,4 +77,9 @@ public class Product {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
+
+    @Override
+    public String toString(){
+        return this.getName() + " | " + this.getPrice() + "$";
+    }
 }

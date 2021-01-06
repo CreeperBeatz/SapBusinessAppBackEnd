@@ -88,4 +88,9 @@ public class Client {
     public void setNumOfPurchases(int numOfPurchases) {
         this.numOfPurchases = numOfPurchases;
     }
+
+    @Override
+    public String toString(){
+        return this.getName() + " " + this.getSurname() + " | " + this.getAddress();
+    }
 }

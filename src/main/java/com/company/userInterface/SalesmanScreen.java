@@ -2,6 +2,13 @@ package com.company.userInterface;
 
 import com.company.exceptions.WrapperException;
 import com.company.persistence.Datasource;
+import com.company.persistence.TableClients;
+import com.company.persistence.TableProducts;
+import com.company.persistence.TableSales;
+import com.company.shared.Client;
+import com.company.shared.Product;
+import com.company.userInterface.comboBoxLogic.ComboBoxProductLogic;
+import com.company.userInterface.comboBoxLogic.ComboBoxClientLogic;
 import com.company.utilities.TimeConverter;
 
 import javax.swing.*;
@@ -13,9 +20,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SalesmanScreen extends Thread{
-    private int id;
-    private String username;
-    private String email;
+    private final int id;
+    private final String username;
+    private final String email;
 
 
     private JPanel panel1;
@@ -32,18 +39,18 @@ public class SalesmanScreen extends Thread{
     private JButton queryByPriceButton;
     private JTextField productByNameTextField;
     private JButton queryByNameButton;
-    private JTextField textField4;
-    private JTextField textField7;
-    private JTextField textField8;
-    private JTextField textField9;
-    private JTextField textField10;
-    private JTextField textField11;
+    private JTextField textFieldAddClientName;
+    private JTextField textFieldAddClientSurname;
+    private JTextField textFieldAddClientAddress;
+    private JTextField textFieldAddClientCountry;
+    private JTextField textFieldAddClientCity;
+    private JTextField textFieldAddClientPostalCode;
     private JButton insertClientButton;
-    private JComboBox comboBox1;
-    private JComboBox comboBox2;
-    private JTextField textField12;
+    private JComboBox comboBoxClient;
+    private JComboBox comboBoxProduct;
+    private JTextField textFieldSaleQuantity;
     private JButton addSaleButton;
-    private JTextField a0TextField;
+    private JTextField textFieldSaleDiscount;
     private JTextField fromSalesTextField;
     private JTextField toSalesTextField;
     private JButton saleByDateButton;
@@ -51,13 +58,25 @@ public class SalesmanScreen extends Thread{
     private JScrollPane JScrollPaneClients;
     private JPanel saleHistoryPanel;
     private JButton queryAllProductsButton;
+    private JTextField textField1;
+    private JTextField textField2;
+    private JTextField textField3;
+    private JTextField textField5;
+    private JTextField textField6;
+    private JButton insertProductButton;
+    private JComboBox comboBoxModifyProduct;
+    private JTextField textField13;
+    private JTextField textField14;
+    private JTextField textField15;
+    private JTextField textField16;
+    private JButton changeProductButton;
 
 
     /**
-     * Sets up the login page and keeps it active
+     * Sets up the salesman page and keeps it active
      */
     public void run() {
-        JFrame salesmanScreen = new JFrame("SalesmanScreen");
+        JFrame salesmanScreen = new JFrame("Welcome, " + username);
         salesmanScreen.setContentPane(this.panel1);
         salesmanScreen.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         salesmanScreen.addWindowListener(exitAppWindowAdapter());
@@ -70,7 +89,7 @@ public class SalesmanScreen extends Thread{
 
     }
 
-    public SalesmanScreen(int id, String username, String email) {
+    public SalesmanScreen(int id, final String username, String email) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -111,6 +130,7 @@ public class SalesmanScreen extends Thread{
                     double to = Double.parseDouble(toProductTextField.getText());
 
                     jTableProducts.setModel(new TableProductsModel(from, to));
+                    TableProductsModel.setHeaders(jTableProducts);
                 } catch (NumberFormatException e1) {
                     PopupCatalog.invalidNumber();
                 }
@@ -149,6 +169,58 @@ public class SalesmanScreen extends Thread{
 
             }
         });
+        addSaleButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    int quantity = Integer.parseInt(textFieldSaleQuantity.getText());
+                    if (quantity < 1) {
+                        textFieldSaleQuantity.setText("");
+                        throw new WrapperException(new NumberFormatException() , "Quantity can't be 0 or lower!");
+                    }
+
+                    int discount = Integer.parseInt(textFieldSaleDiscount.getText());
+                    if (discount < 0 || discount > 100) {
+                        textFieldSaleDiscount.setText("0");
+                        throw new WrapperException(new NumberFormatException() , "Discount can't be lower " +
+                                "than 0 or higher than 100!");
+                    }
+
+                    Client client = (Client) comboBoxClient.getSelectedItem();
+                    Product product = (Product) comboBoxProduct.getSelectedItem();
+
+                    TableSales.insertSale(username , client.getId() , product.getId() , quantity , discount);
+                } catch (WrapperException e1) {
+                    PopupCatalog.customError(e1.getWrapperMessage());
+                } catch (NullPointerException e2) {
+                    PopupCatalog.customError("Critical error. Please contact System Admin");
+                }
+            }
+        });
+        insertClientButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                String name = textFieldAddClientName.getText();
+                String surname = textFieldAddClientSurname.getText();
+                String address = textFieldAddClientAddress.getText();
+                String country = textFieldAddClientCountry.getText();
+                String city = textFieldAddClientCity.getText();
+                int postalCode = Integer.parseInt(textFieldAddClientPostalCode.getText());
+
+                if (name.equals("") || surname.equals("") || address.equals("") || country.equals("") || city.equals("")) {
+                    PopupCatalog.customError("Please enter data in all the fields!");
+                } else if (postalCode < 0 || postalCode > 99999) {
+                    PopupCatalog.customError("Please enter a valid postal code!");
+                } else {
+                    try {
+                        TableClients.insertClient(name , surname , address , country , city , postalCode);
+                    } catch (WrapperException e1) {
+                        PopupCatalog.customError(e1.getWrapperMessage());
+                    }
+                }
+            }
+        });
     }
 
     private WindowAdapter exitAppWindowAdapter() {
@@ -172,13 +244,21 @@ public class SalesmanScreen extends Thread{
     }
 
     public void createUIComponents(){
-        jTableClients.setModel(new TableClientsModel());
-        TableClientsModel.setHeaders(jTableClients);
+        try {
+            jTableClients.setModel(new TableClientsModel());
+            TableClientsModel.setHeaders(jTableClients);
 
-        jTableProducts.setModel(new TableProductsModel());
-        TableProductsModel.setHeaders(jTableProducts);
+            jTableProducts.setModel(new TableProductsModel());
+            TableProductsModel.setHeaders(jTableProducts);
 
-        jTableSaleHistory.setModel(new TableSalesModel());
-        TableSalesModel.setHeaders(jTableSaleHistory);
+            jTableSaleHistory.setModel(new TableSalesModel());
+            TableSalesModel.setHeaders(jTableSaleHistory);
+
+            ComboBoxClientLogic.updateComboBox(comboBoxClient);
+            ComboBoxProductLogic.updateElements(comboBoxProduct);
+            ComboBoxProductLogic.updateElements(comboBoxModifyProduct);
+        } catch (WrapperException e1) {
+            PopupCatalog.customError(e1.getWrapperMessage());
+        }
     }
 }

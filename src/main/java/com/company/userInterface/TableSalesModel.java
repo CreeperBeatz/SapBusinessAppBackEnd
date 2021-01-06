@@ -96,7 +96,6 @@ public class TableSalesModel extends AbstractTableModel {
             sales[j][5] = Double.toString(current.getDiscount()) + '%';
             sales[j][6] = current.getPrice();
             sales[j][7] = TimeConverter.MillisToString(current.getDate());
-            System.out.println(current.getDate());
             j++;
         }
         return sales;
