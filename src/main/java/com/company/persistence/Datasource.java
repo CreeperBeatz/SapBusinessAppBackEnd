@@ -16,11 +16,12 @@ public class Datasource {
     private PreparedStatement insertUserPrep;
     private PreparedStatement deleteUserPrep;
     private PreparedStatement changeUserPrep;
-    private PreparedStatement queryUserByUsername;
+    private PreparedStatement queryUserById;
     private PreparedStatement queryAllUsers;
     private PreparedStatement queryAllTraders;
-    private PreparedStatement queryUserByUsernameType;
+    private PreparedStatement queryUserByIdType;
     private PreparedStatement queryUserByUsernameHash;
+    private PreparedStatement queryUserByUsername;
 
     //Sales statements
     private PreparedStatement querySaleBySalesman;
@@ -71,14 +72,15 @@ public class Datasource {
            insertUserPrep = conn.prepareStatement(TableUsers.INSERT_NEW_USER_PREP);
            deleteUserPrep = conn.prepareStatement(TableUsers.DELETE_USER_PREP);
            changeUserPrep = conn.prepareStatement(TableUsers.CHANGE_USER_PREP);
-           queryUserByUsername = conn.prepareStatement(TableUsers.QUERY_USER_BY_USERNAME_PREP);
+           queryUserById = conn.prepareStatement(TableUsers.QUERY_USER_BY_ID_PREP);
            queryAllUsers = conn.prepareStatement(TableUsers.QUERY_ALL_USERS_PREP);
-           queryAllTraders = conn.prepareStatement(TableUsers.QUERY_ALL_TRADERS_PREP);
-           queryUserByUsernameType = conn.prepareStatement(TableUsers.QUERY_USER_BY_USERNAME_TYPE_PREP);
+           queryAllTraders = conn.prepareStatement(TableUsers.QUERY_ALL_SALESMEN_PREP);
+           queryUserByIdType = conn.prepareStatement(TableUsers.QUERY_USER_BY_ID_TYPE_PREP);
            queryUserByUsernameHash = conn.prepareStatement(TableUsers.QUERY_USER_BY_USERNAME_HASH_PREP);
+           queryUserByUsername = conn.prepareStatement(TableUsers.QUERY_USER_BY_USERNAME_PREP);
 
            //table sales
-           querySaleBySalesman = conn.prepareStatement(TableSales.QUERY_SALE_BY_TRADER_PREP);
+           querySaleBySalesman = conn.prepareStatement(TableSales.QUERY_SALE_BY_SALESMAN_PREP);
            querySaleByDate = conn.prepareStatement(TableSales.QUERY_SALE_BY_DATE_PREP);
            insertSale = conn.prepareStatement(TableSales.INSERT_SALE_PREP);
            deleteSale = conn.prepareStatement(TableSales.DELETE_SALE_PREP);
@@ -119,11 +121,12 @@ public class Datasource {
                 if (insertUserPrep != null) insertUserPrep.close();
                 if (deleteUserPrep != null) deleteUserPrep.close();
                 if (changeUserPrep != null) changeUserPrep.close();
-                if (queryUserByUsername != null) queryUserByUsername.close();
+                if (queryUserById != null) queryUserById.close();
                 if (queryAllUsers != null) queryAllUsers.close();
                 if (queryAllTraders != null) queryAllTraders.close();
-                if (queryUserByUsernameType != null) queryUserByUsernameType.close();
+                if (queryUserByIdType != null) queryUserByIdType.close();
                 if (queryUserByUsernameHash != null) queryUserByUsernameHash.close();
+                if (queryUserByUsername != null) queryUserByUsername.close();
 
                 //Table sales
                 if (querySaleBySalesman != null) querySaleBySalesman.close();
@@ -159,11 +162,11 @@ public class Datasource {
         }
     }
 
-    public PreparedStatement getQueryUserByUsernameType() {
-        return  queryUserByUsernameType;
+    public PreparedStatement getQueryUserByIdType() {
+        return queryUserByIdType;
     }
-    public PreparedStatement getQueryUserByUsername() {
-        return queryUserByUsername;
+    public PreparedStatement getQueryUserById() {
+        return queryUserById;
     }
     public PreparedStatement getChangeUserPrep() {
         return changeUserPrep;
@@ -182,6 +185,9 @@ public class Datasource {
     }
     public PreparedStatement getQueryUserByUsernameHash() {
         return queryUserByUsernameHash;
+    }
+    public PreparedStatement getQueryUserByUsername() {
+        return queryUserByUsername;
     }
 
     public PreparedStatement getQuerySaleBySalesman() {

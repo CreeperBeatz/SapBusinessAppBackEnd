@@ -107,7 +107,7 @@ public class SalesmanScreen extends Thread {
 
     }
 
-    public SalesmanScreen(int id , final String username , String email) {
+    public SalesmanScreen(final int id , final String username ,final String email) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -207,7 +207,7 @@ public class SalesmanScreen extends Thread {
                     Client client = (Client) comboBoxClient.getSelectedItem();
                     Product product = (Product) comboBoxProduct.getSelectedItem();
 
-                    TableSales.insertSale(username , client.getId() , product.getId() , quantity , discount);
+                    TableSales.insertSale(id , client.getId() , product.getId() , quantity , discount);
 
                     PopupCatalog.successfulSale();
 

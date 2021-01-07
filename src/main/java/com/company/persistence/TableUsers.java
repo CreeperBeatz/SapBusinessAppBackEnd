@@ -6,7 +6,6 @@ import com.company.exceptions.WrapperException;
 import com.company.shared.VerificationSyntax;
 import com.company.utilities.MD5Hash;
 import com.company.shared.User;
-import com.jcabi.log.Logger;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -46,24 +45,28 @@ public class TableUsers {
             " = ?, " + COLUMN_USERS_EMAIL + " = ?, " + COLUMN_USERS_PASSWORD_HASH + " = ? , " + COLUMN_USERS_TYPE +
             " = ? WHERE " + COLUMN_USERS_USERNAME + " = ?";
 
-    //query user by username
-    public static final String QUERY_USER_BY_USERNAME_PREP = "SELECT * FROM " + TABLE_USERS + " WHERE " + TABLE_USERS + "." +
-            COLUMN_USERS_USERNAME + " = ?";
+    //query user by id
+    public static final String QUERY_USER_BY_ID_PREP = "SELECT * FROM " + TABLE_USERS + " WHERE " + TABLE_USERS + "." +
+            COLUMN_USERS_ID + " = ?";
 
     //query user by username
+    public static final String QUERY_USER_BY_USERNAME_PREP = "SELECT * FROM " + TABLE_USERS + " WHERE " + COLUMN_USERS_USERNAME +
+            " = ?";
+
+    //query user by username and password
     public static final String QUERY_USER_BY_USERNAME_HASH_PREP = "SELECT * FROM " + TABLE_USERS + " WHERE " + TABLE_USERS + "." +
             COLUMN_USERS_USERNAME + " = ? AND " + COLUMN_USERS_PASSWORD_HASH + " = ?";
 
     //query user by username and type
-    public static final String QUERY_USER_BY_USERNAME_TYPE_PREP = "SELECT * FROM " + TABLE_USERS + " WHERE " + TABLE_USERS + "." +
-            COLUMN_USERS_USERNAME + " = ? AND " + TABLE_USERS + "." + COLUMN_USERS_TYPE + " = ?";
+    public static final String QUERY_USER_BY_ID_TYPE_PREP = "SELECT * FROM " + TABLE_USERS + " WHERE " + TABLE_USERS + "." +
+            COLUMN_USERS_ID + " = ? AND " + TABLE_USERS + "." + COLUMN_USERS_TYPE + " = ?";
 
     //query all users
     public static final String QUERY_ALL_USERS_PREP = "SELECT * FROM " + TABLE_USERS + " ORDER BY " +
             TABLE_USERS + "." + COLUMN_USERS_TYPE;
 
     //query all traders
-    public static final String QUERY_ALL_TRADERS_PREP = "SELECT * FROM " + TABLE_USERS + " WHERE " +
+    public static final String QUERY_ALL_SALESMEN_PREP = "SELECT * FROM " + TABLE_USERS + " WHERE " +
             TABLE_USERS + "." + COLUMN_USERS_TYPE + " = " + INDEX_SALESMAN;
 
 
@@ -135,13 +138,13 @@ public class TableUsers {
     /**
      * Changes parameters of user._id
      * If a string is empty "" or int is 0, old value is preserved
-     * @param oldUsername User that you want to change
+     * @param id User that you want to change
      * @param newUsername to be replaced. If you want to avoid changing it, put "" on username
      * @param email to be replaced. If you want to avoid changing it, put "" on email
      * @param password to be replaced. If you want to avoid changing it, put "" on password
      * @param type to be replaced. If you want to avoid changing it, put 0 on type
      */
-    public static void changeUser(String oldUsername, String newUsername, String email, String password, int type){
+    public static void changeUser(int id, String newUsername, String email, String password, int type){
      try {
          //Validation
          if(type > NUM_TYPES_USERS || type < 0) {
@@ -149,18 +152,18 @@ public class TableUsers {
          }
 
 
-         PreparedStatement queryUserByUsername = Datasource.getInstance().getQueryUserByUsername();
+         PreparedStatement queryUserById = Datasource.getInstance().getQueryUserById();
          PreparedStatement changeUser = Datasource.getInstance().getChangeUserPrep();
 
-         queryUserByUsername.setString(1, oldUsername);
-         ResultSet result = queryUserByUsername.executeQuery();
+         queryUserById.setInt(1, id);
+         ResultSet result = queryUserById.executeQuery();
 
          //ResultSet is initially set to -1, so we don't lose the first result by calling .next()
          if(!result.next()) {
              throw new UserDoesNotExistException();
          }
 
-         changeUser.setString(5, oldUsername);
+         changeUser.setInt(5, id);
 
          //Checking and setting all params for the user
          if(newUsername.equals("")) {
@@ -215,9 +218,7 @@ public class TableUsers {
     public static List<User> queryAllUsers() {
         try {
             ResultSet results = Datasource.getInstance().getQueryAllUsers().executeQuery();
-
             return getUsersFromResultSet(results);
-
         } catch (SQLException e) {
             System.out.println("Couldn't execute query: " + e.getMessage());
             e.printStackTrace();
@@ -226,26 +227,22 @@ public class TableUsers {
 
     }
 
-    /**
-     * Query that utilizes the DataSource class and the connection in it. Returns Traders only, without Admins
-     *
-     * @return ArrayList of User, containing ID, Username, Email, Type of user WITHOUT password hash!
-     */
-    public static List<User> querySalesmen() {//TODO change queries to prep statements if performance is better
+    public static List<User> queryUsersByUsername(String username) throws WrapperException{
         try {
-            ResultSet results = Datasource.getInstance().getQueryAllTraders().executeQuery();
+            PreparedStatement statement = Datasource.getInstance().getQueryUserByUsername();
+            statement.setString(1, username);
+
+            ResultSet results = statement.executeQuery();
             return getUsersFromResultSet(results);
         } catch (SQLException e) {
-            System.out.println("Couldn't execute query: " + e.getMessage());
-            e.printStackTrace();
-            return null;
+            throw new WrapperException(e, "Couldn't execute user by username query");
         }
     }
 
-    public static boolean salesmanExists(String username) {
+    public static boolean salesmanExists(int id) {
         try {
-            PreparedStatement statement = Datasource.getInstance().getQueryUserByUsernameType();
-            statement.setString(1 , username);
+            PreparedStatement statement = Datasource.getInstance().getQueryUserByIdType();
+            statement.setInt(1 , id);
             statement.setInt(2, INDEX_SALESMAN);
             ResultSet results = statement.executeQuery();
 

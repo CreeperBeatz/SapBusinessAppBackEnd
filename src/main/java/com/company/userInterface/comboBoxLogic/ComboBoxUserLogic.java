@@ -7,7 +7,7 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ComboBocUserLogic {
+public class ComboBoxUserLogic {
 
     private static List<User> elements = new ArrayList<>();
 

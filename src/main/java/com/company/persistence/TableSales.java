@@ -4,12 +4,15 @@ import com.company.exceptions.*;
 import com.company.shared.Product;
 import com.company.shared.SaleClientProduct;
 
+import javax.xml.crypto.Data;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static java.lang.System.exit;
 
 public class TableSales {
 
@@ -41,8 +44,8 @@ public class TableSales {
             COLUMN_SALES_ID + " = ?";
 
 
-    public static final String QUERY_SALE_BY_TRADER_PREP = "SELECT " + TABLE_SALES + "." + COLUMN_SALES_ID + ", " +
-            TABLE_SALES + "." + COLUMN_SALES_SALESMAN + ", " +
+    public static final String QUERY_SALE_BY_SALESMAN_PREP = "SELECT " + TABLE_SALES + "." + COLUMN_SALES_ID + ", " +
+            TableUsers.TABLE_USERS + "." + TableUsers.COLUMN_USERS_USERNAME + ", " +
             TableClients.TABLE_CLIENTS + "." + TableClients.COLUMN_CLIENTS_NAME + ", " +
             TableProducts.TABLE_PRODUCTS + "." + TableProducts.COLUMN_PRODUCTS_NAME + ", " +
             TABLE_SALES + "." + COLUMN_SALES_QUANTITY + ", " +
@@ -53,11 +56,12 @@ public class TableSales {
             " ON " + TableProducts.TABLE_PRODUCTS + "." + TableProducts.COLUMN_PRODUCTS_ID + " = " +
             TABLE_SALES + "." + COLUMN_SALES_PRODUCT + ", " +
             TableClients.TABLE_CLIENTS + " ON " + TableClients.TABLE_CLIENTS + "." + TableClients.COLUMN_CLIENTS_ID +
-            " = " + TABLE_SALES + "." + COLUMN_SALES_CLIENT +
+            " = " + TABLE_SALES + "." + COLUMN_SALES_CLIENT + ", " + TableUsers.TABLE_USERS + " ON " + TableUsers.TABLE_USERS +
+            "." + TableUsers.COLUMN_USERS_ID + " = " + TABLE_SALES + "." + COLUMN_SALES_SALESMAN +
             " WHERE " + TABLE_SALES + "." + COLUMN_SALES_SALESMAN + " = ?";
 
     public static final String QUERY_SALE_BY_DATE_PREP = "SELECT " + TABLE_SALES + "." + COLUMN_SALES_ID + ", " +
-            TABLE_SALES + "." + COLUMN_SALES_SALESMAN + ", " +
+            TableUsers.TABLE_USERS + "." + TableUsers.COLUMN_USERS_USERNAME + ", " +
             TableClients.TABLE_CLIENTS + "." + TableClients.COLUMN_CLIENTS_NAME + ", " +
             TableProducts.TABLE_PRODUCTS + "." + TableProducts.COLUMN_PRODUCTS_NAME + ", " +
             TABLE_SALES + "." + COLUMN_SALES_QUANTITY + ", " +
@@ -68,11 +72,12 @@ public class TableSales {
             " ON " + TableProducts.TABLE_PRODUCTS + "." + TableProducts.COLUMN_PRODUCTS_ID + " = " +
             TABLE_SALES + "." + COLUMN_SALES_PRODUCT + ", " +
             TableClients.TABLE_CLIENTS + " ON " + TableClients.TABLE_CLIENTS + "." + TableClients.COLUMN_CLIENTS_ID +
-            " = " + TABLE_SALES + "." + COLUMN_SALES_CLIENT +
+            " = " + TABLE_SALES + "." + COLUMN_SALES_CLIENT + ", " + TableUsers.TABLE_USERS + " ON " + TableUsers.TABLE_USERS +
+            "." + TableUsers.COLUMN_USERS_ID + " = " + TABLE_SALES + "." + COLUMN_SALES_SALESMAN +
             " WHERE " + TABLE_SALES + "." + COLUMN_SALES_DATE + " > ? AND " + TABLE_SALES + "." + COLUMN_SALES_DATE + " < ?";
 
     public static final String QUERY_ALL_SALES = "SELECT " + TABLE_SALES + "." + COLUMN_SALES_ID + ", " +
-            TABLE_SALES + "." + COLUMN_SALES_SALESMAN + ", " +
+            TableUsers.TABLE_USERS + "." + TableUsers.COLUMN_USERS_USERNAME + ", " +
             TableClients.TABLE_CLIENTS + "." + TableClients.COLUMN_CLIENTS_NAME + ", " +
             TableProducts.TABLE_PRODUCTS + "." + TableProducts.COLUMN_PRODUCTS_NAME + ", " +
             TABLE_SALES + "." + COLUMN_SALES_QUANTITY + ", " +
@@ -83,10 +88,11 @@ public class TableSales {
             " ON " + TableProducts.TABLE_PRODUCTS + "." + TableProducts.COLUMN_PRODUCTS_ID + " = " +
             TABLE_SALES + "." + COLUMN_SALES_PRODUCT + ", " +
             TableClients.TABLE_CLIENTS + " ON " + TableClients.TABLE_CLIENTS + "." + TableClients.COLUMN_CLIENTS_ID +
-            " = " + TABLE_SALES + "." + COLUMN_SALES_CLIENT;
+            " = " + TABLE_SALES + "." + COLUMN_SALES_CLIENT + ", " + TableUsers.TABLE_USERS + " ON " + TableUsers.TABLE_USERS +
+            "." + TableUsers.COLUMN_USERS_ID + " = " + TABLE_SALES + "." + COLUMN_SALES_SALESMAN;
 
 
-    public static void insertSale(String salesman, int client, int productID, int quantity, double discount)
+    public static void insertSale(int salesman, int client, int productID, int quantity, double discount)
             throws WrapperException {
 
         Connection conn = Datasource.getInstance().getConn();
@@ -95,16 +101,16 @@ public class TableSales {
 
         //VALIDATION
         if(!TableUsers.salesmanExists(salesman)) {
-            throw new WrapperException(new UserDoesNotExistException());
+            throw new WrapperException(new UserDoesNotExistException(), "Salesman doesn't exist!");
         }
         if(product == null) { //getStockByID throws ProductNowExistsException
-            throw new WrapperException(new ProductDoesNotExistException());
+            throw new WrapperException(new ProductDoesNotExistException(), "Product doesn't exist!");
         }
         if(product.getStock() < quantity) {
-            throw new WrapperException(new NotEnoughStockException());
+            throw new WrapperException(new NotEnoughStockException(), "Not enough stock!");
         }
         if(!TableClients.clientExists(client)) {
-            throw new WrapperException(new ClientDoesNotExistException());
+            throw new WrapperException(new ClientDoesNotExistException(), "Client doesn't exist");
         }
         if(quantity < 0) {
             throw new WrapperException(new IllegalArgumentException(),"Only positive numbers for quantity!");
@@ -117,7 +123,7 @@ public class TableSales {
         try {
             conn.setAutoCommit(false); //initiating a transaction
 
-            statementSale.setString(1, salesman);
+            statementSale.setInt(1, salesman);
             statementSale.setInt(2, client);
             statementSale.setInt(3, productID);
             statementSale.setInt(4, quantity);
@@ -140,7 +146,8 @@ public class TableSales {
                 conn.rollback();
             } catch (SQLException e2) {
                 System.out.println("CRITICAL ERROR: couldn't rollback");
-                //TODO end operation
+                Datasource.getInstance().close();
+                exit(-1);
             }
         } finally {
             try {
@@ -148,7 +155,8 @@ public class TableSales {
                 conn.setAutoCommit(true);
             } catch (SQLException e3) {
                 System.out.println("CRITICAL ERROR: couldn't reset autocommit");
-                //TODO end opperation
+                Datasource.getInstance().close();
+                exit(-1);
             }
         }
     }
@@ -158,27 +166,26 @@ public class TableSales {
      * UNSAFE
      * @param id sale to be deleted
      */
-    public static int deleteSale(int id) {
+    public static int deleteSale(int id) throws WrapperException{
         PreparedStatement statement = Datasource.getInstance().getDeleteSale();
         try {
             statement.setInt(1 , id);
             return statement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace(); //TODO change to log
-            return -1;
+            throw new WrapperException(e, "Couldn't delete user");
         }
     }
 
     /**
      *
      *
-     * @param username String of the Trader whose sales you want to check
+     * @param id id of the user whose sales you want to check
      * @return
      */
-    public static List<SaleClientProduct> querySalesBySalesman(String username) throws WrapperException{
+    public static List<SaleClientProduct> querySalesBySalesman(int id) throws WrapperException{
         try {
             PreparedStatement statement = Datasource.getInstance().getQuerySaleBySalesman();
-            statement.setString(1, username);
+            statement.setInt(1, id);
             ResultSet results = statement.executeQuery();
 
             return getListFromResultSet(results);

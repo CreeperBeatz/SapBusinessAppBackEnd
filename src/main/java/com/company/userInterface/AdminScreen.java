@@ -8,7 +8,7 @@ import com.company.persistence.*;
 import com.company.shared.Client;
 import com.company.shared.Product;
 import com.company.shared.VerificationSyntax;
-import com.company.userInterface.comboBoxLogic.ComboBocUserLogic;
+import com.company.userInterface.comboBoxLogic.ComboBoxUserLogic;
 import com.company.userInterface.comboBoxLogic.ComboBoxClientLogic;
 import com.company.userInterface.comboBoxLogic.ComboBoxProductLogic;
 import com.company.userInterface.comboBoxLogic.ComboBoxUserTypeLogic;
@@ -98,6 +98,11 @@ public class AdminScreen extends Thread {
     private JTextField textFieldChangeUserPassword;
     private JTextField textFieldChangeUserEmail;
     private JComboBox comboBoxChangeUserType;
+    private JTable jTableUsers;
+    private JPanel usersjPanel;
+    private JButton allUsersButton;
+    private JTextField textFieldUserByUsername;
+    private JButton userByUsernameButton;
 
 
     /**
@@ -387,6 +392,20 @@ public class AdminScreen extends Thread {
                 }
             }
         });
+        allUsersButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                jTableUsers.setModel(new TableUserModel());
+                TableUserModel.setHeaders(jTableUsers);
+            }
+        });
+        userByUsernameButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                jTableUsers.setModel(new TableUserModel(textFieldUserByUsername.getText()));
+                TableUserModel.setHeaders(jTableUsers);
+            }
+        });
     }
 
     private WindowAdapter exitAppWindowAdapter() {
@@ -420,13 +439,17 @@ public class AdminScreen extends Thread {
             jTableSaleHistory.setModel(new TableSalesModel());
             TableSalesModel.setHeaders(jTableSaleHistory);
 
+            jTableUsers.setModel(new TableUserModel());
+            TableUserModel.setHeaders(jTableUsers);
+
             //ComboBoxClientLogic.updateComboBox(comboBoxClient);
             ComboBoxClientLogic.updateComboBox(comboBoxChangeClient);
             ComboBoxProductLogic.updateElements();
             //ComboBoxProductLogic.setElements(comboBoxProduct);
             ComboBoxProductLogic.setElements(comboBoxModifyProduct);
             ComboBoxUserTypeLogic.updateElements(comboBoxAddUserType);
-            ComboBocUserLogic.updateElements(comboBoxChangeUserType);
+            ComboBoxUserTypeLogic.updateElements(comboBoxChangeUserType);
+            ComboBoxUserLogic.updateElements(comboBoxChangeUser);
         } catch (WrapperException e1) {
             PopupCatalog.customError(e1.getWrapperMessage());
         }

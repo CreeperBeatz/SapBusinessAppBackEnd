@@ -2,11 +2,6 @@ package com.company.userInterface;
 
 import com.company.persistence.*;
 
-
-import javax.swing.*;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 public class Main {
 
     public static void main(String[] args) {
@@ -19,8 +14,5 @@ public class Main {
         LoginScreen login = new LoginScreen();
         login.start();
 
-        System.out.println(System.currentTimeMillis());
-
-        //TableUsers.insertUser("testTrader", "testTrader1", "test@bg.com", 2);
     }
 }
