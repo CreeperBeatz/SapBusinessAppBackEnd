@@ -43,7 +43,7 @@ public class TableUsers {
     //change user prep
     public static final String CHANGE_USER_PREP = "UPDATE " + TABLE_USERS + " SET " + COLUMN_USERS_USERNAME +
             " = ?, " + COLUMN_USERS_EMAIL + " = ?, " + COLUMN_USERS_PASSWORD_HASH + " = ? , " + COLUMN_USERS_TYPE +
-            " = ? WHERE " + COLUMN_USERS_USERNAME + " = ?";
+            " = ? WHERE " + COLUMN_USERS_ID + " = ?";
 
     //query user by id
     public static final String QUERY_USER_BY_ID_PREP = "SELECT * FROM " + TABLE_USERS + " WHERE " + TABLE_USERS + "." +
@@ -145,66 +145,59 @@ public class TableUsers {
      * @param type to be replaced. If you want to avoid changing it, put 0 on type
      */
     public static void changeUser(int id, String newUsername, String email, String password, int type){
-     try {
-         //Validation
-         if(type > NUM_TYPES_USERS || type < 0) {
-             throw new InvalidUserTypeException();
+         try {
+             //Validation
+             if(type > NUM_TYPES_USERS || type < 0) {
+                 throw new InvalidUserTypeException();
+             }
+
+
+             PreparedStatement queryUserById = Datasource.getInstance().getQueryUserById();
+             PreparedStatement changeUser = Datasource.getInstance().getChangeUserPrep();
+
+             queryUserById.setInt(1, id);
+             ResultSet result = queryUserById.executeQuery();
+             User user = getUsersFromResultSet(result).get(0);
+
+             changeUser.setInt(5, id);
+
+             //Checking and setting all params for the user
+             if(newUsername.equals("")) {
+                 changeUser.setString(1, user.getUsername());
+             } else {
+                 changeUser.setString(1, newUsername);
+             }
+
+             if(email.equals("")) {
+                 changeUser.setString(2, user.getEmail());
+             } else {
+                 changeUser.setString(2, email);
+             }
+
+             if(password.equals("")) {
+                 changeUser.setString(3, user.getPassword_hash());
+             } else {
+                 changeUser.setString(3, MD5Hash.getHash(password));
+             }
+
+             if(type == 0) {
+                 changeUser.setInt(4, user.getType());
+             } else {
+                 changeUser.setInt(4, type);
+             }
+
+
+
+             //Writing the changes
+             changeUser.execute();
+
+         } catch (SQLException e) {
+             System.out.println("Couldn't change user -" + e.getMessage());
+             e.printStackTrace();
+         } catch (InvalidUserTypeException e) {
+             System.out.println("Couldn't change user -" + e.getMessage());
+             e.printStackTrace();
          }
-
-
-         PreparedStatement queryUserById = Datasource.getInstance().getQueryUserById();
-         PreparedStatement changeUser = Datasource.getInstance().getChangeUserPrep();
-
-         queryUserById.setInt(1, id);
-         ResultSet result = queryUserById.executeQuery();
-
-         //ResultSet is initially set to -1, so we don't lose the first result by calling .next()
-         if(!result.next()) {
-             throw new UserDoesNotExistException();
-         }
-
-         changeUser.setInt(5, id);
-
-         //Checking and setting all params for the user
-         if(newUsername.equals("")) {
-             changeUser.setString(1, result.getString(1));
-         } else {
-             changeUser.setString(1, newUsername);
-         }
-
-         if(email.equals("")) {
-             changeUser.setString(2, result.getString(2));
-         } else {
-             changeUser.setString(2, email);
-         }
-
-         if(password.equals("")) {
-             changeUser.setString(3, result.getString(3));
-         } else {
-             changeUser.setString(3, MD5Hash.getHash(MD5Hash.getHash(password)));
-         }
-
-         if(type == 0) {
-             changeUser.setInt(4, result.getInt(4));
-         } else {
-             changeUser.setInt(4, type);
-         }
-
-
-
-         //Writing the changes
-         changeUser.execute();
-
-     } catch (SQLException e) {
-         System.out.println("Couldn't change user -" + e.getMessage());
-         e.printStackTrace();
-     } catch (InvalidUserTypeException e) {
-         System.out.println("Couldn't change user -" + e.getMessage());
-         e.printStackTrace();
-     } catch (UserDoesNotExistException e) {
-         System.out.println("Couldn't change user -" + e.getMessage());
-         e.printStackTrace();
-     }
     }
 
     //////////////////////////////////////////////////////////

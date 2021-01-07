@@ -7,6 +7,7 @@ import com.company.exceptions.WrapperException;
 import com.company.persistence.*;
 import com.company.shared.Client;
 import com.company.shared.Product;
+import com.company.shared.User;
 import com.company.shared.VerificationSyntax;
 import com.company.userInterface.comboBoxLogic.ComboBoxUserLogic;
 import com.company.userInterface.comboBoxLogic.ComboBoxClientLogic;
@@ -404,6 +405,36 @@ public class AdminScreen extends Thread {
             public void actionPerformed(ActionEvent e) {
                 jTableUsers.setModel(new TableUserModel(textFieldUserByUsername.getText()));
                 TableUserModel.setHeaders(jTableUsers);
+            }
+        });
+        changeUserButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    User user = (User) comboBoxChangeUser.getSelectedItem();
+
+                    String username = textFieldChangeUserUsername.getText();
+
+                    String password = textFieldChangeUserPassword.getText();
+                    if(!VerificationSyntax.verifyPassword(password) && !password.equals("")) {
+                        throw new WrapperException(new InvalidPasswordException(), "Password must contain minimum" +
+                                " eight characters, at least one letter and one number");
+                    }
+
+                    String email = textFieldChangeUserEmail.getText();
+                    if(!VerificationSyntax.verifyEmail(email) && !email.equals("")) {
+                        throw new WrapperException(new InvalidEmailException(), "Please enter a valid email!");
+                    }
+
+                    int type = comboBoxAddUserType.getSelectedIndex() + 1; //TODO make this more elegant
+
+                    TableUsers.changeUser(user.getId(), username, email, password, type);
+
+                    ComboBoxUserLogic.updateElements(comboBoxChangeUser);
+
+                } catch (WrapperException e1) {
+                    PopupCatalog.customError(e1.getWrapperMessage());
+                }
             }
         });
     }
