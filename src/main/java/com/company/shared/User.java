@@ -1,5 +1,7 @@
 package com.company.shared;
 
+import com.company.persistence.TableUsers;
+
 public class User {
 
     private String username;
@@ -58,5 +60,17 @@ public class User {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    @Override
+    public String toString(){
+        switch (this.type) {
+            case TableUsers.INDEX_ADMIN:
+                return this.getUsername() + " | Administrator";
+            case TableUsers.INDEX_SALESMAN:
+                return this.getUsername() + " | Salesman";
+            default:
+                return this.getUsername() + " | Unknown";
+        }
     }
 }

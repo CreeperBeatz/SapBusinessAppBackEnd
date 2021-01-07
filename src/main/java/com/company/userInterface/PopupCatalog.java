@@ -52,4 +52,18 @@ public class PopupCatalog {
                 "Success",
                 JOptionPane.INFORMATION_MESSAGE);
     }
+
+    public static boolean yesNoDeleteUser(String thingToDelete) {
+        int result = JOptionPane.showConfirmDialog(null,
+                "are you sure you want to delete this " + thingToDelete + "?",
+                "Question",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+
+        if(result == JOptionPane.YES_OPTION) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
