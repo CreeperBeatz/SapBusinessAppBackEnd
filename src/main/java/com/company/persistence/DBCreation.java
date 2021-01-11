@@ -48,5 +48,8 @@ public class DBCreation {
                     ");\n" +
                     "INSERT INTO users(username, email ,hash, type) VALUES('administrator', 'random@mail.com', '" +
                     MD5Hash.getHash("administrator") +
+                    "', 1);" +
+                    "INSERT INTO users(username, email ,hash, type) VALUES('default', 'random@mail.com', '" +
+                    MD5Hash.getHash("default") +
                     "', 1);";
 }

@@ -24,9 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AdminScreen extends Thread {
-    private final int id;
     private final String username;
-    private final String email;
 
 
     private JPanel panelAdmin;
@@ -124,9 +122,7 @@ public class AdminScreen extends Thread {
     }
 
     public AdminScreen(int id , final String username , String email) {
-        this.id = id;
         this.username = username;
-        this.email = email;
         clientsByNameButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -219,7 +215,7 @@ public class AdminScreen extends Thread {
                     } else if (postalCode < 0 || postalCode > 99999) {
                         throw new WrapperException(new NumberFormatException() , "Please enter a valid postal code!");
                     } else {
-                        TableClients.insertClient(name , surname , address , country , city , postalCode);
+                        SqlClients.insertClient(name , surname , address , country , city , postalCode);
                         //ComboBoxClientLogic.updateComboBox(comboBoxClient);//TODO automate this
                         ComboBoxClientLogic.updateComboBox(comboBoxChangeClient);
                     }
@@ -251,7 +247,7 @@ public class AdminScreen extends Thread {
                         throw new WrapperException(new NumberFormatException() , "Stock can't be lower than 0!");
                     }
 
-                    TableProducts.insertProduct(name , price , stock , discount , description , imgUrl);
+                    SqlProducts.insertProduct(name , price , stock , discount , description , imgUrl);
 
                     ComboBoxProductLogic.updateElements(); //TODO make this automatic
                     //ComboBoxProductLogic.setElements(comboBoxProduct);
@@ -280,7 +276,7 @@ public class AdminScreen extends Thread {
                         price = Double.parseDouble(textFieldChangeProductPrice.getText());
                     }
 
-                    TableProducts.changeProduct(product.getId() , name , price , product.getStock() + stock , 0 , description , imgUrl);
+                    SqlProducts.changeProduct(product.getId() , name , price , product.getStock() + stock , 0 , description , imgUrl);
 
                     //TODO change on focus gain to modify products
                     ComboBoxProductLogic.updateElements();
@@ -323,7 +319,7 @@ public class AdminScreen extends Thread {
                         postalCode = Integer.parseInt(textFieldChangeClientPostalCode.getText());
                     }
 
-                    TableClients.changeClient(client.getId(), name, surname, address, country, city, postalCode);
+                    SqlClients.changeClient(client.getId(), name, surname, address, country, city, postalCode);
 
                     //ComboBoxClientLogic.updateComboBox(comboBoxClient);
                     ComboBoxClientLogic.updateComboBox(comboBoxChangeClient);
@@ -356,7 +352,7 @@ public class AdminScreen extends Thread {
 
                     int type = comboBoxAddUserType.getSelectedIndex() + 1; //TODO make this more elegant
 
-                    TableUsers.insertUser(username, password, email, type);
+                    SqlUsers.insertUser(username, password, email, type);
                 } catch (WrapperException e1) {
                     PopupCatalog.customError(e1.getWrapperMessage());
                 }
@@ -368,7 +364,7 @@ public class AdminScreen extends Thread {
                 try {
                     if (PopupCatalog.yesNoDeleteUser("product")) {
                         Product product = (Product) comboBoxModifyProduct.getSelectedItem();
-                        TableProducts.deleteProduct(product.getId());
+                        SqlProducts.deleteProduct(product.getId());
 
                         ComboBoxProductLogic.updateElements();
                         ComboBoxProductLogic.setElements(comboBoxModifyProduct);
@@ -384,7 +380,7 @@ public class AdminScreen extends Thread {
                 try {
                     if(PopupCatalog.yesNoDeleteUser("client")) {
                         Client client = (Client) comboBoxChangeClient.getSelectedItem();
-                        TableClients.deleteClient(client.getId());
+                        SqlClients.deleteClient(client.getId());
 
                         ComboBoxClientLogic.updateComboBox(comboBoxChangeClient);
                     }
@@ -428,10 +424,21 @@ public class AdminScreen extends Thread {
 
                     int type = comboBoxAddUserType.getSelectedIndex() + 1; //TODO make this more elegant
 
-                    TableUsers.changeUser(user.getId(), username, email, password, type);
+                    SqlUsers.changeUser(user.getId(), username, email, password, type);
 
                     ComboBoxUserLogic.updateElements(comboBoxChangeUser);
 
+                } catch (WrapperException e1) {
+                    PopupCatalog.customError(e1.getWrapperMessage());
+                }
+            }
+        });
+        deleteUserButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    User user = (User) comboBoxChangeUser.getSelectedItem();
+                    SqlUsers.deleteUser(user.getId());
                 } catch (WrapperException e1) {
                     PopupCatalog.customError(e1.getWrapperMessage());
                 }

@@ -1,7 +1,7 @@
 package com.company.userInterface;
 
 import com.company.exceptions.WrapperException;
-import com.company.persistence.TableProducts;
+import com.company.persistence.SqlProducts;
 import com.company.shared.Product;
 
 import javax.swing.*;
@@ -10,9 +10,9 @@ import java.util.List;
 
 public class TableProductsModel extends AbstractTableModel {
 
-    private static String[] columnNames = {TableProducts.COLUMN_PRODUCTS_NAME, TableProducts.COLUMN_PRODUCTS_PRICE,
-            TableProducts.COLUMN_PRODUCTS_STOCK,
-            TableProducts.COLUMN_PRODUCTS_DESCRIPTION};
+    private static String[] columnNames = {SqlProducts.COLUMN_PRODUCTS_NAME, SqlProducts.COLUMN_PRODUCTS_PRICE,
+            SqlProducts.COLUMN_PRODUCTS_STOCK,
+            SqlProducts.COLUMN_PRODUCTS_DESCRIPTION};
 
     private Object[][] data;
 
@@ -53,7 +53,7 @@ public class TableProductsModel extends AbstractTableModel {
 
     private Object[][] getAllProducts(){
         try {
-            List<Product> products = TableProducts.queryAllProducts();
+            List<Product> products = SqlProducts.queryAllProducts();
             return getObjectsFromProductList(products);
         } catch (WrapperException e) {
             PopupCatalog.customError(e.getWrapperMessage() + "\n" + e.getMessage());
@@ -63,7 +63,7 @@ public class TableProductsModel extends AbstractTableModel {
 
     private Object[][] getProductsByPrice(double from, double to) {
         try {
-            List<Product> products = TableProducts.queryProductByPrice(from, to);
+            List<Product> products = SqlProducts.queryProductByPrice(from, to);
             return getObjectsFromProductList(products);
         } catch (WrapperException e) {
             PopupCatalog.customError(e.getWrapperMessage());
@@ -73,7 +73,7 @@ public class TableProductsModel extends AbstractTableModel {
 
     private Object[][] getProductByName(String name) {
         try {
-            List<Product> products = TableProducts.queryProductByName(name);
+            List<Product> products = SqlProducts.queryProductByName(name);
             return getObjectsFromProductList(products);
         } catch (WrapperException e) {
             PopupCatalog.customError(e.getWrapperMessage());

@@ -1,6 +1,6 @@
 package com.company.userInterface.comboBoxLogic;
 
-import com.company.persistence.TableUsers;
+import com.company.persistence.SqlUsers;
 import com.company.shared.User;
 
 import javax.swing.*;
@@ -13,7 +13,7 @@ public class ComboBoxUserLogic {
 
     public static void updateElements(JComboBox comboBox) {
         comboBox.removeAllItems();
-        elements = TableUsers.queryAllUsers();
+        elements = SqlUsers.queryAllUsers();
 
         for(User current: elements) {
             comboBox.addItem(current);

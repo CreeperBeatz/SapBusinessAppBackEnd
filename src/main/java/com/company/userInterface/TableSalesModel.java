@@ -1,23 +1,19 @@
 package com.company.userInterface;
 
 import com.company.exceptions.WrapperException;
-import com.company.persistence.TableSales;
-import com.company.shared.Sale;
+import com.company.persistence.SqlSales;
 import com.company.shared.SaleClientProduct;
 import com.company.utilities.TimeConverter;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 public class TableSalesModel extends AbstractTableModel {
 
-    private static String[] columnNames = {TableSales.COLUMN_SALES_ID, TableSales.COLUMN_SALES_SALESMAN,
-            TableSales.COLUMN_SALES_CLIENT, TableSales.COLUMN_SALES_PRODUCT, TableSales.COLUMN_SALES_QUANTITY,
-            TableSales.COLUMN_SALES_DISCOUNT, TableSales.COLUMN_SALES_PRICE, TableSales.COLUMN_SALES_DATE};
+    private static String[] columnNames = {SqlSales.COLUMN_SALES_ID, SqlSales.COLUMN_SALES_SALESMAN,
+            SqlSales.COLUMN_SALES_CLIENT, SqlSales.COLUMN_SALES_PRODUCT, SqlSales.COLUMN_SALES_QUANTITY,
+            SqlSales.COLUMN_SALES_DISCOUNT, SqlSales.COLUMN_SALES_PRICE, SqlSales.COLUMN_SALES_DATE};
 
     private Object[][] data;
 
@@ -55,7 +51,7 @@ public class TableSalesModel extends AbstractTableModel {
 
     private Object[][] getAllSales(){
         try{
-            List<SaleClientProduct> sales = TableSales.queryAllSales();
+            List<SaleClientProduct> sales = SqlSales.queryAllSales();
             return getObjectFromListSales(sales);
         } catch (WrapperException e) {
             PopupCatalog.customError(e.getWrapperMessage());
@@ -65,7 +61,7 @@ public class TableSalesModel extends AbstractTableModel {
 
     private Object[][] getSaleByDate(long from, long to) {
         try {
-            List<SaleClientProduct> sales = TableSales.querySalesByDate(from, to);
+            List<SaleClientProduct> sales = SqlSales.querySalesByDate(from, to);
             return getObjectFromListSales(sales);
         } catch (WrapperException e) {
             PopupCatalog.customError(e.getWrapperMessage());

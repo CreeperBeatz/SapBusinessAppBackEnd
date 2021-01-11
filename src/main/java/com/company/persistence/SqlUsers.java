@@ -1,7 +1,6 @@
 package com.company.persistence;
 
 import com.company.exceptions.InvalidUserTypeException;
-import com.company.exceptions.UserDoesNotExistException;
 import com.company.exceptions.WrapperException;
 import com.company.shared.VerificationSyntax;
 import com.company.utilities.MD5Hash;
@@ -13,7 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TableUsers {
+public class SqlUsers {
 
     public static final String TABLE_USERS = "users";
     public static final String COLUMN_USERS_ID = "_id";
@@ -124,14 +123,13 @@ public class TableUsers {
      * Deletes an user from given unique username
      * @param id unique ID from the Users table
      */
-    public static void deleteUser(int id){
+    public static void deleteUser(int id) throws WrapperException {
         try {
             PreparedStatement deleteUser = Datasource.getInstance().getDeleteUserPrep();
             deleteUser.setInt(1, id);
             deleteUser.execute();
         } catch (SQLException e) {
-            System.out.println("Couldn't delete user - " + e.getMessage());
-            e.printStackTrace();
+            throw new WrapperException(e, "couldn't delete user!\n" + e.getMessage());
         }
     }
 
@@ -284,7 +282,6 @@ public class TableUsers {
 
             query.add(currUser);
         }
-
         return query;
     }
 }

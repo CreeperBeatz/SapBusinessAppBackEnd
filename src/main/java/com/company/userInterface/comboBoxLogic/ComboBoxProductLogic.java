@@ -1,9 +1,7 @@
 package com.company.userInterface.comboBoxLogic;
 
 import com.company.exceptions.WrapperException;
-import com.company.persistence.TableClients;
-import com.company.persistence.TableProducts;
-import com.company.shared.Client;
+import com.company.persistence.SqlProducts;
 import com.company.shared.Product;
 
 import javax.swing.*;
@@ -16,7 +14,7 @@ public class ComboBoxProductLogic {
 
     public static void updateElements() throws WrapperException {
         elements.clear();
-        elements = TableProducts.queryAllProducts();
+        elements = SqlProducts.queryAllProducts();
     }
 
     public static final synchronized void setElements(JComboBox comboBox) {

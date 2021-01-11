@@ -4,7 +4,6 @@ import com.company.exceptions.ProductDoesNotExistException;
 import com.company.exceptions.WrapperException;
 import com.company.shared.Product;
 
-import javax.xml.crypto.Data;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,7 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TableProducts {
+public class SqlProducts {
 
     public static final String TABLE_PRODUCTS = "products";
     public static final String COLUMN_PRODUCTS_ID = "_id";
@@ -67,7 +66,8 @@ public class TableProducts {
     //query all products
     public static final String QUERY_ALL_PRODUCTS = "SELECT * FROM " + TABLE_PRODUCTS;
 
-    public static void insertProduct(String name, double price, int stock, double discount, String description, String imgUrl){
+    public static void insertProduct(String name, double price, int stock, double discount, String description,
+                                     String imgUrl) throws WrapperException{
         try {
             PreparedStatement statement = Datasource.getInstance().getInsertProduct();
 
@@ -83,7 +83,7 @@ public class TableProducts {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            //TODO logging
+            throw new WrapperException(e, "SQL Error, couldnt insert product!");
         }
     }
 
@@ -132,7 +132,7 @@ public class TableProducts {
      * @param discount if <0, remains the same
      * @param description if "", remains the same
      * @param imgUrl if "", remains the same
-     * @throws ProductDoesNotExistException product not found in database
+     * @throws WrapperException product not found in database
      * @return number of rows affected. If > 1, there is a problem. returns -1 if there's an sql error
      */
     public static int changeProduct(int id, String name, double price, int stock, double discount, String description, String imgUrl)

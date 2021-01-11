@@ -1,7 +1,7 @@
 package com.company.userInterface;
 
 import com.company.exceptions.WrapperException;
-import com.company.persistence.TableUsers;
+import com.company.persistence.SqlUsers;
 import com.company.shared.User;
 
 import javax.swing.*;
@@ -10,8 +10,8 @@ import java.util.List;
 
 public class TableUserModel extends AbstractTableModel {
 
-    private static String[] columnNames = {TableUsers.COLUMN_USERS_ID , TableUsers.COLUMN_USERS_USERNAME ,
-            TableUsers.COLUMN_USERS_EMAIL, TableUsers.COLUMN_USERS_TYPE};
+    private static String[] columnNames = {SqlUsers.COLUMN_USERS_ID , SqlUsers.COLUMN_USERS_USERNAME ,
+            SqlUsers.COLUMN_USERS_EMAIL, SqlUsers.COLUMN_USERS_TYPE};
 
     private Object[][] data;
 
@@ -46,13 +46,13 @@ public class TableUserModel extends AbstractTableModel {
     }
 
     private Object[][] getAllUsers(){
-        List<User> userList = TableUsers.queryAllUsers();
+        List<User> userList = SqlUsers.queryAllUsers();
         return getDataFromUsersList(userList);
     }
 
     private Object[][] getUsersByUsername(String username) {
         try {
-            List<User> userList = TableUsers.queryUsersByUsername(username);
+            List<User> userList = SqlUsers.queryUsersByUsername(username);
             return getDataFromUsersList(userList);
         } catch (WrapperException e) {
             PopupCatalog.customError(e.getWrapperMessage());
@@ -80,10 +80,10 @@ public class TableUserModel extends AbstractTableModel {
             users[j][2] = current.getEmail();
 
             switch (current.getType()) {
-                case TableUsers.INDEX_ADMIN:
+                case SqlUsers.INDEX_ADMIN:
                     users[j][3] =  "Administrator";
                     break;
-                case TableUsers.INDEX_SALESMAN:
+                case SqlUsers.INDEX_SALESMAN:
                     users[j][3] =  "Salesman";
                     break;
                 default:

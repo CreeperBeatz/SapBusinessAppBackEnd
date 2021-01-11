@@ -3,13 +3,13 @@ package com.company.userInterface;
 import com.company.exceptions.EmptyTextFieldException;
 import com.company.exceptions.WrapperException;
 import com.company.persistence.Datasource;
-import com.company.persistence.TableClients;
-import com.company.persistence.TableProducts;
-import com.company.persistence.TableSales;
+import com.company.persistence.SqlClients;
+import com.company.persistence.SqlProducts;
+import com.company.persistence.SqlSales;
 import com.company.shared.Client;
 import com.company.shared.Product;
-import com.company.userInterface.comboBoxLogic.ComboBoxProductLogic;
 import com.company.userInterface.comboBoxLogic.ComboBoxClientLogic;
+import com.company.userInterface.comboBoxLogic.ComboBoxProductLogic;
 import com.company.utilities.TimeConverter;
 
 import javax.swing.*;
@@ -114,7 +114,6 @@ public class SalesmanScreen extends Thread {
         clientsByNameButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //DefaultTableModel model = (DefaultTableModel) tableClients.getModel();
                 jTableClients.setModel(new TableClientsModel(clientNameTextField.getText()));
                 TableClientsModel.setHeaders(jTableClients); //this is the only way I found to update headers... sorry
             }
@@ -207,7 +206,7 @@ public class SalesmanScreen extends Thread {
                     Client client = (Client) comboBoxClient.getSelectedItem();
                     Product product = (Product) comboBoxProduct.getSelectedItem();
 
-                    TableSales.insertSale(id , client.getId() , product.getId() , quantity , discount);
+                    SqlSales.insertSale(id , client.getId() , product.getId() , quantity , discount);
 
                     PopupCatalog.successfulSale();
 
@@ -239,7 +238,7 @@ public class SalesmanScreen extends Thread {
                     } else if (postalCode < 0 || postalCode > 99999) {
                         throw new WrapperException(new NumberFormatException() , "Please enter a valid postal code!");
                     } else {
-                        TableClients.insertClient(name , surname , address , country , city , postalCode);
+                        SqlClients.insertClient(name , surname , address , country , city , postalCode);
                         ComboBoxClientLogic.updateComboBox(comboBoxClient);//TODO automate this
                         ComboBoxClientLogic.updateComboBox(comboBoxChangeClient);
                     }
@@ -271,7 +270,7 @@ public class SalesmanScreen extends Thread {
                         throw new WrapperException(new NumberFormatException() , "Stock can't be lower than 0!");
                     }
 
-                    TableProducts.insertProduct(name , price , stock , discount , description , imgUrl);
+                    SqlProducts.insertProduct(name , price , stock , discount , description , imgUrl);
 
                     ComboBoxProductLogic.updateElements(); //TODO make this automatic
                     ComboBoxProductLogic.setElements(comboBoxProduct);
@@ -300,7 +299,7 @@ public class SalesmanScreen extends Thread {
                         price = Double.parseDouble(textFieldChangeProductPrice.getText());
                     }
 
-                    TableProducts.changeProduct(product.getId() , name , price , product.getStock() + stock , 0 , description , imgUrl);
+                    SqlProducts.changeProduct(product.getId() , name , price , product.getStock() + stock , 0 , description , imgUrl);
 
                     //TODO change on focus gain to modify products
                     ComboBoxProductLogic.updateElements();
@@ -363,7 +362,7 @@ public class SalesmanScreen extends Thread {
                         postalCode = Integer.parseInt(textFieldChangeClientPostalCode.getText());
                     }
 
-                    TableClients.changeClient(client.getId(), name, surname, address, country, city, postalCode);
+                    SqlClients.changeClient(client.getId(), name, surname, address, country, city, postalCode);
 
                     ComboBoxClientLogic.updateComboBox(comboBoxClient);
                     ComboBoxClientLogic.updateComboBox(comboBoxChangeClient);

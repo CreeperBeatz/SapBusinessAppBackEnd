@@ -69,41 +69,41 @@ public class Datasource {
            }
 
            //Table users
-           insertUserPrep = conn.prepareStatement(TableUsers.INSERT_NEW_USER_PREP);
-           deleteUserPrep = conn.prepareStatement(TableUsers.DELETE_USER_PREP);
-           changeUserPrep = conn.prepareStatement(TableUsers.CHANGE_USER_PREP);
-           queryUserById = conn.prepareStatement(TableUsers.QUERY_USER_BY_ID_PREP);
-           queryAllUsers = conn.prepareStatement(TableUsers.QUERY_ALL_USERS_PREP);
-           queryAllTraders = conn.prepareStatement(TableUsers.QUERY_ALL_SALESMEN_PREP);
-           queryUserByIdType = conn.prepareStatement(TableUsers.QUERY_USER_BY_ID_TYPE_PREP);
-           queryUserByUsernameHash = conn.prepareStatement(TableUsers.QUERY_USER_BY_USERNAME_HASH_PREP);
-           queryUserByUsername = conn.prepareStatement(TableUsers.QUERY_USER_BY_USERNAME_PREP);
+           insertUserPrep = conn.prepareStatement(SqlUsers.INSERT_NEW_USER_PREP);
+           deleteUserPrep = conn.prepareStatement(SqlUsers.DELETE_USER_PREP);
+           changeUserPrep = conn.prepareStatement(SqlUsers.CHANGE_USER_PREP);
+           queryUserById = conn.prepareStatement(SqlUsers.QUERY_USER_BY_ID_PREP);
+           queryAllUsers = conn.prepareStatement(SqlUsers.QUERY_ALL_USERS_PREP);
+           queryAllTraders = conn.prepareStatement(SqlUsers.QUERY_ALL_SALESMEN_PREP);
+           queryUserByIdType = conn.prepareStatement(SqlUsers.QUERY_USER_BY_ID_TYPE_PREP);
+           queryUserByUsernameHash = conn.prepareStatement(SqlUsers.QUERY_USER_BY_USERNAME_HASH_PREP);
+           queryUserByUsername = conn.prepareStatement(SqlUsers.QUERY_USER_BY_USERNAME_PREP);
 
            //table sales
-           querySaleBySalesman = conn.prepareStatement(TableSales.QUERY_SALE_BY_SALESMAN_PREP);
-           querySaleByDate = conn.prepareStatement(TableSales.QUERY_SALE_BY_DATE_PREP);
-           insertSale = conn.prepareStatement(TableSales.INSERT_SALE_PREP);
-           deleteSale = conn.prepareStatement(TableSales.DELETE_SALE_PREP);
-           queryAllSales = conn.prepareStatement(TableSales.QUERY_ALL_SALES);
+           querySaleBySalesman = conn.prepareStatement(SqlSales.QUERY_SALE_BY_SALESMAN_PREP);
+           querySaleByDate = conn.prepareStatement(SqlSales.QUERY_SALE_BY_DATE_PREP);
+           insertSale = conn.prepareStatement(SqlSales.INSERT_SALE_PREP);
+           deleteSale = conn.prepareStatement(SqlSales.DELETE_SALE_PREP);
+           queryAllSales = conn.prepareStatement(SqlSales.QUERY_ALL_SALES);
 
            //table products
-           queryProductByID = conn.prepareStatement(TableProducts.QUERY_PRODUCT_BY_ID_PREP);
-           queryProductByName = conn.prepareStatement(TableProducts.QUERY_PRODUCT_BY_NAME_PREP);
-           changeProduct = conn.prepareStatement(TableProducts.CHANGE_PRODUCT_PREP);
-           queryProductByPrice = conn.prepareStatement(TableProducts.QUERY_PRODUCT_BY_PRICE_PREP);
-           deleteProduct = conn.prepareStatement(TableProducts.DELETE_PRODUCT_PREP);
-           insertProduct = conn.prepareStatement(TableProducts.INSERT_PRODUCT_PREP);
-           queryAllProducts = conn.prepareStatement(TableProducts.QUERY_ALL_PRODUCTS);
+           queryProductByID = conn.prepareStatement(SqlProducts.QUERY_PRODUCT_BY_ID_PREP);
+           queryProductByName = conn.prepareStatement(SqlProducts.QUERY_PRODUCT_BY_NAME_PREP);
+           changeProduct = conn.prepareStatement(SqlProducts.CHANGE_PRODUCT_PREP);
+           queryProductByPrice = conn.prepareStatement(SqlProducts.QUERY_PRODUCT_BY_PRICE_PREP);
+           deleteProduct = conn.prepareStatement(SqlProducts.DELETE_PRODUCT_PREP);
+           insertProduct = conn.prepareStatement(SqlProducts.INSERT_PRODUCT_PREP);
+           queryAllProducts = conn.prepareStatement(SqlProducts.QUERY_ALL_PRODUCTS);
 
            //table clients
-           queryClientByID = conn.prepareStatement(TableClients.QUERY_CLIENT_BY_ID_PREP);
-           queryClientByName = conn.prepareStatement(TableClients.QUERY_CLIENT_BY_NAME);
-           queryAllClients = conn.prepareStatement(TableClients.QUERY_ALL_CLIENTS_PREP);
-           insertClient = conn.prepareStatement(TableClients.INSERT_CLIENT_PREP);
-           deleteClient = conn.prepareStatement(TableClients.DELETE_CLIENT_PREP);
-           changeClient = conn.prepareStatement(TableClients.CHANGE_CLIENT_PREP);
-           updateClientPurchases = conn.prepareStatement(TableClients.UPDATE_CLIENT_NUM_PURCHASES_PREP);
-           countNumClients = conn.prepareStatement(TableClients.COUNT_NUM_RECORDS_PREP);
+           queryClientByID = conn.prepareStatement(SqlClients.QUERY_CLIENT_BY_ID_PREP);
+           queryClientByName = conn.prepareStatement(SqlClients.QUERY_CLIENT_BY_NAME);
+           queryAllClients = conn.prepareStatement(SqlClients.QUERY_ALL_CLIENTS_PREP);
+           insertClient = conn.prepareStatement(SqlClients.INSERT_CLIENT_PREP);
+           deleteClient = conn.prepareStatement(SqlClients.DELETE_CLIENT_PREP);
+           changeClient = conn.prepareStatement(SqlClients.CHANGE_CLIENT_PREP);
+           updateClientPurchases = conn.prepareStatement(SqlClients.UPDATE_CLIENT_NUM_PURCHASES_PREP);
+           countNumClients = conn.prepareStatement(SqlClients.COUNT_NUM_RECORDS_PREP);
 
            return true;
         } catch(SQLException e) {

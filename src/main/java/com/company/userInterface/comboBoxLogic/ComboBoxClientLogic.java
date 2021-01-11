@@ -1,7 +1,7 @@
 package com.company.userInterface.comboBoxLogic;
 
 import com.company.exceptions.WrapperException;
-import com.company.persistence.TableClients;
+import com.company.persistence.SqlClients;
 import com.company.shared.Client;
 
 import javax.swing.*;
@@ -16,7 +16,7 @@ public class ComboBoxClientLogic {
         elements.clear();
         comboBox.removeAllItems();
 
-        elements = TableClients.queryAllClients();
+        elements = SqlClients.queryAllClients();
 
         for(Client current: elements) {
             comboBox.addItem(current);

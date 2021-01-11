@@ -2,7 +2,7 @@ package com.company.userInterface;
 
 import com.company.exceptions.WrapperException;
 import com.company.persistence.Datasource;
-import com.company.persistence.TableUsers;
+import com.company.persistence.SqlUsers;
 import com.company.shared.User;
 
 import javax.swing.*;
@@ -24,7 +24,7 @@ public class LoginScreen extends Thread {
                 char[] passwordRaw = passwordField1.getPassword();
                 String password = new String(passwordRaw);
                 try {
-                    User user = TableUsers.queryUserByUsernamePassword(username , password);
+                    User user = SqlUsers.queryUserByUsernamePassword(username , password);
 
                     //If user doesn't exist
                     if (user == null) {
@@ -32,12 +32,12 @@ public class LoginScreen extends Thread {
                     }
                     else { //if user exists
                         switch (user.getType()){
-                            case TableUsers.INDEX_ADMIN:
+                            case SqlUsers.INDEX_ADMIN:
                                 AdminScreen adminScreen =
                                         new AdminScreen(user.getId(), user.getUsername(), user.getEmail());
                                 adminScreen.run();
                                 break;
-                            case TableUsers.INDEX_SALESMAN:
+                            case SqlUsers.INDEX_SALESMAN:
                                 SalesmanScreen salesmanScreen =
                                         new SalesmanScreen(user.getId(), user.getUsername(), user.getEmail());
                                 salesmanScreen.run();

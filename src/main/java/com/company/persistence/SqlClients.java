@@ -3,15 +3,15 @@ package com.company.persistence;
 import com.company.exceptions.WrapperException;
 import com.company.shared.Client;
 
-import javax.xml.crypto.Data;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TableClients {
+import static java.lang.System.exit;
+
+public class SqlClients {
     public static final String TABLE_CLIENTS = "clients";
 
     public static final String COLUMN_CLIENTS_ID = "_id";
@@ -145,9 +145,10 @@ public class TableClients {
             statement.setInt(7, id);
 
             statement.executeUpdate(); //TODO maybe a transaction to check if there is more than 1 row affected?
-        } catch (SQLException e) {
+        } catch (SQLException e) { //end operation
             e.printStackTrace();
-            //TODO end operation
+            Datasource.getInstance().close();
+            exit(-1);
         }
     }
 
@@ -158,7 +159,9 @@ public class TableClients {
             statement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
-            //TODO end operation
+            Datasource.getInstance().close();
+            exit(-1);
+            //end operation
             //Add client purchase is a method, only accessible from TableSales
             //It's not possible to have invalid client number, as it's being verified in TableSales
             //Therefore, SQL error means something is wrong on a technical level
@@ -170,7 +173,7 @@ public class TableClients {
             ResultSet results = Datasource.getInstance().getCountNumClients().executeQuery();
             return results.getInt(1);
         } catch (SQLException e) {
-            throw new WrapperException(e, "counlnt get count of records in Clients table");
+            throw new WrapperException(e, "couldn't get count of records in Clients table");
         }
     }
 
@@ -240,11 +243,7 @@ public class TableClients {
             statement.setInt(1 , id);
             ResultSet results = statement.executeQuery();
 
-            if(results.next()) {
-                return true;
-            } else {
-                return false;
-            }
+            return results.next();
         } catch (SQLException e) {
             //TODO change with log
             e.printStackTrace();

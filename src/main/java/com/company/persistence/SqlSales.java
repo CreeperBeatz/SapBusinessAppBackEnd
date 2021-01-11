@@ -4,7 +4,6 @@ import com.company.exceptions.*;
 import com.company.shared.Product;
 import com.company.shared.SaleClientProduct;
 
-import javax.xml.crypto.Data;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,7 +13,7 @@ import java.util.List;
 
 import static java.lang.System.exit;
 
-public class TableSales {
+public class SqlSales {
 
     public static final String TABLE_SALES = "sales";
     public static final String COLUMN_SALES_ID = "_id";
@@ -45,51 +44,51 @@ public class TableSales {
 
 
     public static final String QUERY_SALE_BY_SALESMAN_PREP = "SELECT " + TABLE_SALES + "." + COLUMN_SALES_ID + ", " +
-            TableUsers.TABLE_USERS + "." + TableUsers.COLUMN_USERS_USERNAME + ", " +
-            TableClients.TABLE_CLIENTS + "." + TableClients.COLUMN_CLIENTS_NAME + ", " +
-            TableProducts.TABLE_PRODUCTS + "." + TableProducts.COLUMN_PRODUCTS_NAME + ", " +
+            SqlUsers.TABLE_USERS + "." + SqlUsers.COLUMN_USERS_USERNAME + ", " +
+            SqlClients.TABLE_CLIENTS + "." + SqlClients.COLUMN_CLIENTS_NAME + ", " +
+            SqlProducts.TABLE_PRODUCTS + "." + SqlProducts.COLUMN_PRODUCTS_NAME + ", " +
             TABLE_SALES + "." + COLUMN_SALES_QUANTITY + ", " +
             TABLE_SALES + "." + COLUMN_SALES_DISCOUNT + ", " +
             TABLE_SALES + "." + COLUMN_SALES_PRICE + ", " +
             TABLE_SALES + "." + COLUMN_SALES_DATE +
-            " FROM " + TABLE_SALES + " INNER JOIN " + TableProducts.TABLE_PRODUCTS +
-            " ON " + TableProducts.TABLE_PRODUCTS + "." + TableProducts.COLUMN_PRODUCTS_ID + " = " +
+            " FROM " + TABLE_SALES + " INNER JOIN " + SqlProducts.TABLE_PRODUCTS +
+            " ON " + SqlProducts.TABLE_PRODUCTS + "." + SqlProducts.COLUMN_PRODUCTS_ID + " = " +
             TABLE_SALES + "." + COLUMN_SALES_PRODUCT + ", " +
-            TableClients.TABLE_CLIENTS + " ON " + TableClients.TABLE_CLIENTS + "." + TableClients.COLUMN_CLIENTS_ID +
-            " = " + TABLE_SALES + "." + COLUMN_SALES_CLIENT + ", " + TableUsers.TABLE_USERS + " ON " + TableUsers.TABLE_USERS +
-            "." + TableUsers.COLUMN_USERS_ID + " = " + TABLE_SALES + "." + COLUMN_SALES_SALESMAN +
+            SqlClients.TABLE_CLIENTS + " ON " + SqlClients.TABLE_CLIENTS + "." + SqlClients.COLUMN_CLIENTS_ID +
+            " = " + TABLE_SALES + "." + COLUMN_SALES_CLIENT + ", " + SqlUsers.TABLE_USERS + " ON " + SqlUsers.TABLE_USERS +
+            "." + SqlUsers.COLUMN_USERS_ID + " = " + TABLE_SALES + "." + COLUMN_SALES_SALESMAN +
             " WHERE " + TABLE_SALES + "." + COLUMN_SALES_SALESMAN + " = ?";
 
     public static final String QUERY_SALE_BY_DATE_PREP = "SELECT " + TABLE_SALES + "." + COLUMN_SALES_ID + ", " +
-            TableUsers.TABLE_USERS + "." + TableUsers.COLUMN_USERS_USERNAME + ", " +
-            TableClients.TABLE_CLIENTS + "." + TableClients.COLUMN_CLIENTS_NAME + ", " +
-            TableProducts.TABLE_PRODUCTS + "." + TableProducts.COLUMN_PRODUCTS_NAME + ", " +
+            SqlUsers.TABLE_USERS + "." + SqlUsers.COLUMN_USERS_USERNAME + ", " +
+            SqlClients.TABLE_CLIENTS + "." + SqlClients.COLUMN_CLIENTS_NAME + ", " +
+            SqlProducts.TABLE_PRODUCTS + "." + SqlProducts.COLUMN_PRODUCTS_NAME + ", " +
             TABLE_SALES + "." + COLUMN_SALES_QUANTITY + ", " +
             TABLE_SALES + "." + COLUMN_SALES_DISCOUNT + ", " +
             TABLE_SALES + "." + COLUMN_SALES_PRICE + ", " +
             TABLE_SALES + "." + COLUMN_SALES_DATE +
-            " FROM " + TABLE_SALES + " INNER JOIN " + TableProducts.TABLE_PRODUCTS +
-            " ON " + TableProducts.TABLE_PRODUCTS + "." + TableProducts.COLUMN_PRODUCTS_ID + " = " +
+            " FROM " + TABLE_SALES + " INNER JOIN " + SqlProducts.TABLE_PRODUCTS +
+            " ON " + SqlProducts.TABLE_PRODUCTS + "." + SqlProducts.COLUMN_PRODUCTS_ID + " = " +
             TABLE_SALES + "." + COLUMN_SALES_PRODUCT + ", " +
-            TableClients.TABLE_CLIENTS + " ON " + TableClients.TABLE_CLIENTS + "." + TableClients.COLUMN_CLIENTS_ID +
-            " = " + TABLE_SALES + "." + COLUMN_SALES_CLIENT + ", " + TableUsers.TABLE_USERS + " ON " + TableUsers.TABLE_USERS +
-            "." + TableUsers.COLUMN_USERS_ID + " = " + TABLE_SALES + "." + COLUMN_SALES_SALESMAN +
+            SqlClients.TABLE_CLIENTS + " ON " + SqlClients.TABLE_CLIENTS + "." + SqlClients.COLUMN_CLIENTS_ID +
+            " = " + TABLE_SALES + "." + COLUMN_SALES_CLIENT + ", " + SqlUsers.TABLE_USERS + " ON " + SqlUsers.TABLE_USERS +
+            "." + SqlUsers.COLUMN_USERS_ID + " = " + TABLE_SALES + "." + COLUMN_SALES_SALESMAN +
             " WHERE " + TABLE_SALES + "." + COLUMN_SALES_DATE + " > ? AND " + TABLE_SALES + "." + COLUMN_SALES_DATE + " < ?";
 
     public static final String QUERY_ALL_SALES = "SELECT " + TABLE_SALES + "." + COLUMN_SALES_ID + ", " +
-            TableUsers.TABLE_USERS + "." + TableUsers.COLUMN_USERS_USERNAME + ", " +
-            TableClients.TABLE_CLIENTS + "." + TableClients.COLUMN_CLIENTS_NAME + ", " +
-            TableProducts.TABLE_PRODUCTS + "." + TableProducts.COLUMN_PRODUCTS_NAME + ", " +
+            SqlUsers.TABLE_USERS + "." + SqlUsers.COLUMN_USERS_USERNAME + ", " +
+            SqlClients.TABLE_CLIENTS + "." + SqlClients.COLUMN_CLIENTS_NAME + ", " +
+            SqlProducts.TABLE_PRODUCTS + "." + SqlProducts.COLUMN_PRODUCTS_NAME + ", " +
             TABLE_SALES + "." + COLUMN_SALES_QUANTITY + ", " +
             TABLE_SALES + "." + COLUMN_SALES_DISCOUNT + ", " +
             TABLE_SALES + "." + COLUMN_SALES_PRICE + ", " +
             TABLE_SALES + "." + COLUMN_SALES_DATE +
-            " FROM " + TABLE_SALES + " INNER JOIN " + TableProducts.TABLE_PRODUCTS +
-            " ON " + TableProducts.TABLE_PRODUCTS + "." + TableProducts.COLUMN_PRODUCTS_ID + " = " +
+            " FROM " + TABLE_SALES + " INNER JOIN " + SqlProducts.TABLE_PRODUCTS +
+            " ON " + SqlProducts.TABLE_PRODUCTS + "." + SqlProducts.COLUMN_PRODUCTS_ID + " = " +
             TABLE_SALES + "." + COLUMN_SALES_PRODUCT + ", " +
-            TableClients.TABLE_CLIENTS + " ON " + TableClients.TABLE_CLIENTS + "." + TableClients.COLUMN_CLIENTS_ID +
-            " = " + TABLE_SALES + "." + COLUMN_SALES_CLIENT + ", " + TableUsers.TABLE_USERS + " ON " + TableUsers.TABLE_USERS +
-            "." + TableUsers.COLUMN_USERS_ID + " = " + TABLE_SALES + "." + COLUMN_SALES_SALESMAN;
+            SqlClients.TABLE_CLIENTS + " ON " + SqlClients.TABLE_CLIENTS + "." + SqlClients.COLUMN_CLIENTS_ID +
+            " = " + TABLE_SALES + "." + COLUMN_SALES_CLIENT + ", " + SqlUsers.TABLE_USERS + " ON " + SqlUsers.TABLE_USERS +
+            "." + SqlUsers.COLUMN_USERS_ID + " = " + TABLE_SALES + "." + COLUMN_SALES_SALESMAN;
 
 
     public static void insertSale(int salesman, int client, int productID, int quantity, double discount)
@@ -97,10 +96,10 @@ public class TableSales {
 
         Connection conn = Datasource.getInstance().getConn();
         PreparedStatement statementSale = Datasource.getInstance().getInsertSale();
-        Product product = TableProducts.queryProductByID(productID);
+        Product product = SqlProducts.queryProductByID(productID);
 
         //VALIDATION
-        if(!TableUsers.salesmanExists(salesman)) {
+        if(!SqlUsers.salesmanExists(salesman)) {
             throw new WrapperException(new UserDoesNotExistException(), "Salesman doesn't exist!");
         }
         if(product == null) { //getStockByID throws ProductNowExistsException
@@ -109,14 +108,14 @@ public class TableSales {
         if(product.getStock() < quantity) {
             throw new WrapperException(new NotEnoughStockException(), "Not enough stock!");
         }
-        if(!TableClients.clientExists(client)) {
+        if(!SqlClients.clientExists(client)) {
             throw new WrapperException(new ClientDoesNotExistException(), "Client doesn't exist");
         }
         if(quantity < 0) {
             throw new WrapperException(new IllegalArgumentException(),"Only positive numbers for quantity!");
         }
         if(discount < 0) {
-            throw new WrapperException(new IllegalArgumentException(), "Only possitive numbers for discount!");
+            throw new WrapperException(new IllegalArgumentException(), "Only positive numbers for discount!");
         }
 
         //INSERTION
@@ -131,9 +130,9 @@ public class TableSales {
             statementSale.setDouble(6, calculatePrice(product, discount, quantity));
             statementSale.setLong(7, System.currentTimeMillis());
 
-            if(TableProducts.changeProduct(productID, "",-1 , product.getStock()-quantity, -1, "", "") == 1) {
+            if(SqlProducts.changeProduct(productID, "",-1 , product.getStock()-quantity, -1, "", "") == 1) {
                 statementSale.execute();
-                TableClients.addClientPurchase(client); //adding a purchase to the client ID
+                SqlClients.addClientPurchase(client); //adding a purchase to the client ID
                 conn.commit();
             } else {
                 throw new SQLException(); //Performing rollback, since more than 1 row was affected
@@ -180,7 +179,7 @@ public class TableSales {
      *
      *
      * @param id id of the user whose sales you want to check
-     * @return
+     * @return List of SaleClientProducts
      */
     public static List<SaleClientProduct> querySalesBySalesman(int id) throws WrapperException{
         try {
@@ -190,7 +189,7 @@ public class TableSales {
 
             return getListFromResultSet(results);
         } catch (SQLException e) {
-            throw new WrapperException(e, "Couldnt execute sale by salesman query");
+            throw new WrapperException(e, "Couldn't execute sale by salesman query");
         }
     }
 
@@ -199,7 +198,7 @@ public class TableSales {
      *
      * @param fromDate begin date of the sale query in millis
      * @param toDate end date of the sale query in millis
-     * @return
+     * @return list of SaleClientProducts
      */
     public static List<SaleClientProduct> querySalesByDate(long fromDate, long toDate) throws WrapperException{
         try {
@@ -210,7 +209,7 @@ public class TableSales {
             ResultSet results = statement.executeQuery();
             return getListFromResultSet(results);
         } catch (SQLException e) {
-            throw new WrapperException(e, "Couldnt execute sale by date query");
+            throw new WrapperException(e, "Couldn't execute sale by date query");
         }
     }
 
@@ -222,7 +221,7 @@ public class TableSales {
             return getListFromResultSet(results);
 
         } catch (SQLException e) {
-            throw new WrapperException(e, "Couldnt execute all sales query");
+            throw new WrapperException(e, "Couldn't execute all sales query");
         }
     }
 

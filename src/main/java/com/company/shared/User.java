@@ -1,6 +1,6 @@
 package com.company.shared;
 
-import com.company.persistence.TableUsers;
+import com.company.persistence.SqlUsers;
 
 public class User {
 
@@ -65,9 +65,9 @@ public class User {
     @Override
     public String toString(){
         switch (this.type) {
-            case TableUsers.INDEX_ADMIN:
+            case SqlUsers.INDEX_ADMIN:
                 return this.getUsername() + " | Administrator";
-            case TableUsers.INDEX_SALESMAN:
+            case SqlUsers.INDEX_SALESMAN:
                 return this.getUsername() + " | Salesman";
             default:
                 return this.getUsername() + " | Unknown";
