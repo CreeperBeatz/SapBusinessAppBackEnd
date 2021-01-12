@@ -14,6 +14,5 @@ public class Main {
         LoginScreen login = new LoginScreen();
         login.start();
 
-        System.out.println(SqlUsers.CHANGE_USER_PREP);
     }
 }

@@ -11,6 +11,13 @@ public class PopupCatalog {
                 JOptionPane.ERROR_MESSAGE);
     }
 
+    public static void successfulDBCreation() {
+        JOptionPane.showMessageDialog(null,
+                "Default database created!",
+                "DB Creation",
+                JOptionPane.INFORMATION_MESSAGE);
+    }
+
     public static void unrecognisedUserType() {
         JOptionPane.showMessageDialog(null,
                 "User type unrecognised!\nPlease contact a system administrator!",

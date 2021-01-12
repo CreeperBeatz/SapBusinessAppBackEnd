@@ -1,5 +1,7 @@
 package com.company.persistence;
 
+import com.company.userInterface.PopupCatalog;
+
 import java.io.File;
 import java.sql.*;
 
@@ -264,8 +266,14 @@ public class Datasource {
 
     private void createDB() throws SQLException{
         Statement statement = conn.createStatement();
-        statement.execute(DBCreation.DATABASE_CREATION_STRING);
+        statement.execute(DBCreation.DATABASE_CREATION_USERS);
+        statement.execute(DBCreation.DATABASE_CREATION_CLIENTS);
+        statement.execute(DBCreation.DATABASE_CREATION_PRODUCTS);
+        statement.execute(DBCreation.DATABASE_CREATION_SALES);
+        statement.execute(DBCreation.DATABASE_CREATION_INSERT_ADMIN);
+        statement.execute(DBCreation.DATABASE_CREATION_INSERT_SALESMAN);
         statement.close();
-        System.out.println("Default database with admin account administrator:administrator created");
+        //TODO Change with something more elegant
+        PopupCatalog.successfulDBCreation();
     }
 }
